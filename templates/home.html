@@ -1,0 +1,497 @@
+{% extends 'base.html' %}
+{% block title %}Home - Fintelligent{% endblock %}
+
+{% block content %}
+
+<!-- Union Budget 2026 Banner -->
+<div
+    style="background: linear-gradient(135deg, #ff9933 0%, #ffffff 50%, #138808 100%); padding: 0.25rem; border-radius: 16px; margin-bottom: 2rem; animation: fadeIn 0.6s ease-out;">
+    <div
+        style="background: rgba(15, 23, 42, 0.95); border-radius: 14px; padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 1.5rem; flex: 1; min-width: 300px;">
+            <div
+                style="width: 60px; height: 60px; background: linear-gradient(135deg, #ff9933 0%, #138808 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0;">
+                🇮🇳
+            </div>
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0;">Union Budget
+                        2026</h3>
+                    <span
+                        style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Latest</span>
+                </div>
+                <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+                    <strong style="color: #10b981;">₹1.39L Cr</strong> for education • <strong
+                        style="color: #f59e0b;">15,500 AVGC Labs</strong> • <strong style="color: #3b82f6;">TCS
+                        Relief</strong> for students
+                </p>
+            </div>
+        </div>
+        <a href="/budget2026" class="btn-primary-ui"
+            style="background: linear-gradient(135deg, #ff9933 0%, #138808 100%); color: white; font-weight: 700; padding: 0.875rem 2rem; white-space: nowrap; box-shadow: 0 4px 15px rgba(255, 153, 51, 0.3);">
+            <i class="fa-solid fa-arrow-right"></i> View All Benefits
+        </a>
+    </div>
+</div>
+
+<!-- Hero Section -->
+
+<div style="text-align: center; margin: 4rem 0 6rem 0; position: relative;">
+    <div
+        style="position: absolute; width: 400px; height: 400px; background: rgba(59, 130, 246, 0.2); filter: blur(120px); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; animation: pulse-slow 8s infinite alternate;">
+    </div>
+
+    <div class="animate-rise">
+        <div
+            style="display: inline-block; padding: 6px 18px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 30px; color: var(--primary); font-size: 0.85rem; font-weight: 700; margin-bottom: 2rem; letter-spacing: 1px; text-transform: uppercase;">
+            ✨ New: AI-Powered Wealth Guard Active
+        </div>
+        <h1 class="hero-title"
+            style="font-weight: 800; margin-bottom: 1.5rem; line-height: 1.1; font-size: 4.5rem; letter-spacing: -0.04em;">
+            Financial Intelligence <br>
+            <span
+                style="background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Redefined</span>
+        </h1>
+        <p class="hero-subtitle"
+            style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2.5rem auto;">
+            Your intelligent companion for smarter money management, tax optimization, and wealth growth.
+        </p>
+
+        <div class="hero-actions" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/dashboard" class="btn-primary-ui hero-btn">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Analyze My Data
+            </a>
+            <a href="/education/students" class="btn-primary-ui hero-btn"
+                style="background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+                <i class="fa-solid fa-graduation-cap"></i> Student Hub
+            </a>
+            <a href="/education/glossary" class="btn-primary-ui hero-btn"
+                style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);">
+                <i class="fa-solid fa-book-sparkles"></i> Gen-Z Glossary
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Grid -->
+<div
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 8rem;">
+    <div class="card-ui animate-rise glass-layer"
+        style="text-align: center; transition-delay: 0.1s; border-color: rgba(16, 185, 129, 0.2);">
+        <div class="stat-number" id="totalSavings"
+            style="font-size: 2.75rem; font-weight: 800; color: #10b981; margin-bottom: 0.5rem; letter-spacing: -1px;">
+            ₹0</div>
+        <div
+            style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+            Savings Identified</div>
+    </div>
+    <div class="card-ui animate-rise glass-layer"
+        style="text-align: center; transition-delay: 0.2s; border-color: rgba(59, 130, 246, 0.2);">
+        <div class="stat-number" id="taxSaved"
+            style="font-size: 2.75rem; font-weight: 800; color: #3b82f6; margin-bottom: 0.5rem; letter-spacing: -1px;">
+            ₹0</div>
+        <div
+            style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+            Tax Optimized</div>
+    </div>
+    <div class="card-ui animate-rise glass-layer"
+        style="text-align: center; transition-delay: 0.3s; border-color: rgba(245, 158, 11, 0.2);">
+        <div class="stat-number" id="investments"
+            style="font-size: 2.75rem; font-weight: 800; color: #f59e0b; margin-bottom: 0.5rem; letter-spacing: -1px;">
+            ₹0</div>
+        <div
+            style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+            Assets Managed</div>
+    </div>
+    <div class="card-ui animate-rise glass-layer"
+        style="text-align: center; transition-delay: 0.4s; border-color: rgba(255, 255, 255, 0.1);">
+        <div class="stat-number" id="score"
+            style="font-size: 2.75rem; font-weight: 800; color: white; margin-bottom: 0.5rem; letter-spacing: -1px;">
+            {{ data.financial_score if data else 85 }}/100</div>
+        <div
+            style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+            Health Score</div>
+    </div>
+</div>
+
+<!-- Section: How It Works -->
+<div style="margin-bottom: 8rem;">
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h2 style="font-size: 2.75rem; margin-bottom: 1rem; font-weight: 800; letter-spacing: -0.02em;">Three Steps to
+            Excellence</h2>
+        <p style="color: var(--text-muted); font-size: 1.25rem; max-width: 600px; margin: 0 auto;">Our intelligent
+            architecture automates your financial growth.</p>
+    </div>
+
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; position: relative;">
+        <!-- Step 1 -->
+        <div style="text-align: center;">
+            <div
+                style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem auto; font-size: 2rem; color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2);">
+                <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 700;">Connect & Sync</h3>
+            <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">Easily upload receipts or link your
+                accounts to feed the AI engine with your financial data.</p>
+        </div>
+        <!-- Step 2 -->
+        <div style="text-align: center;">
+            <div
+                style="width: 80px; height: 80px; background: rgba(168, 85, 247, 0.1); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem auto; font-size: 2rem; color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.2);">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 700;">AI Analysis</h3>
+            <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">Our proprietary algorithms scan for
+                tax leakage, spending anomalies, and growth opportunities.</p>
+        </div>
+        <!-- Step 3 -->
+        <div style="text-align: center;">
+            <div
+                style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem auto; font-size: 2rem; color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 700;">Wealth Growth</h3>
+            <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">Execute professional-grade tax
+                strategies and investment plans to maximize your net worth.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Section: Pro Features Showcase -->
+<div style="margin-bottom: 8rem;">
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h2 style="font-size: 2.75rem; margin-bottom: 1rem; font-weight: 800; letter-spacing: -0.02em;">Professional
+            Architecture</h2>
+        <p style="color: var(--text-muted); font-size: 1.25rem; max-width: 600px; margin: 0 auto;">Standardized
+            components for the modern wealth builder.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+        <!-- Pro Feature 1 -->
+        <div class="card-ui glass-layer"
+            style="padding: 2.5rem; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-color: rgba(96, 165, 250, 0.2);">
+            <div
+                style="width: 50px; height: 50px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; color: #3b82f6; font-size: 1.5rem;">
+                <i class="fa-solid fa-microchip"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 700;">Predictive Engine</h3>
+            <p style="color: var(--text-muted); line-height: 1.7;">Advanced ML models predict your cash flow and alert
+                you to potential "broke" scenarios before they happen.</p>
+            <ul style="padding-left: 1.2rem; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.9rem;">
+                <li style="margin-bottom: 0.5rem;">Cash Flow Forecasting</li>
+                <li style="margin-bottom: 0.5rem;">Anomaly Detection</li>
+                <li>Budget Drift Alerts</li>
+            </ul>
+        </div>
+        <!-- Pro Feature 2 -->
+        <div class="card-ui glass-layer"
+            style="padding: 2.5rem; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-color: rgba(168, 85, 247, 0.2);">
+            <div
+                style="width: 50px; height: 50px; background: rgba(168, 85, 247, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; color: #a855f7; font-size: 1.5rem;">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 700;">Tax Optimizer</h3>
+            <p style="color: var(--text-muted); line-height: 1.7;">Professional tax planning for the 80C, 80D, and HRA
+                regimes. Maximize your take-home pay legally.</p>
+            <ul style="padding-left: 1.2rem; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.9rem;">
+                <li style="margin-bottom: 0.5rem;">Deduction Tracker</li>
+                <li style="margin-bottom: 0.5rem;">Investment Mapping</li>
+                <li>TDS Forecasting</li>
+            </ul>
+        </div>
+        <!-- Pro Feature 3 -->
+        <div class="card-ui glass-layer"
+            style="padding: 2.5rem; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-color: rgba(16, 185, 129, 0.2);">
+            <div
+                style="width: 50px; height: 50px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; color: #10b981; font-size: 1.5rem;">
+                <i class="fa-solid fa-magnifying-glass-chart"></i>
+            </div>
+            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 700;">Alpha Analyzer</h3>
+            <p style="color: var(--text-muted); line-height: 1.7;">Deep-dive stock analysis using Nifty/BSE data.
+                Identify undervalued assets with professional benchmarks.</p>
+            <ul style="padding-left: 1.2rem; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.9rem;">
+                <li style="margin-bottom: 0.5rem;">Sentiment Analysis</li>
+                <li style="margin-bottom: 0.5rem;">Fundamental Scoring</li>
+                <li>Portfolio Simulation</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Section: Interactive Preview -->
+<div style="margin-bottom: 8rem;">
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h2 style="font-size: 2.75rem; margin-bottom: 1rem; font-weight: 800; letter-spacing: -0.02em;">Glimpse the
+            Future</h2>
+        <p style="color: var(--text-muted); font-size: 1.25rem;">Experience the Command Center interface.</p>
+    </div>
+
+    <div class="card-ui glass-layer"
+        style="padding: 1rem; border-radius: 30px; overflow: hidden; max-width: 1000px; margin: 0 auto;">
+        <div
+            style="display: flex; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 0.5rem; margin-bottom: 1.5rem; gap: 0.5rem;">
+            <button class="preview-tab active" data-tab="dashboard">Dashboard</button>
+            <button class="preview-tab" data-tab="ai">AI Coach</button>
+            <button class="preview-tab" data-tab="analytics">Analytics</button>
+        </div>
+
+        <div id="preview-dashboard" class="preview-pane active">
+            <div
+                style="aspect-ratio: 16/10; background: #0f172a; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                <img src="https://images.unsplash.com/photo-1551288049-bbbda536639a?auto=format&fit=crop&q=80&w=1200"
+                    alt="Dashboard Preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5;">
+                <div style="position: absolute; text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-solar-panel"></i></div>
+                    <h4 style="font-size: 1.5rem; font-weight: 700;">Intuitive Summaries</h4>
+                </div>
+            </div>
+        </div>
+
+        <div id="preview-ai" class="preview-pane">
+            <div
+                style="aspect-ratio: 16/10; background: #0f172a; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200"
+                    alt="AI Preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5;">
+                <div style="position: absolute; text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-robot"></i></div>
+                    <h4 style="font-size: 1.5rem; font-weight: 700;">Intelligent Dialogue</h4>
+                </div>
+            </div>
+        </div>
+
+        <div id="preview-analytics" class="preview-pane">
+            <div
+                style="aspect-ratio: 16/10; background: #0f172a; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                <img src="https://images.unsplash.com/photo-1543286386-2e659306cd6c?auto=format&fit=crop&q=80&w=1200"
+                    alt="Analytics Preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5;">
+                <div style="position: absolute; text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-chart-line"></i></div>
+                    <h4 style="font-size: 1.5rem; font-weight: 700;">Precision Insights</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .preview-tab {
+        flex: 1;
+        padding: 12px 20px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        font-weight: 600;
+        cursor: pointer;
+        border-radius: 15px;
+        transition: 0.3s;
+    }
+
+    .preview-tab.active {
+        background: var(--primary-gradient);
+        color: white;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .preview-pane {
+        display: none;
+    }
+
+    .preview-pane.active {
+        display: block;
+        animation: fadeIn 0.5s ease-out;
+    }
+</style>
+
+<!-- Flash Cards Section (Interactive) -->
+<div style="margin-bottom: 6rem;">
+    <div
+        style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Learn Fast</h2>
+            <p style="color: var(--text-muted); font-size: 1.1rem; margin: 0;">Tap to flip cards and test your knowledge
+            </p>
+        </div>
+        <a href="/education" class="btn-primary-ui"
+            style="background: transparent; border: 1px solid var(--primary); color: var(--primary); box-shadow: none;">
+            View All Topics <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+
+    <!-- Scrollable Horizontal Container -->
+    <div class="flash-cards-wrapper"
+        style="display: flex; overflow-x: auto; gap: 1.5rem; padding-bottom: 1rem; scroll-snap-type: x mandatory;">
+        <!-- Card 1 -->
+        <div class="flash-card" onclick="this.classList.toggle('flipped')">
+            <div class="flash-card-inner">
+                <div class="flash-card-front">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">🌱</div>
+                    <div class="question">What is Compound Interest?</div>
+                </div>
+                <div class="flash-card-back">
+                    <div class="answer">"Interest on interest." It allows your investments to grow exponentially over
+                        time, accelerating wealth creation.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="flash-card" onclick="this.classList.toggle('flipped')">
+            <div class="flash-card-inner">
+                <div class="flash-card-front">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
+                    <div class="question">50-30-20 Rule</div>
+                </div>
+                <div class="flash-card-back">
+                    <div class="answer">Budget 50% for needs, 30% for wants, and 20% for savings and debt repayment. A
+                        simple formula for balance.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="flash-card" onclick="this.classList.toggle('flipped')">
+            <div class="flash-card-inner">
+                <div class="flash-card-front">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">🛡️</div>
+                    <div class="question">Emergency Fund</div>
+                </div>
+                <div class="flash-card-back">
+                    <div class="answer">Liquid cash set aside for unexpected costs (3-6 months of expenses). It prevents
+                        you from tapping into investments.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="flash-card" onclick="this.classList.toggle('flipped')">
+            <div class="flash-card-inner">
+                <div class="flash-card-front">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">🥧</div>
+                    <div class="question">Asset Allocation</div>
+                </div>
+                <div class="flash-card-back">
+                    <div class="answer">Dividing your portfolio among different asset classes (stocks, bonds, cash) to
+                        balance risk and reward based on your goals.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section: Testimonials/Trust -->
+<div style="margin-bottom: 8rem; text-align: center;">
+    <div
+        style="display: flex; justify-content: center; gap: 4rem; opacity: 0.5; filter: grayscale(1); margin-bottom: 4rem; flex-wrap: wrap;">
+        <div style="font-size: 1.5rem; font-weight: 700; color: white;"><i class="fa-solid fa-shield-halved"></i>
+            SECUREBANK</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: white;"><i class="fa-solid fa-building-columns"></i>
+            NEXUS ASSETS</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: white;"><i class="fa-solid fa-vault"></i> TITAN TRUST
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+        <div class="card-ui glass-layer" style="padding: 2rem; border-color: rgba(255,255,255,0.05);">
+            <p style="font-style: italic; color: var(--text-muted); margin-bottom: 1.5rem;">"The TDS forecasting alone
+                saved me ₹2L last year. It's like having a CA in your pocket."</p>
+            <div style="font-weight: 700; color: var(--text-main);">Ananya S.</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">SDE at Fortune 500</div>
+        </div>
+        <div class="card-ui glass-layer" style="padding: 2rem; border-color: rgba(255,255,255,0.05);">
+            <p style="font-style: italic; color: var(--text-muted); margin-bottom: 1.5rem;">"Finally, a tool that
+                understands the Indian market. The credit card optimizer is genius."</p>
+            <div style="font-weight: 700; color: var(--text-main);">Rahul M.</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Small Business Owner</div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Footer -->
+<div class="card-ui"
+    style="text-align: center; padding: 6rem 2rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 40px; position: relative; overflow: hidden;">
+    <div
+        style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; filter: blur(50px);">
+    </div>
+    <h2 style="font-size: 3rem; margin-bottom: 1.5rem; font-weight: 800; letter-spacing: -0.02em;">Ready to Scale Your
+        Wealth?</h2>
+    <p
+        style="color: var(--text-muted); margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto; font-size: 1.1rem; line-height: 1.7;">
+        Join 10,000+ elite users architecting their financial future with Fintelligent. Start your 14-day Pro trial
+        today.
+    </p>
+    <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/register" class="btn-primary-ui" style="font-size: 1.1rem; padding: 1.25rem 3rem;">
+            Create Free Account
+        </a>
+        <a href="/pricing" class="btn-primary-ui"
+            style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1.1rem; padding: 1.25rem 3rem; box-shadow: none;">
+            Explore Pro Plans
+        </a>
+    </div>
+</div>
+
+<style>
+    @keyframes pulse-slow {
+        0% {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.5;
+        }
+
+        100% {
+            transform: translate(-50%, -50%) scale(1.1);
+            opacity: 0.8;
+        }
+    }
+</style>
+
+<script>
+    // Pass data from backend to JavaScript
+    window.dashboardData = {{ data | tojson | safe if data else 'null' }};
+
+    // Tab Logic
+    document.querySelectorAll('.preview-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.dataset.tab;
+
+            // Update tabs
+            document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            // Update panes
+            document.querySelectorAll('.preview-pane').forEach(p => p.classList.remove('active'));
+            document.getElementById(`preview-${target}`).classList.add('active');
+        });
+    });
+
+    // Animate counters
+    function animateCounter(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+            const current = Math.floor(easeOutQuart * (end - start) + start);
+            element.textContent = '₹' + current.toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const backendData = window.dashboardData;
+        setTimeout(() => {
+            const defaults = { savings: 250000, tax: 45000, invest: 180000 };
+            const targetSavings = backendData ? backendData.total_savings : defaults.savings;
+            const targetTax = backendData ? backendData.tax_saved : defaults.tax;
+            const targetInvest = backendData ? backendData.investments : defaults.invest;
+
+            if (document.getElementById('totalSavings')) animateCounter(document.getElementById('totalSavings'), 0, targetSavings, 2000);
+            if (document.getElementById('taxSaved')) animateCounter(document.getElementById('taxSaved'), 0, targetTax, 2500);
+            if (document.getElementById('investments')) animateCounter(document.getElementById('investments'), 0, targetInvest, 2200);
+        }, 500);
+    });
+</script>
+{% endblock %}

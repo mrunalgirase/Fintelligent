@@ -1,0 +1,98 @@
+flowchart TD
+    Start([Authentication Flow Start])
+    CheckMethod{Request<br/>Method?}
+    
+    %% GET Request
+    GETRequest[GET Request]
+    RenderForm[Render Template<br/>register.html or login.html]
+    End([End - Return Template])
+    
+    %% POST Registration
+    POSTReg[POST /register]
+    GetFormData[Get Form Data<br/>username, password]
+    CheckUserExists{User<br/>Exists?}
+    FlashError1[Flash: Username exists]
+    RedirectReg[Redirect to /register]
+    
+    CreateUser[Create User Object]
+    HashPassword[Hash Password<br/>set_password]
+    AddToDB[Add User to Database]
+    CommitDB[Commit Transaction]
+    LoginUser[Login User<br/>login_user]
+    RedirectHome[Redirect to Home]
+    
+    %% POST Login
+    POSTLogin[POST /login]
+    GetCredentials[Get Credentials<br/>username, password]
+    FindUser[Find User by Username<br/>User.get_by_username]
+    CheckFound{User<br/>Found?}
+    FlashError2[Flash: Invalid credentials]
+    RedirectLogin[Redirect to /login]
+    
+    CheckPassword{Password<br/>Valid?}
+    
+    LoginUser2[Login User<br/>login_user]
+    RedirectHome2[Redirect to Home]
+    
+    %% Logout
+    LogoutRoute[POST /logout]
+    CheckLogin{User<br/>Logged In?}
+    LogoutUser[Logout User<br/>logout_user]
+    RedirectHome3[Redirect to Home]
+    
+    %% Flow
+    Start --> CheckMethod
+    CheckMethod -->|GET /register| GETRequest
+    CheckMethod -->|POST /register| POSTReg
+    CheckMethod -->|GET /login| GETRequest
+    CheckMethod -->|POST /login| POSTLogin
+    CheckMethod -->|GET /logout| LogoutRoute
+    
+    GETRequest --> RenderForm
+    RenderForm --> End
+    
+    POSTReg --> GetFormData
+    GetFormData --> CheckUserExists
+    CheckUserExists -->|Yes| FlashError1
+    CheckUserExists -->|No| CreateUser
+    FlashError1 --> RedirectReg
+    RedirectReg --> End
+    
+    CreateUser --> HashPassword
+    HashPassword --> AddToDB
+    AddToDB --> CommitDB
+    CommitDB --> LoginUser
+    LoginUser --> RedirectHome
+    RedirectHome --> End
+    
+    POSTLogin --> GetCredentials
+    GetCredentials --> FindUser
+    FindUser --> CheckFound
+    CheckFound -->|No| FlashError2
+    CheckFound -->|Yes| CheckPassword
+    FlashError2 --> RedirectLogin
+    RedirectLogin --> End
+    
+    CheckPassword -->|Invalid| FlashError2
+    CheckPassword -->|Valid| LoginUser2
+    LoginUser2 --> RedirectHome2
+    RedirectHome2 --> End
+    
+    LogoutRoute --> CheckLogin
+    CheckLogin -->|Not Logged In| End
+    CheckLogin -->|Logged In| LogoutUser
+    LogoutUser --> RedirectHome3
+    RedirectHome3 --> End
+    
+    %% Styling
+    classDef startEnd fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
+    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef decision fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef success fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    
+    class Start,End startEnd
+    class GETRequest,RenderForm,GetFormData,CreateUser,HashPassword,AddToDB,CommitDB,LoginUser,RedirectHome,GetCredentials,FindUser,LoginUser2,RedirectHome2,LogoutUser,RedirectHome3 process
+    class CheckMethod,CheckUserExists,CheckFound,CheckPassword,CheckLogin decision
+    class FlashError1,FlashError2,RedirectReg,RedirectLogin error
+    class LoginUser,LoginUser2 success

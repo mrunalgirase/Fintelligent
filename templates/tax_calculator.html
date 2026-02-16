@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% block title %}Tax Calculator - Fintelligent{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div style="text-align: center; margin: 4rem 0 6rem 0; position: relative;">
+    <div
+        style="position: absolute; width: 300px; height: 300px; background: rgba(59, 130, 246, 0.15); filter: blur(100px); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1;">
+    </div>
+
+    <div class="animate-rise">
+        <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2;">
+            Advanced Tax
+            <span
+                style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Calculator</span>
+        </h1>
+        <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2.5rem auto;">
+            Comprehensive Indian Tax Calculator 2024-25 with TDS, Advance Tax & more.
+        </p>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="#calculator" class="btn-primary-ui" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                <i class="fa-solid fa-calculator"></i> Calculate Now
+            </a>
+            <a href="#tools" class="btn-primary-ui"
+                style="padding: 1rem 2rem; font-size: 1.1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); box-shadow: none;">
+                <i class="fa-solid fa-tools"></i> Tools
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Important Alert -->
+<div class="card-ui animate-rise"
+    style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); margin-bottom: 4rem; display: flex; gap: 1rem; align-items: start;">
+    <i class="fa-solid fa-lightbulb" style="color: #f59e0b; font-size: 1.25rem; margin-top: 0.2rem;"></i>
+    <div>
+        <h4 style="color: #f59e0b; margin-bottom: 0.5rem; font-size: 1.05rem;">Important Update for 2024-25</h4>
+        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+            Sections 80C and 80D deductions are no longer available under the New Tax Regime.
+            The new regime offers higher standard deduction (₹75,000) and enhanced rebate (₹60,000) instead.
+        </p>
+    </div>
+</div>
+
+<!-- Main Calculator -->
+<div id="calculator" class="card-ui animate-rise"
+    style="max-width: 700px; margin: 0 auto 6rem auto; position: relative;">
+    <h3
+        style="margin-bottom: 2rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem;">
+        <i class="fa-solid fa-calculator" style="color: var(--primary);"></i> Income Tax Calculator
+    </h3>
+
+    <form method="POST" action="/tax">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Annual
+            Income</label>
+        <div style="display: flex; margin-bottom: 2rem;">
+            <div
+                style="background: rgba(255,255,255,0.05); padding: 0 1rem; display: flex; align-items: center; border: 1px solid #334155; border-right: none; border-radius: 12px 0 0 12px; color: var(--text-muted);">
+                ₹</div>
+            <input type="number" id="income" class="input-ui" required style="border-radius: 0 12px 12px 0;"
+                placeholder="Enter your total annual income">
+        </div>
+
+        <button type="submit" class="btn-primary-ui" style="width: 100%; justify-content: center; padding: 1rem;">
+            Calculate Tax <i class="fa-solid fa-arrow-right-long"></i>
+        </button>
+    </form>
+</div>
+
+<!-- Results Area -->
+<div id="taxResults" style="display: none; margin-bottom: 6rem;">
+    <!-- Comparison Cards -->
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <!-- New Regime -->
+        <div class="card-ui animate-rise" style="border-left: 4px solid #10b981; text-align: center;">
+            <h4 style="color: #10b981; margin-bottom: 1rem;">New Regime (2024-25)</h4>
+            <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">
+                ₹<span id="newRegimeTax">0</span>
+            </div>
+            <p style="color: var(--text-muted);">Effective Rate: <span id="newRegimeRate"
+                    style="color: var(--text-main); font-weight: 600;">0%</span></p>
+        </div>
+
+        <!-- Old Regime -->
+        <div class="card-ui animate-rise" style="border-left: 4px solid #ef4444; text-align: center;">
+            <h4 style="color: #ef4444; margin-bottom: 1rem;">Old Regime</h4>
+            <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">
+                ₹<span id="oldRegimeTax">0</span>
+            </div>
+            <p style="color: var(--text-muted);">Effective Rate: <span id="oldRegimeRate"
+                    style="color: var(--text-main); font-weight: 600;">0%</span></p>
+        </div>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="card-ui animate-rise"
+        style="text-align: center; margin-bottom: 3rem; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2);">
+        <h3 style="margin-bottom: 1rem;">Recommendation</h3>
+        <p style="font-size: 1.25rem; margin-bottom: 1rem;">
+            You should opt for <strong id="recommendedRegime" style="color: #10b981;">-</strong>
+        </p>
+        <p style="color: var(--text-muted);">
+            Potential Annual Savings: <span style="color: #10b981; font-weight: 700; font-size: 1.25rem;">₹<span
+                    id="savings">0</span></span>
+        </p>
+    </div>
+
+    <!-- Detailed Stats Grid -->
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem;">
+        <div class="card-ui" style="text-align: center; padding: 1.5rem;">
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">Monthly TDS</div>
+            <div style="font-size: 1.25rem; font-weight: 700;">₹<span id="monthlyTds">0</span></div>
+        </div>
+        <div class="card-ui" style="text-align: center; padding: 1.5rem;">
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">Q1 Advance Tax</div>
+            <div style="font-size: 1.25rem; font-weight: 700;">₹<span id="advanceQ1">0</span></div>
+        </div>
+        <div class="card-ui" style="text-align: center; padding: 1.5rem;">
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">Q2 Advance Tax</div>
+            <div style="font-size: 1.25rem; font-weight: 700;">₹<span id="advanceQ2">0</span></div>
+        </div>
+        <div class="card-ui" style="text-align: center; padding: 1.5rem;">
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;">Q3 Advance Tax</div>
+            <div style="font-size: 1.25rem; font-weight: 700;">₹<span id="advanceQ3">0</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- Tools Section -->
+<div id="tools" style="margin-bottom: 6rem;">
+    <h2 style="text-align: center; margin-bottom: 3rem;">Specialized Tools</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+        <a href="/tax/tds-calculator" class="card-ui animate-rise" style="text-decoration: none; display: block;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🕒</div>
+            <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">TDS Calculator</h3>
+            <p style="color: var(--text-muted);">Calculate Tax Deducted at Source based on different payout frequencies.
+            </p>
+        </a>
+        <a href="/tax/hra-calculator" class="card-ui animate-rise"
+            style="text-decoration: none; display: block; transition-delay: 0.1s;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">🏠</div>
+            <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">HRA Calculator</h3>
+            <p style="color: var(--text-muted);">Find your House Rent Allowance exemption amount.</p>
+        </a>
+        <a href="/tax/advance-tax-calculator" class="card-ui animate-rise"
+            style="text-decoration: none; display: block; transition-delay: 0.2s;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">📅</div>
+            <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Advance Tax</h3>
+            <p style="color: var(--text-muted);">Compute quarterly advance tax liability to avoid penalties.</p>
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.getElementById('taxCalcForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const income = document.getElementById('income').value;
+        if (!income || income <= 0) {
+            showToast('Invalid Input', 'Please enter a valid annual income amount.', 'warning');
+            return;
+        }
+
+        // Tax Calculation Logic (Simplified for client-side demo)
+        // New Regime 2024-25
+        let newTax = 0;
+        const standardDeduction = 75000;
+        let taxableNew = Math.max(0, income - standardDeduction);
+
+        if (taxableNew > 300000) {
+            if (taxableNew <= 700000) {
+                newTax += (taxableNew - 300000) * 0.05;
+            } else if (taxableNew <= 1000000) {
+                newTax += 20000 + (taxableNew - 700000) * 0.10;
+            } else if (taxableNew <= 1200000) {
+                newTax += 50000 + (taxableNew - 1000000) * 0.15;
+            } else if (taxableNew <= 1500000) {
+                newTax += 80000 + (taxableNew - 1200000) * 0.20;
+            } else {
+                newTax += 140000 + (taxableNew - 1500000) * 0.30;
+            }
+        }
+
+        // Rebate 87A for New Regime (Assuming income <= 7L is tax free in new regime basically)
+        // Actually standard reduction 75k + 7L slab means up to 7.75L is tax free.
+        // Simplifying for demo purposes
+        if (taxableNew <= 700000) newTax = 0;
+
+        // Cess
+        newTax *= 1.04;
+
+        // Old Regime (Approximate logic for comparison)
+        let oldTax = 0;
+        let taxableOld = Math.max(0, income - 50000); // Standard deduction 50k
+
+        // Old regime slabs: 2.5L-5L: 5%, 5L-10L: 20%, >10L: 30%
+        if (taxableOld > 250000) {
+            if (taxableOld <= 500000) {
+                oldTax += (taxableOld - 250000) * 0.05;
+            } else if (taxableOld <= 1000000) {
+                oldTax += 12500 + (taxableOld - 500000) * 0.20;
+            } else {
+                oldTax += 112500 + (taxableOld - 1000000) * 0.30;
+            }
+        }
+
+        // Rebate 87A for Old Regime (Income <= 5L)
+        if (taxableOld <= 500000) oldTax = 0;
+
+        oldTax *= 1.04;
+
+        // Update UI
+        document.getElementById('newRegimeTax').textContent = Math.round(newTax).toLocaleString();
+        document.getElementById('newRegimeRate').textContent = ((newTax / income) * 100).toFixed(1) + '%';
+
+        document.getElementById('oldRegimeTax').textContent = Math.round(oldTax).toLocaleString();
+        document.getElementById('oldRegimeRate').textContent = ((oldTax / income) * 100).toFixed(1) + '%';
+
+        const diff = Math.abs(newTax - oldTax);
+        const recommended = newTax < oldTax ? 'New Regime' : 'Old Regime';
+
+        document.getElementById('recommendedRegime').textContent = recommended;
+        document.getElementById('recommendedRegime').style.color = newTax < oldTax ? '#10b981' : '#ef4444';
+        document.getElementById('savings').textContent = Math.round(diff).toLocaleString();
+
+        // Stats
+        document.getElementById('monthlyTds').textContent = Math.round(newTax / 12).toLocaleString();
+        document.getElementById('advanceQ1').textContent = Math.round(newTax * 0.15).toLocaleString();
+        document.getElementById('advanceQ2').textContent = Math.round(newTax * 0.45).toLocaleString();
+        document.getElementById('advanceQ3').textContent = Math.round(newTax * 0.75).toLocaleString();
+
+        document.getElementById('taxResults').style.display = 'block';
+
+        // Smooth scroll to results
+        document.getElementById('taxResults').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

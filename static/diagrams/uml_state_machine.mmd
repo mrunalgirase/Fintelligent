@@ -1,0 +1,70 @@
+stateDiagram-v2
+    [*] --> LoggedOut
+    
+    LoggedOut --> Registering: Register
+    Registering --> RegistrationError: Invalid Data
+    RegistrationError --> LoggedOut: Retry
+    Registering --> LoggedIn: Registration Success
+    
+    LoggedOut --> LoggingIn: Login
+    LoggingIn --> AuthenticationError: Invalid Credentials
+    AuthenticationError --> LoggedOut: Retry
+    LoggingIn --> LoggedIn: Authentication Success
+    
+    LoggedIn --> ViewingDashboard: Access Dashboard
+    LoggedIn --> CalculatingTax: Access Tax Calculator
+    LoggedIn --> AnalyzingStock: Access Stock Analysis
+    LoggedIn --> UploadingExpenditure: Upload CSV
+    LoggedIn --> UsingCalculator: Use Financial Tools
+    LoggedIn --> LoggedOut: Logout
+    
+    ViewingDashboard --> LoggedIn: Back
+    
+    CalculatingTax --> EnteringTaxData: Start Calculation
+    EnteringTaxData --> ProcessingTax: Submit Data
+    ProcessingTax --> TaxError: Invalid Input
+    TaxError --> EnteringTaxData: Retry
+    ProcessingTax --> DisplayingTaxResults: Calculation Success
+    DisplayingTaxResults --> LoggedIn: Done
+    
+    AnalyzingStock --> EnteringStockSymbol: Enter Symbol
+    EnteringStockSymbol --> FetchingStockData: Request Data
+    FetchingStockData --> StockAPIError: API Error
+    StockAPIError --> EnteringStockSymbol: Retry
+    FetchingStockData --> ProcessingStockData: Data Received
+    ProcessingStockData --> ClusteringStocks: Calculate Metrics
+    ClusteringStocks --> DisplayingStockResults: Clustering Done
+    DisplayingStockResults --> LoggedIn: Done
+    
+    UploadingExpenditure --> ValidatingCSV: Upload File
+    ValidatingCSV --> CSVError: Invalid Format
+    CSVError --> UploadingExpenditure: Retry
+    ValidatingCSV --> ProcessingExpenditure: Valid File
+    ProcessingExpenditure --> ClusteringExpenditure: Aggregate Data
+    ClusteringExpenditure --> GeneratingRecommendations: Clustering Done
+    GeneratingRecommendations --> DisplayingExpResults: Recommendations Ready
+    DisplayingExpResults --> LoggedIn: Done
+    
+    UsingCalculator --> EnteringSIPData: SIP Calculator
+    UsingCalculator --> EnteringBudgetData: Budget Planner
+    EnteringSIPData --> CalculatingSIP: Submit
+    CalculatingSIP --> DisplayingSIPResult: Success
+    DisplayingSIPResult --> LoggedIn: Done
+    EnteringBudgetData --> CalculatingBudget: Submit
+    CalculatingBudget --> DisplayingBudgetResult: Success
+    DisplayingBudgetResult --> LoggedIn: Done
+    
+    note right of LoggedIn
+        User can access all features
+        in this state
+    end note
+    
+    note right of ProcessingTax
+        Calculate both regimes
+        Compare and recommend
+    end note
+    
+    note right of ClusteringExpenditure
+        K-Means clustering
+        PCA for visualization
+    end note

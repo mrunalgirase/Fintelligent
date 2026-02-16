@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}Gen-Z Finance Glossary - Fintelligent{% endblock %}
+{% block content %}
+
+<div class="animate-rise" style="text-align: center; margin-bottom: 3rem;">
+    <h1
+        style="font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(to right, #ec4899, #8b5cf6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+        The Gen-Z Finance Glossary 💅
+    </h1>
+    <p style="color: var(--text-muted); font-size: 1.1rem;">
+        Because "traditional finance" talk is a total vibe kill. Let's make it make sense.
+    </p>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+    <!-- CIBIL -->
+    <div class="card-ui animate-rise" style="cursor: pointer; perspective: 1000px;"
+        onclick="this.classList.toggle('flipped')">
+        <div class="glossary-card-inner">
+            <div class="glossary-card-front">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">📋</div>
+                <h3 style="color: var(--text-main);">CIBIL Score</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Click to see the vibe check...</p>
+            </div>
+            <div class="glossary-card-back">
+                <h3 style="color: var(--accent); margin-bottom: 1rem;">The Vibe Check</h3>
+                <p style="color: var(--text-main); line-height: 1.6;">
+                    It's your "financial reputation." If you're ghosting your bills, your score drops. High score =
+                    "Main Character" energy for loans.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compounding -->
+    <div class="card-ui animate-rise" style="cursor: pointer; perspective: 1000px; transition-delay: 0.1s;"
+        onclick="this.classList.toggle('flipped')">
+        <div class="glossary-card-inner">
+            <div class="glossary-card-front">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">📈</div>
+                <h3 style="color: var(--text-main);">Compounding</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Click for the glow up...</p>
+            </div>
+            <div class="glossary-card-back">
+                <h3 style="color: var(--accent); margin-bottom: 1rem;">The Glow Up</h3>
+                <p style="color: var(--text-main); line-height: 1.6;">
+                    Interest on interest. It's like a small effort that builds up into a massive glow-up over time.
+                    Start early, win big.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIP -->
+    <div class="card-ui animate-rise" style="cursor: pointer; perspective: 1000px; transition-delay: 0.2s;"
+        onclick="this.classList.toggle('flipped')">
+        <div class="glossary-card-inner">
+            <div class="glossary-card-front">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">💧</div>
+                <h3 style="color: var(--text-main);">SIP</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Click for the drip...</p>
+            </div>
+            <div class="glossary-card-back">
+                <h3 style="color: var(--accent); margin-bottom: 1rem;">The Slow Drip</h3>
+                <p style="color: var(--text-main); line-height: 1.6;">
+                    "Systematic Investment Plan." Instead of dumping ₹10k at once (no cap), you drop ₹500 every month
+                    like a subscription.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inflation -->
+    <div class="card-ui animate-rise" style="cursor: pointer; perspective: 1000px; transition-delay: 0.3s;"
+        onclick="this.classList.toggle('flipped')">
+        <div class="glossary-card-inner">
+            <div class="glossary-card-front">
+                <div style="font-size: 2rem; margin-bottom: 1rem;">🎈</div>
+                <h3 style="color: var(--text-main);">Inflation</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Click for the reality check...</p>
+            </div>
+            <div class="glossary-card-back">
+                <h3 style="color: var(--accent); margin-bottom: 1rem;">The Stealth Nerf</h3>
+                <p style="color: var(--text-main); line-height: 1.6;">
+                    Prices go up, your money's value gets a stealth nerf. Investing is how you "patch" your wealth to
+                    keep up.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glossary-card-inner {
+        position: relative;
+        width: 100%;
+        height: 180px;
+        text-align: center;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+
+    .flipped .glossary-card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .glossary-card-front,
+    .glossary-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .glossary-card-back {
+        transform: rotateY(180deg);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 1rem;
+    }
+</style>
+
+{% endblock %}

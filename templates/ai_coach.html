@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% block title %}AI Financial Coach - Fintelligent{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto; height: calc(100vh - 160px); display: flex; flex-direction: column;">
+    <!-- Chat Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+            <h1
+                style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;">
+                AI Financial Coach</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
+                <i class="fa-solid fa-bolt" style="color: var(--secondary);"></i> Powered by Llama3 • Private & Local
+            </p>
+        </div>
+        <div
+            style="background: rgba(167, 139, 250, 0.1); color: #a78bfa; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+            PRO FEATURE
+        </div>
+    </div>
+
+    <!-- Chat Messages Area -->
+    <div id="chat-container" class="card-ui"
+        style="flex: 1; overflow-y: auto; padding: 25px; margin-bottom: 20px; background: rgba(15, 23, 42, 0.4); display: flex; flex-direction: column; gap: 20px;">
+        <!-- Bot Welcome Message -->
+        <div style="display: flex; gap: 15px; max-width: 80%;">
+            <div
+                style="width: 35px; height: 35px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="fa-solid fa-robot" style="color: white; font-size: 0.9rem;"></i>
+            </div>
+            <div
+                style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 0 15px 15px 15px; border: 1px solid rgba(255,255,255,0.1);">
+                <p style="color: var(--text-main); margin: 0; line-height: 1.5;">
+                    Namaste, <strong>{{ current_user.username }}</strong>! I'm your Fintelligent AI.
+                    I've looked at your recent spending and I'm ready to help you save and invest better.
+                    What's on your mind today?
+                </p>
+            </div>
+        </div>
+
+        <!-- Sample Questions -->
+        <div id="suggestions" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+            <button onclick="sendQuickMessage('Analyze my spending this week')"
+                style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-size: 0.85rem;">Analyze
+                spending</button>
+            <button onclick="sendQuickMessage('How can I save ₹2000 this month?')"
+                style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #34d399; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-size: 0.85rem;">Saving
+                tips</button>
+            <button onclick="sendQuickMessage('Explain SIP like I am five')"
+                style="background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.2); color: #a78bfa; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-size: 0.85rem;">Explain
+                SIP</button>
+        </div>
+    </div>
+
+    <!-- Chat Input Area -->
+    <div style="position: relative;">
+        <input type="text" id="chat-input" class="input-ui"
+            placeholder="Ask me anything about money, taxes, or your spending..."
+            style="width: 100%; padding: 18px 60px 18px 25px; border-radius: 15px; font-size: 1rem;"
+            onkeypress="if(event.key === 'Enter') sendMessage()">
+
+        <button onclick="sendMessage()" id="send-btn"
+            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: var(--primary); border: none; width: 45px; height: 45px; border-radius: 12px; cursor: pointer; transition: all 0.2s;">
+            <i class="fa-solid fa-paper-plane" style="color: white;"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+    const chatContainer = document.getElementById('chat-container');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const suggestions = document.getElementById('suggestions');
+
+    function addMessage(text, isUser = false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.style.display = 'flex';
+        msgDiv.style.gap = '15px';
+        msgDiv.style.maxWidth = '85%';
+        msgDiv.style.alignSelf = isUser ? 'flex-end' : 'flex-start';
+        msgDiv.style.flexDirection = isUser ? 'row-reverse' : 'row';
+
+        const iconHtml = isUser
+            ? `<div style="width: 35px; height: 35px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fa-solid fa-user" style="color: var(--text-muted); font-size: 0.8rem;"></i></div>`
+            : `<div style="width: 35px; height: 35px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fa-solid fa-robot" style="color: white; font-size: 0.8rem;"></i></div>`;
+
+        const bg = isUser ? 'var(--primary-gradient)' : 'rgba(255,255,255,0.05)';
+        const border = isUser ? 'none' : '1px solid rgba(255,255,255,0.1)';
+        const radius = isUser ? '15px 0 15px 15px' : '0 15px 15px 15px';
+
+        msgDiv.innerHTML = `
+            ${iconHtml}
+            <div style="background: ${bg}; padding: 15px; border-radius: ${radius}; border: ${border}; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <p style="color: ${isUser ? 'white' : 'var(--text-main)'}; margin: 0; line-height: 1.6; font-size: 0.95rem; white-space: pre-wrap;">${text}</p>
+            </div>
+        `;
+
+        chatContainer.appendChild(msgDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function sendQuickMessage(text) {
+        chatInput.value = text;
+        sendMessage();
+    }
+
+    async function sendMessage() {
+        // Get input
+        const messageInput = document.getElementById('chat-input');
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        // Clear input
+        messageInput.value = '';
+        document.getElementById('suggestions').style.display = 'none';
+
+        // Add user message
+        const chatContainer = document.getElementById('chat-container');
+        addMessage(message, true);
+
+        // Create bot message placeholder
+        const botMsgDiv = document.createElement('div');
+        botMsgDiv.style.display = 'flex';
+        botMsgDiv.style.gap = '15px';
+        botMsgDiv.style.maxWidth = '85%';
+        botMsgDiv.style.alignSelf = 'flex-start';
+
+        const botAvatar = `
+            <div style="width: 35px; height: 35px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="fa-solid fa-robot" style="color: white; font-size: 0.8rem;"></i>
+            </div>
+        `;
+
+        const botBubble = document.createElement('div');
+        botBubble.style.background = 'rgba(255,255,255,0.05)';
+        botBubble.style.padding = '15px';
+        botBubble.style.borderRadius = '0 15px 15px 15px';
+        botBubble.style.border = '1px solid rgba(255,255,255,0.1)';
+        botBubble.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+        botBubble.style.color = 'var(--text-main)';
+        botBubble.style.lineHeight = '1.6';
+        botBubble.style.fontSize = '0.95rem';
+        botBubble.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Thinking...';
+
+        botMsgDiv.innerHTML = botAvatar;
+        botMsgDiv.appendChild(botBubble);
+        chatContainer.appendChild(botMsgDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        try {
+            const response = await fetch('/api/ai/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let isFirstChunk = true;
+            let fullText = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const dataStr = line.slice(6);
+                        if (dataStr === '[DONE]') break;
+
+                        try {
+                            const data = JSON.parse(dataStr);
+
+                            if (data.error) {
+                                botBubble.innerHTML = `<span style="color: var(--danger);">Error: ${data.error}</span>`;
+                                return;
+                            }
+
+                            if (data.content) {
+                                if (isFirstChunk) {
+                                    botBubble.innerHTML = ''; // Clear "Thinking..."
+                                    isFirstChunk = false;
+                                }
+                                fullText += data.content;
+                                // Simple markdown-like processing (optional)
+                                botBubble.innerHTML = fullText.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                                chatContainer.scrollTop = chatContainer.scrollHeight;
+                            }
+                        } catch (e) {
+                            console.error('Error parsing stream:', e);
+                        }
+                    }
+                }
+            }
+
+        } catch (error) {
+            botBubble.innerHTML = `<span style="color: var(--danger);">I'm having trouble connecting. Is the standard AI model running?</span>`;
+            console.error('Fetch error:', error);
+        }
+    }
+</script>
+
+<style>
+    /* Chat Scrollbar */
+    #chat-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #chat-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #chat-container::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+
+    #chat-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+</style>
+{% endblock %}

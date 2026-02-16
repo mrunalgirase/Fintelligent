@@ -1,0 +1,105 @@
+graph TB
+    subgraph "Communication Diagram - Tax Calculation"
+        User1[User]
+        Browser1[Web Browser]
+        App1[Flask App]
+        TaxRoute1[TaxRoutes]
+        TaxCalc1[TaxCalculator]
+        CSV1[CSVManager]
+        DB1[Database]
+        
+        User1 <-->|1: Request Tax Calc| Browser1
+        Browser1 <-->|2: POST /tax/calculate| App1
+        App1 <-->|3: Route Request| TaxRoute1
+        TaxRoute1 <-->|4: Calculate Tax| TaxCalc1
+        TaxRoute1 <-->|5: Save Data| CSV1
+        TaxRoute1 <-->|6: Get User| DB1
+        TaxCalc1 <-->|7: Return Results| TaxRoute1
+        CSV1 <-->|8: Write CSV| CSV1
+        TaxRoute1 <-->|9: JSON Response| Browser1
+        Browser1 <-->|10: Display Results| User1
+    end
+    
+    subgraph "Communication Diagram - Stock Analysis"
+        User2[User]
+        Browser2[Web Browser]
+        App2[Flask App]
+        StockRoute1[StockRoutes]
+        StockAnalyzer1[StockAnalyzer]
+        ClusterEngine1[ClusteringEngine]
+        API1[Stock API]
+        
+        User2 <-->|1: Request Analysis| Browser2
+        Browser2 <-->|2: GET /get_clusters| App2
+        App2 <-->|3: Route Request| StockRoute1
+        StockRoute1 <-->|4: Fetch Data| StockAnalyzer1
+        StockAnalyzer1 <-->|5: API Request| API1
+        API1 <-->|6: Return Data| StockAnalyzer1
+        StockAnalyzer1 <-->|7: Process Data| StockAnalyzer1
+        StockAnalyzer1 <-->|8: Cluster Request| ClusterEngine1
+        ClusterEngine1 <-->|9: Return Clusters| StockAnalyzer1
+        StockAnalyzer1 <-->|10: Analysis Results| StockRoute1
+        StockRoute1 <-->|11: JSON Response| Browser2
+        Browser2 <-->|12: Display Analysis| User2
+    end
+    
+    subgraph "Communication Diagram - Expenditure Analysis"
+        User3[User]
+        Browser3[Web Browser]
+        App3[Flask App]
+        RecRoute1[RecommendationRoutes]
+        ExpProcessor1[ExpenditureProcessor]
+        ClusterEngine2[ClusteringEngine]
+        RecGen1[RecommendationGenerator]
+        CSV2[CSVManager]
+        
+        User3 <-->|1: Upload CSV| Browser3
+        Browser3 <-->|2: POST /upload| App3
+        App3 <-->|3: Route Request| RecRoute1
+        RecRoute1 <-->|4: Validate File| ExpProcessor1
+        ExpProcessor1 <-->|5: Validation Result| RecRoute1
+        RecRoute1 <-->|6: Process Data| ExpProcessor1
+        ExpProcessor1 <-->|7: Aggregate Data| ExpProcessor1
+        ExpProcessor1 <-->|8: Processed Data| RecRoute1
+        RecRoute1 <-->|9: Cluster Request| ClusterEngine2
+        ClusterEngine2 <-->|10: Return Clusters| RecRoute1
+        RecRoute1 <-->|11: Generate Recommendations| RecGen1
+        RecGen1 <-->|12: Read Tax Data| CSV2
+        CSV2 <-->|13: Return Data| RecGen1
+        RecGen1 <-->|14: Recommendations| RecRoute1
+        RecRoute1 <-->|15: Render Page| Browser3
+        Browser3 <-->|16: Display Results| User3
+    end
+    
+    subgraph "Communication Diagram - Authentication"
+        User4[User]
+        Browser4[Web Browser]
+        App4[Flask App]
+        AuthRoute1[AuthRoutes]
+        UserModel1[User Model]
+        DB2[Database]
+        Session1[Session Manager]
+        
+        User4 <-->|1: Login Request| Browser4
+        Browser4 <-->|2: POST /login| App4
+        App4 <-->|3: Route Request| AuthRoute1
+        AuthRoute1 <-->|4: Get User| UserModel1
+        UserModel1 <-->|5: Query User| DB2
+        DB2 <-->|6: Return User| UserModel1
+        UserModel1 <-->|7: Check Password| UserModel1
+        UserModel1 <-->|8: Validation Result| AuthRoute1
+        AuthRoute1 <-->|9: Create Session| Session1
+        Session1 <-->|10: Session Created| AuthRoute1
+        AuthRoute1 <-->|11: Redirect| Browser4
+        Browser4 <-->|12: Show Dashboard| User4
+    end
+    
+    %% Styling
+    classDef user fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef component fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    
+    class User1,User2,User3,User4 user
+    class Browser1,Browser2,Browser3,Browser4,App1,App2,App3,App4,TaxRoute1,StockRoute1,RecRoute1,AuthRoute1 component
+    class TaxCalc1,CSV1,DB1,StockAnalyzer1,ClusterEngine1,RecGen1,ExpProcessor1,ClusterEngine2,UserModel1,Session1 component
+    class API1 external

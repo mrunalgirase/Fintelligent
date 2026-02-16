@@ -1,0 +1,114 @@
+graph TB
+    subgraph "Client Layer"
+        ClientBrowser[Web Browser<br/>Chrome/Firefox/Safari]
+        MobileBrowser[Mobile Browser<br/>iOS/Android]
+    end
+    
+    subgraph "Network Layer"
+        Internet[Internet/Intranet]
+        HTTPS[HTTPS Protocol<br/>Port 5001]
+    end
+    
+    subgraph "Application Server"
+        FlaskServer[Flask Development Server<br/>app.py<br/>Port 5001]
+        WSGI[WSGI Server<br/>Gunicorn/uWSGI<br/>Production]
+    end
+    
+    subgraph "Application Components"
+        FlaskApp[Flask Application<br/>Main App]
+        Blueprints[Flask Blueprints<br/>Modules]
+        PythonRuntime[Python Runtime<br/>3.x]
+    end
+    
+    subgraph "Business Logic Services"
+        TaxService[Tax Calculation Service]
+        StockService[Stock Analysis Service]
+        ClusteringService[Clustering Service]
+        RecommendationService[Recommendation Service]
+        FinancialToolsService[Financial Tools Service]
+    end
+    
+    subgraph "Data Storage Layer"
+        SQLiteDB[(SQLite Database<br/>fintelligent.db<br/>instance/)]
+        CSVFiles[(CSV Files<br/>Tax & Expenditure Data<br/>Root Directory)]
+        TempStorage[(Temporary Storage<br/>/tmp)]
+    end
+    
+    subgraph "External Services"
+        StockAPI[Stock Market API<br/>Alpha Vantage<br/>https://alphavantage.co]
+    end
+    
+    subgraph "Development Environment"
+        DevMachine[Development Machine<br/>macOS/Linux/Windows]
+        CodeEditor[Code Editor<br/>VS Code/PyCharm]
+        GitRepo[Git Repository]
+    end
+    
+    subgraph "Production Environment - Optional"
+        ProdServer[Production Server<br/>Linux/Cloud]
+        LoadBalancer[Load Balancer<br/>nginx/Apache]
+        DatabaseServer[Production Database<br/>PostgreSQL/MySQL]
+        CacheLayer[Cache Layer<br/>Redis]
+        FileStorage[File Storage<br/>S3/Cloud Storage]
+    end
+    
+    %% Client to Network
+    ClientBrowser --> Internet
+    MobileBrowser --> Internet
+    Internet --> HTTPS
+    
+    %% Network to Server
+    HTTPS --> FlaskServer
+    HTTPS --> WSGI
+    
+    %% Server Components
+    FlaskServer --> FlaskApp
+    WSGI --> FlaskApp
+    FlaskApp --> Blueprints
+    FlaskApp --> PythonRuntime
+    
+    %% Blueprints to Services
+    Blueprints --> TaxService
+    Blueprints --> StockService
+    Blueprints --> ClusteringService
+    Blueprints --> RecommendationService
+    Blueprints --> FinancialToolsService
+    
+    %% Services to Storage
+    TaxService --> SQLiteDB
+    TaxService --> CSVFiles
+    StockService --> StockAPI
+    ClusteringService --> CSVFiles
+    RecommendationService --> CSVFiles
+    RecommendationService --> TempStorage
+    FinancialToolsService --> CSVFiles
+    
+    %% Development
+    DevMachine --> CodeEditor
+    CodeEditor --> FlaskApp
+    DevMachine --> GitRepo
+    
+    %% Production Dependencies - Optional
+    WSGI -.->|Optional| LoadBalancer
+    FlaskApp -.->|Optional| DatabaseServer
+    FlaskApp -.->|Optional| CacheLayer
+    CSVFiles -.->|Optional| FileStorage
+    
+    %% Styling
+    classDef client fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef network fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef server fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef service fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef storage fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef external fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef dev fill:#eceff1,stroke:#455a64,stroke-width:2px
+    classDef prod fill:#f1f8e9,stroke:#689f38,stroke-width:2px,stroke-dasharray: 5 5
+    
+    class ClientBrowser,MobileBrowser client
+    class Internet,HTTPS network
+    class FlaskServer,WSGI,FlaskApp,Blueprints,PythonRuntime server
+    class TaxService,StockService,ClusteringService,RecommendationService,FinancialToolsService service
+    class SQLiteDB,CSVFiles,TempStorage storage
+    class StockAPI external
+    class DevMachine,CodeEditor,GitRepo dev
+    class ProdServer,LoadBalancer,DatabaseServer,CacheLayer,FileStorage prod

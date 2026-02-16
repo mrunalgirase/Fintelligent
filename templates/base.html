@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Fintelligent - Premium Financial Analytics{% endblock %}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            /* Premium Dark Navy Palette */
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --bg-glass: rgba(30, 41, 59, 0.7);
+
+            /* Accents - Enhanced for Better Visibility */
+            --primary: #2563eb;
+            /* Deeper Electric Blue */
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --secondary: #059669;
+            /* Vibrant Emerald */
+            --accent: #ea580c;
+            /* Bright Orange */
+            --danger: #dc2626;
+            /* Strong Red */
+            --warning: #f59e0b;
+            /* Amber */
+            --success: #10b981;
+            /* Green */
+
+            /* Text - Improved Contrast */
+            --text-main: #f1f5f9;
+            /* Brighter white */
+            --text-muted: #cbd5e1;
+            /* Lighter muted text */
+
+            /* UI Elements */
+            --border: 1px solid rgba(255, 255, 255, 0.1);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+
+            /* Pro Gradient */
+            --pro-gradient: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            margin-top: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Layout */
+        .wrapper {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glassmorphism Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: var(--border);
+            padding: 0.75rem 0;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .brand i {
+            color: var(--primary);
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 1001;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background: var(--text-main);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .nav-item i {
+            font-size: 1.1em;
+        }
+
+        /* Nav Dropdown */
+        .nav-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-trigger {
+            cursor: pointer;
+            padding-bottom: 5px;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 220px;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.15);
+            z-index: 1000;
+            padding: 0.75rem;
+            backdrop-filter: blur(20px);
+            margin-top: 0;
+            /* Removed gap margin */
+        }
+
+        /* Bridge the gap for hover */
+        .dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            background: transparent;
+        }
+
+        .nav-dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .dropdown-content .nav-item {
+            padding: 0.85rem 1.25rem;
+            width: 100%;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+
+        .dropdown-content .nav-item:hover {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Main Container */
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            width: 100%;
+        }
+
+        /* Custom UI Components */
+        /* Floating Action Button (FAB) */
+        .fab-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 1rem;
+        }
+
+        .fab-main {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .fab-main:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 12px 40px rgba(59, 130, 246, 0.5);
+        }
+
+        .fab-label {
+            position: absolute;
+            right: 75px;
+            background: var(--bg-card);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: 0.3s;
+            pointer-events: none;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .fab-container:hover .fab-label {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Standardized Component Spacing */
+        .section-padding {
+            padding: 6rem 0;
+        }
+
+        .glass-layer {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+        }
+
+        .card-ui:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary-ui {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 99px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary-ui:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        .input-ui {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid #334155;
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .input-ui:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-card);
+            border-top: var(--border);
+            padding: 3rem 0;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h4 {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-col a {
+            display: block;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-col a:hover {
+            color: var(--primary);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-rise {
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            pointer-events: none;
+        }
+
+        .toast-ui {
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            border: var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            min-width: 280px;
+            max-width: 400px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            pointer-events: auto;
+            animation: toastIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transition: all 0.3s ease;
+        }
+
+        .toast-ui.closing {
+            animation: toastOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes toastOut {
+            to {
+                opacity: 0;
+                transform: translateX(40px) scale(0.95);
+            }
+        }
+
+        .toast-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .toast-content h5 {
+            margin: 0 0 0.15rem 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .toast-content p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .toast-success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast-success .toast-icon {
+            color: #10b981;
+        }
+
+        .toast-error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .toast-error .toast-icon {
+            color: #ef4444;
+        }
+
+        .toast-warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .toast-warning .toast-icon {
+            color: #f59e0b;
+        }
+
+        .toast-info {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .toast-info .toast-icon {
+            color: #3b82f6;
+        }
+
+        /* Mobile Responsive adjustments */
+        @media (max-width: 991px) {
+            .nav-links {
+                gap: 1.25rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 1rem;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: var(--bg-card);
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 5rem 2rem 2rem 2rem;
+                transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+                z-index: 1000;
+                border-left: var(--border);
+                gap: 1.5rem;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-item {
+                font-size: 1.1rem;
+                width: 100%;
+                padding: 0.5rem 0;
+            }
+
+            .auth-buttons {
+                display: none;
+                /* Hide or move to nav-links on mobile */
+            }
+
+            .nav-links .auth-buttons-mobile {
+                display: flex !important;
+                flex-direction: column;
+                gap: 1rem;
+                width: 100%;
+                margin-top: 1rem;
+                padding-top: 1.5rem;
+                border-top: var(--border);
+            }
+
+            h1 {
+                font-size: 2.25rem !important;
+            }
+
+            h2 {
+                font-size: 1.75rem !important;
+            }
+
+            h3 {
+                font-size: 1.5rem !important;
+            }
+
+            .main-content {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        #mobile-menu-btn.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        #mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        #mobile-menu-btn.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <div class="wrapper">
+        <div id="toast-container"></div>
+        <header>
+            <nav class="navbar">
+                <a href="/" class="brand">
+                    <img src="/static/img/logo.png" alt="Fintelligent Logo"
+                        style="height: 40px; width: auto; object-fit: contain;">
+                    Fintelligent
+                </a>
+
+                <div class="menu-toggle" id="mobile-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <div class="nav-links" id="nav-links">
+                    <a href="/dashboard" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                    <a href="{{ url_for('recommendation.financial_analytics') }}" class="nav-item"><i
+                            class="fa-solid fa-chart-line"></i> Analytics</a>
+                    <a href="{{ url_for('receipts.receipts_history') }}" class="nav-item"><i
+                            class="fa-solid fa-receipt"></i> Receipts</a>
+                    <a href="{{ url_for('statements.index') }}" class="nav-item"><i
+                            class="fa-solid fa-file-invoice-dollar"></i> Statements</a>
+
+                    <!-- Wealth Dropdown -->
+                    <div class="nav-dropdown">
+                        <div class="nav-item dropdown-trigger">
+                            <i class="fa-solid fa-wallet"></i> Wealth <i class="fa-solid fa-chevron-down"
+                                style="font-size: 0.7rem;"></i>
+                        </div>
+                        <div class="dropdown-content">
+                            <a href="/strategies" class="nav-item"><i class="fa-solid fa-lightbulb"></i> Strategies</a>
+                            <a href="/tax" class="nav-item"><i class="fa-solid fa-file-invoice-dollar"></i> Tax
+                                Management</a>
+                            <a href="/analyze-stock" class="nav-item"><i class="fa-solid fa-magnifying-glass-chart"></i>
+                                Stocks Analysis</a>
+                            <a href="/cards" class="nav-item"><i class="fa-solid fa-credit-card"></i> Cards & Perks</a>
+                        </div>
+                    </div>
+
+                    <!-- Growth Dropdown -->
+                    <div class="nav-dropdown">
+                        <div class="nav-item dropdown-trigger">
+                            <i class="fa-solid fa-seedling"></i> Growth <i class="fa-solid fa-chevron-down"
+                                style="font-size: 0.7rem;"></i>
+                        </div>
+                        <div class="dropdown-content">
+                            <a href="/education" class="nav-item"><i class="fa-solid fa-graduation-cap"></i> Academy</a>
+                            <a href="{{ url_for('ai_coach.coach_page') }}" class="nav-item"><i
+                                    class="fa-solid fa-robot"></i> AI Coach</a>
+                            <a href="/gamification" class="nav-item"><i class="fa-solid fa-trophy"></i> Rewards</a>
+                        </div>
+                    </div>
+
+                    {% if current_user.is_authenticated and not current_user.is_premium %}
+                    <a href="{{ url_for('main.pricing') }}" class="nav-item"
+                        style="color: var(--accent); font-weight: 600;">
+                        <i class="fa-solid fa-crown"></i> Go Pro
+                    </a>
+                    {% endif %}
+
+                    {% if current_user.is_authenticated and current_user.is_premium %}
+                    <span class="nav-item" style="color: var(--secondary); font-weight: 600; cursor: default;">
+                        <i class="fa-solid fa-star"></i> Pro
+                    </span>
+                    {% endif %}
+
+                    <a href="http://localhost:5173" target="_blank" class="nav-item"
+                        style="color: var(--primary); font-weight: 600;"><i class="fa-solid fa-robot"></i> AI Coach</a>
+
+                    <div class="auth-buttons-mobile" style="display: none;">
+                        {% if current_user.is_authenticated %}
+                        <span style="color: var(--text-muted); font-weight: 500; font-size: 0.95rem;">
+                            <i class="fa-solid fa-user-circle" style="color: var(--primary);"></i> {{
+                            current_user.username }}
+                        </span>
+                        <a href="/logout" class="nav-item" style="color: #ef4444;"><i
+                                class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                        {% else %}
+                        <a href="/login" class="nav-item">Login</a>
+                        <a href="/register" class="btn-primary-ui"
+                            style="text-align: center; justify-content: center;">Get Started</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="auth-buttons">
+                    {% if current_user.is_authenticated %}
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <span style="color: var(--text-muted); font-weight: 500;">
+                            <i class="fa-solid fa-user-circle" style="color: var(--primary);"></i> {{
+                            current_user.username }}
+                        </span>
+                        <a href="/logout" class="nav-item" style="color: #ef4444;"><i
+                                class="fa-solid fa-right-from-bracket"></i></a>
+                    </div>
+                    {% else %}
+                    <a href="/login" class="nav-item">Login</a>
+                    <a href="/register" class="btn-primary-ui" style="padding: 0.5rem 1.25rem; font-size: 0.9rem;">
+                        Get Started
+                    </a>
+                    {% endif %}
+                </div>
+            </nav>
+            <div class="menu-overlay" id="menu-overlay"></div>
+        </header>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Global Floating Action Button -->
+        <div class="fab-container">
+            <span class="fab-label">Quick Scan Receipt</span>
+            <a href="/receipts" class="fab-main">
+                <i class="fa-solid fa-camera"></i>
+            </a>
+        </div>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-col" style="flex: 1.5;">
+                    <div class="brand" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <img src="/static/img/logo.png" alt="Logo" style="height: 32px; filter: brightness(1.2);">
+                        <span style="font-size: 1.5rem; font-weight: 800; tracking: -0.02em;">Fintelligent</span>
+                    </div>
+                    <p
+                        style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 2rem; max-width: 320px;">
+                        The ultimate financial intelligence platform. Empowering the next generation with AI-driven
+                        wealth architecture and precision tax tools.
+                    </p>
+                    <div style="display: flex; gap: 1.5rem; font-size: 1.5rem;">
+                        <a href="#" style="color: var(--text-muted); transition: 0.3s;"
+                            onmouseover="this.style.color='var(--primary)'"
+                            onmouseout="this.style.color='var(--text-muted)'"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" style="color: var(--text-muted); transition: 0.3s;"
+                            onmouseover="this.style.color='var(--primary)'"
+                            onmouseout="this.style.color='var(--text-muted)'"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" style="color: var(--text-muted); transition: 0.3s;"
+                            onmouseover="this.style.color='var(--primary)'"
+                            onmouseout="this.style.color='var(--text-muted)'"><i class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Ecosystem</h4>
+                    <a href="/dashboard">Dashboard</a>
+                    <a href="/analytics">Advanced Analytics</a>
+                    <a href="/receipts">Receipts Hub</a>
+                    <a href="/pricing">Pro Access</a>
+                    <a href="/monitoring">Monitoring</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Wealth Tools</h4>
+                    <a href="/strategies">Growth Strategies</a>
+                    <a href="/tax">Tax Engine</a>
+                    <a href="/analyze-stock">Stock Pulse</a>
+                    <a href="/cards">Card Optimizer</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Support</h4>
+                    <a href="/education">Academy</a>
+                    <a href="/glossary">Glossary</a>
+                    <a href="/ai-coach">AI Coach</a>
+                    <a href="mailto:support@fintelligent.com">Help Desk</a>
+                </div>
+            </div>
+            <div
+                style="max-width: 1200px; margin: 4rem auto 0 auto; padding: 2rem 1.5rem 0 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+                <p style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">&copy; 2026 Fintelligent AI
+                    Lab. Standardizing Financial Excellence.</p>
+                <div style="display: flex; gap: 2.5rem; font-size: 0.9rem; font-weight: 500;">
+                    <a href="#" style="color: var(--text-muted); text-decoration: none;">Privacy Protocol</a>
+                    <a href="#" style="color: var(--text-muted); text-decoration: none;">Operational Terms</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /**
+         * Global Toast System
+         * @param {string} title - Title of the toast
+         * @param {string} message - Message body
+         * @param {string} type - success, error, warning, info
+         * @param {number} duration - ms to show
+         */
+        function showToast(title, message, type = 'info', duration = 5000) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-ui toast-${type}`;
+
+            const icons = {
+                'success': 'fa-circle-check',
+                'error': 'fa-circle-xmark',
+                'warning': 'fa-circle-exclamation',
+                'info': 'fa-circle-info'
+            };
+
+            toast.innerHTML = `
+            <i class="fa-solid ${icons[type]} toast-icon"></i>
+            <div class="toast-content">
+                <h5>${title}</h5>
+                <p>${message}</p>
+            </div>
+        `;
+
+            container.appendChild(toast);
+
+            // Auto removal
+            const removeTimeout = setTimeout(() => {
+                closeToast(toast);
+            }, duration);
+
+            toast.onclick = () => {
+                clearTimeout(removeTimeout);
+                closeToast(toast);
+            };
+        }
+
+        function closeToast(toast) {
+            toast.classList.add('closing');
+            toast.addEventListener('animationend', () => {
+                toast.remove();
+            });
+        }
+
+        // Handle Flask Flash Messages automatically
+        document.addEventListener('DOMContentLoaded', () => {
+            {% with messages = get_flashed_messages(with_categories = true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            const typeMap = {
+                'success': 'success',
+                'danger': 'error',
+                'warning': 'warning',
+                'info': 'info'
+            };
+            showToast(
+                'System Notification',
+                {{ message | tojson }},
+            typeMap[{{ category | tojson }}] || 'info'
+        );
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        });
+
+        // Mobile Menu Logic
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+        const menuOverlay = document.getElementById('menu-overlay');
+
+        function toggleMenu() {
+            menuBtn.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        menuOverlay.addEventListener('click', toggleMenu);
+
+        // Close menu on link click
+        navLinks.querySelectorAll('a.nav-item').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) toggleMenu();
+            });
+        });
+
+        // Dropdown Toggle Logic (Mobile & Desktop Touch)
+        document.querySelectorAll('.dropdown-trigger').forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                const dropdown = trigger.parentElement;
+                const content = dropdown.querySelector('.dropdown-content');
+
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    const isOpen = content.style.display === 'block';
+
+                    // Close others
+                    document.querySelectorAll('.dropdown-content').forEach(c => {
+                        if (c !== content) c.style.display = 'none';
+                    });
+
+                    content.style.display = isOpen ? 'none' : 'block';
+                    if (!isOpen) {
+                        content.style.position = 'static';
+                        content.style.transform = 'none';
+                        content.style.width = '100%';
+                        content.style.boxShadow = 'none';
+                        content.style.paddingLeft = '1.5rem';
+                    }
+                }
+            });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-dropdown')) {
+                if (window.innerWidth <= 768) {
+                    document.querySelectorAll('.dropdown-content').forEach(c => {
+                        c.style.display = 'none';
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+graph TB
+    subgraph "Client Layer"
+        Browser[Web Browser<br/>User Interface]
+    end
+    
+    subgraph "Presentation Layer"
+        Templates[HTML Templates<br/>Jinja2 Templates]
+        StaticFiles[Static Files<br/>CSS, JS, Images]
+    end
+    
+    subgraph "Application Layer - Flask"
+        FlaskApp[Flask Application<br/>app.py<br/>Port 5001]
+        LoginMgr[Flask-Login<br/>Session Management]
+    end
+    
+    subgraph "Route Modules - Blueprints"
+        AuthBP[Auth Blueprint<br/>/register, /login, /logout<br/>User Authentication]
+        MainBP[Main Blueprint<br/>/, /api/*<br/>Dashboard & Home]
+        TaxBP[Tax Blueprint<br/>/tax/*<br/>Tax Calculator, TDS, HRA]
+        StockBP[Stock Blueprint<br/>/analyze-stock, /get_clusters<br/>Stock Analysis]
+        RecBP[Recommendation Blueprint<br/>/upload, /upload_expenditure<br/>Expenditure & Clustering]
+        EduBP[Education Blueprint<br/>/education/*<br/>SIP, Budget Education]
+        StrategyBP[Strategy Blueprint<br/>/strategies<br/>Tax Planning Strategies]
+        MonitorBP[Monitoring Blueprint<br/>/monitoring<br/>System Monitoring]
+    end
+    
+    subgraph "Business Logic Layer"
+        TaxCalc[Tax Calculator<br/>New/Old Regime<br/>Section 80C, 80D, HRA]
+        StockAnalyzer[Stock Analyzer<br/>Data Processing<br/>Technical Analysis]
+        ClusteringEngine[Clustering Engine<br/>K-Means Algorithm<br/>User Segmentation]
+        RecEngine[Recommendation Engine<br/>Pattern Analysis<br/>Financial Recommendations]
+        FinancialTools[Financial Tools<br/>SIP Calculator<br/>Budget Planner]
+    end
+    
+    subgraph "Data Access Layer"
+        SQLAlchemy[SQLAlchemy ORM<br/>Database Abstraction]
+        CSVManager[CSV Manager<br/>File Processing]
+        FileSystem[File System Manager<br/>Temporary Storage]
+    end
+    
+    subgraph "Data Storage Layer"
+        SQLiteDB[(SQLite Database<br/>fintelligent.db<br/>User Data, Sessions)]
+        TaxCSV[(CSV Files<br/>user_tax_history.csv<br/>user_tax_data_new.csv)]
+        ExpenditureCSV[(CSV Files<br/>expenditure.csv<br/>User Expenditure Data)]
+        TempStorage[(Temporary Storage<br/>/tmp<br/>Upload Files)]
+    end
+    
+    subgraph "External Services"
+        StockAPI[Stock Market APIs<br/>External Data Sources]
+        MLlib[ML Libraries<br/>scikit-learn<br/>K-Means, PCA]
+    end
+    
+    %% Client to Presentation
+    Browser --> Templates
+    Browser --> StaticFiles
+    Browser --> FlaskApp
+    
+    %% Application Layer
+    FlaskApp --> LoginMgr
+    FlaskApp --> AuthBP
+    FlaskApp --> MainBP
+    FlaskApp --> TaxBP
+    FlaskApp --> StockBP
+    FlaskApp --> RecBP
+    FlaskApp --> EduBP
+    FlaskApp --> StrategyBP
+    FlaskApp --> MonitorBP
+    
+    %% Blueprints to Business Logic
+    AuthBP --> TaxCalc
+    TaxBP --> TaxCalc
+    StockBP --> StockAnalyzer
+    RecBP --> ClusteringEngine
+    RecBP --> RecEngine
+    EduBP --> FinancialTools
+    StrategyBP --> TaxCalc
+    StrategyBP --> RecEngine
+    
+    %% Business Logic to Data Access
+    TaxCalc --> SQLAlchemy
+    TaxCalc --> CSVManager
+    StockAnalyzer --> CSVManager
+    ClusteringEngine --> CSVManager
+    RecEngine --> CSVManager
+    RecEngine --> FileSystem
+    FinancialTools --> SQLAlchemy
+    
+    %% Data Access to Storage
+    SQLAlchemy --> SQLiteDB
+    CSVManager --> TaxCSV
+    CSVManager --> ExpenditureCSV
+    FileSystem --> TempStorage
+    
+    %% External Services
+    StockAnalyzer --> StockAPI
+    ClusteringEngine --> MLlib
+    
+    %% Styling
+    classDef client fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef presentation fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef application fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef blueprint fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef business fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef dataAccess fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef storage fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef external fill:#f1f8e9,stroke:#558b2f,stroke-width:2px
+    
+    class Browser client
+    class Templates,StaticFiles presentation
+    class FlaskApp,LoginMgr application
+    class AuthBP,MainBP,TaxBP,StockBP,RecBP,EduBP,StrategyBP,MonitorBP blueprint
+    class TaxCalc,StockAnalyzer,ClusteringEngine,RecEngine,FinancialTools business
+    class SQLAlchemy,CSVManager,FileSystem dataAccess
+    class SQLiteDB,TaxCSV,ExpenditureCSV,TempStorage storage
+    class StockAPI,MLlib external

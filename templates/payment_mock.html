@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Payment Gateway - Mock{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+    <div class="card-ui" style="text-align: center; max-width: 450px; width: 100%;">
+        <div style="margin-bottom: 20px;">
+            <i class="fa-solid fa-lock" style="font-size: 3em; color: var(--primary);"></i>
+        </div>
+        <h2>Confirm Payment</h2>
+        <p style="color: var(--text-muted); margin-bottom: 30px;">
+            You are paying <strong style="color: white; font-size: 1.2em;">₹99</strong> for <strong>Fintelligent
+                Pro</strong>.
+        </p>
+
+        <div
+            style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 25px; border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="color: var(--text-muted);">Plan:</span>
+                <span>Pro Investor Monthly</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="color: var(--text-muted);">Amount:</span>
+                <span>₹99.00</span>
+            </div>
+            <div
+                style="display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 8px;">
+                <span style="color: var(--text-muted);">Total Due:</span>
+                <strong style="color: var(--secondary);">₹99.00</strong>
+            </div>
+        </div>
+
+        <form action="{{ url_for('main.payment_success') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <!-- Simulating different payment methods -->
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                <div
+                    style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; opacity: 0.8;">
+                    <i class="fa-brands fa-cc-visa" style="font-size: 1.5em; color: white;"></i>
+                </div>
+                <div
+                    style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; opacity: 0.8;">
+                    <i class="fa-brands fa-cc-mastercard" style="font-size: 1.5em; color: white;"></i>
+                </div>
+                <div
+                    style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; opacity: 0.8;">
+                    <i class="fa-solid fa-earth-americas" style="font-size: 1.5em; color: white;"></i> UPI
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary-ui"
+                style="width: 100%; justify-content: center; background: #10b981;">
+                Pay ₹99 Securely
+            </button>
+            <p style="margin-top: 15px; font-size: 0.8em; color: var(--text-muted);">
+                (This is a safe mock environment. No actual money will be deducted.)
+            </p>
+        </form>
+    </div>
+</div>
+{% endblock %}

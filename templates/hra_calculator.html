@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block title %}HRA Calculator - Fintelligent{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div style="text-align: center; margin: 4rem 0 6rem 0; position: relative;">
+    <div
+        style="position: absolute; width: 300px; height: 300px; background: rgba(16, 185, 129, 0.15); filter: blur(100px); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1;">
+    </div>
+
+    <div class="animate-rise">
+        <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2;">
+            HRA Exemption
+            <span
+                style="background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Calculator</span>
+        </h1>
+        <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2.5rem auto;">
+            Calculate your House Rent Allowance exemption and see how much tax you can save.
+        </p>
+    </div>
+</div>
+
+<!-- Calculator -->
+<div class="card-ui animate-rise" style="max-width: 800px; margin: 0 auto 6rem auto;">
+    <h3
+        style="margin-bottom: 2rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem;">
+        <i class="fa-solid fa-house" style="color: var(--primary);"></i> HRA Estimator
+    </h3>
+
+    <form id="hraForm">
+        <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+            <div>
+                <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Basic
+                    Salary (Yearly)</label>
+                <div style="display: flex;">
+                    <div
+                        style="background: rgba(255,255,255,0.05); padding: 0 1rem; display: flex; align-items: center; border: 1px solid #334155; border-right: none; border-radius: 12px 0 0 12px; color: var(--text-muted);">
+                        ₹</div>
+                    <input type="number" id="hraBasicSalary" class="input-ui" required
+                        style="border-radius: 0 12px 12px 0;" placeholder="Basic Salary">
+                </div>
+            </div>
+
+            <div>
+                <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">HRA
+                    Received (Yearly)</label>
+                <div style="display: flex;">
+                    <div
+                        style="background: rgba(255,255,255,0.05); padding: 0 1rem; display: flex; align-items: center; border: 1px solid #334155; border-right: none; border-radius: 12px 0 0 12px; color: var(--text-muted);">
+                        ₹</div>
+                    <input type="number" id="hraReceived" class="input-ui" required
+                        style="border-radius: 0 12px 12px 0;" placeholder="Total HRA">
+                </div>
+            </div>
+
+            <div>
+                <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Rent
+                    Paid (Yearly)</label>
+                <div style="display: flex;">
+                    <div
+                        style="background: rgba(255,255,255,0.05); padding: 0 1rem; display: flex; align-items: center; border: 1px solid #334155; border-right: none; border-radius: 12px 0 0 12px; color: var(--text-muted);">
+                        ₹</div>
+                    <input type="number" id="hraRentPaid" class="input-ui" required
+                        style="border-radius: 0 12px 12px 0;" placeholder="Total Rent Paid">
+                </div>
+            </div>
+
+            <div>
+                <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">City
+                    Type</label>
+                <select id="hraCityType" class="input-ui" style="appearance: auto;">
+                    <option value="metro">Metro (50%)</option>
+                    <option value="non-metro">Non-Metro (40%)</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary-ui" style="width: 100%; justify-content: center; padding: 1rem;">
+            Calculate Exemption <i class="fa-solid fa-arrow-right-long"></i>
+        </button>
+    </form>
+</div>
+
+<!-- Results -->
+<div id="hraResult" style="display: none; margin-bottom: 6rem;">
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <!-- Exemption Card -->
+        <div class="card-ui animate-rise" style="border-left: 4px solid #10b981; text-align: center;">
+            <h4 style="color: #10b981; margin-bottom: 1rem;">Exempt HRA</h4>
+            <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">
+                ₹<span id="hraExemption">0</span>
+            </div>
+            <p style="color: var(--text-muted);">This amount is tax-free</p>
+        </div>
+
+        <!-- Taxable Card -->
+        <div class="card-ui animate-rise" style="border-left: 4px solid #ef4444; text-align: center;">
+            <h4 style="color: #ef4444; margin-bottom: 1rem;">Taxable HRA</h4>
+            <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">
+                ₹<span id="hraTaxable">0</span>
+            </div>
+            <p style="color: var(--text-muted);">This amount will be added to income</p>
+        </div>
+    </div>
+
+    <!-- Breakdown -->
+    <div id="calculationBreakdown" class="card-ui animate-rise" style="background: rgba(255,255,255,0.02);">
+        <h4 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-list-check" style="color: var(--accent);"></i>
+            Calculation Logic</h4>
+        <div style="display: grid; gap: 1rem;">
+            <div
+                style="display: flex; justify-content: space-between; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <span style="color: var(--text-muted);">Actual HRA Received</span>
+                <span id="breakdownReceived" style="font-weight: 600;">₹0</span>
+            </div>
+            <div
+                style="display: flex; justify-content: space-between; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <span style="color: var(--text-muted);">Rent Paid - 10% of Basic</span>
+                <span id="breakdownRent" style="font-weight: 600;">₹0</span>
+            </div>
+            <div
+                style="display: flex; justify-content: space-between; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <span style="color: var(--text-muted);" id="breakdownLimitLabel">50% of Basic</span>
+                <span id="breakdownLimit" style="font-weight: 600;">₹0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding-top: 0.5rem; color: #10b981;">
+                <span style="font-weight: 600;">Exemption (Minimum of above)</span>
+                <span id="breakdownExemption" style="font-weight: 700;">₹0</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Info Cards -->
+<div
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 6rem;">
+    <div class="card-ui">
+        <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-building" style="color: var(--primary);"></i> Metro Cities
+        </h4>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+            Mumbai, Delhi, Kolkata, and Chennai are claimed as Metro cities allowing 50% of basic salary as maximum HRA
+            limit. Other cities are capped at 40%.
+        </p>
+    </div>
+    <div class="card-ui">
+        <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-file-invoice" style="color: var(--accent);"></i> Proof Required
+        </h4>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+            You need rent receipts and a valid rental agreement. For annual rent exceeding ₹1,00,000, your landlord's
+            PAN is mandatory.
+        </p>
+    </div>
+</div>
+
+<div style="text-align: center;">
+    <a href="/tax" class="btn-primary-ui"
+        style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); box-shadow: none;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Main Calculator
+    </a>
+</div>
+
+<script>
+    document.getElementById('hraForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Client-side implementation to avoid API dependency for this demo
+        const basicSalary = parseFloat(document.getElementById('hraBasicSalary').value);
+        const hraReceived = parseFloat(document.getElementById('hraReceived').value);
+        const rentPaid = parseFloat(document.getElementById('hraRentPaid').value);
+        const cityType = document.getElementById('hraCityType').value;
+
+        if (isNaN(basicSalary) || isNaN(hraReceived) || isNaN(rentPaid)) {
+            alert('Please enter valid amounts for all fields');
+            return;
+        }
+
+        // Logic
+        // 1. Actual HRA
+        // 2. Rent - 10% Basic
+        const rentMinusBasic = Math.max(0, rentPaid - (basicSalary * 0.10));
+        // 3. 50% or 40% of Basic
+        const limitPercent = cityType === 'metro' ? 0.50 : 0.40;
+        const salaryLimit = basicSalary * limitPercent;
+
+        const exemption = Math.min(hraReceived, rentMinusBasic, salaryLimit);
+        const taxable = Math.max(0, hraReceived - exemption);
+
+        // Update UI
+        document.getElementById('hraExemption').textContent = Math.round(exemption).toLocaleString();
+        document.getElementById('hraTaxable').textContent = Math.round(taxable).toLocaleString();
+
+        document.getElementById('breakdownReceived').textContent = '₹' + Math.round(hraReceived).toLocaleString();
+        document.getElementById('breakdownRent').textContent = '₹' + Math.round(rentMinusBasic).toLocaleString();
+        document.getElementById('breakdownLimit').textContent = '₹' + Math.round(salaryLimit).toLocaleString();
+        document.getElementById('breakdownLimitLabel').textContent = `${limitPercent * 100}% of Basic`;
+        document.getElementById('breakdownExemption').textContent = '₹' + Math.round(exemption).toLocaleString();
+
+        document.getElementById('hraResult').style.display = 'block';
+        document.getElementById('hraResult').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

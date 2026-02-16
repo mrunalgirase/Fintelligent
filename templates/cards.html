@@ -1,0 +1,395 @@
+{% extends "base.html" %}
+
+{% block title %}Credit Card Comparison - Fintelligent{% endblock %}
+
+{% block head %}
+<style>
+    .comparison-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .filter-container {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        background: var(--bg-card);
+        border: var(--border);
+        color: var(--text-muted);
+        padding: 0.6rem 1.2rem;
+        border-radius: 99px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .cc-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cc-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+    }
+
+    .badge-premium {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+    }
+
+    .badge-travel {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+    }
+
+    .badge-cashback {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+    }
+
+    .badge-shopping {
+        background: rgba(139, 92, 246, 0.1);
+        color: #8b5cf6;
+    }
+
+    .badge-lifestyle {
+        background: rgba(236, 72, 153, 0.1);
+        color: #ec4899;
+    }
+
+    .badge-student {
+        background: rgba(250, 204, 21, 0.1);
+        color: #eab308;
+    }
+
+    .cc-fees {
+        display: flex;
+        justify-content: space-between;
+        margin: 1rem 0;
+        padding: 1rem 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .fee-item {
+        text-align: center;
+    }
+
+    .fee-label {
+        display: block;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 0.25rem;
+    }
+
+    .fee-value {
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    .cc-benefits {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .cc-benefits li {
+        display: flex;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    .cc-benefits i {
+        color: var(--secondary);
+        margin-top: 0.25rem;
+        width: 16px;
+    }
+
+    /* Detailed Points Section */
+    .points-details-btn {
+        width: 100%;
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--primary);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        padding: 0.75rem;
+        border-radius: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .points-details-btn:hover {
+        background: var(--primary);
+        color: white;
+    }
+
+    .points-panel {
+        display: none;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        animation: slideDown 0.3s ease-out;
+    }
+
+    .points-panel.active {
+        display: block;
+    }
+
+    .points-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .points-item {
+        background: rgba(15, 23, 42, 0.3);
+        padding: 0.75rem;
+        border-radius: 8px;
+        border-left: 3px solid var(--primary);
+    }
+
+    .points-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .points-value {
+        font-size: 0.85rem;
+        color: var(--text-main);
+        line-height: 1.4;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .cc-source {
+        margin-top: 1.5rem;
+        font-size: 0.8rem;
+        text-align: right;
+    }
+
+    .cc-source a {
+        color: var(--primary);
+    }
+
+    @media (max-width: 768px) {
+        .cards-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="animate-rise">
+    <div class="comparison-header">
+        <h1>Best Credit Cards in India (2025)</h1>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+            Compare top-rated credit cards and discover how to maximize your points for cash, flights, and hotels.
+        </p>
+    </div>
+
+    <div class="filter-container">
+        <button class="filter-btn active" data-filter="all">All Cards</button>
+        <button class="filter-btn" data-filter="Premium">Premium</button>
+        <button class="filter-btn" data-filter="Travel">Travel</button>
+        <button class="filter-btn" data-filter="Cashback">Cashback</button>
+        <button class="filter-btn" data-filter="Shopping">Shopping</button>
+        <button class="filter-btn" data-filter="Lifestyle">Lifestyle</button>
+        <button class="filter-btn" data-filter="Student">Student</button>
+    </div>
+
+    <div id="cards-container" class="cards-grid">
+        <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+            <i class="fa-solid fa-spinner fa-spin fa-2x" style="color: var(--primary);"></i>
+            <p style="margin-top: 1rem;">Analyzing best credit cards...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let allCards = [];
+        const container = document.getElementById('cards-container');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        // Fetch cards data
+        fetch('/api/cards')
+            .then(response => response.json())
+            .then(data => {
+                allCards = data;
+                renderCards(allCards);
+            })
+            .catch(error => {
+                container.innerHTML = `<p style="text-align:center; color:#ef4444;">Error loading data: ${error.message}</p>`;
+            });
+
+        // Filter functionality
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+                if (filter === 'all') {
+                    renderCards(allCards);
+                } else {
+                    const filtered = allCards.filter(card => card.category === filter);
+                    renderCards(filtered);
+                }
+            });
+        });
+
+        function togglePoints(btn) {
+            const panel = btn.nextElementSibling;
+            const isVisible = panel.classList.contains('active');
+
+            // Close all other panels (optional but cleaner)
+            // document.querySelectorAll('.points-panel').forEach(p => p.classList.remove('active'));
+            // document.querySelectorAll('.points-details-btn i').forEach(i => i.className = 'fa-solid fa-chevron-down');
+
+            if (isVisible) {
+                panel.classList.remove('active');
+                btn.querySelector('i').className = 'fa-solid fa-chevron-down';
+                btn.querySelector('span').innerText = 'View Points Conversion';
+            } else {
+                panel.classList.add('active');
+                btn.querySelector('i').className = 'fa-solid fa-chevron-up';
+                btn.querySelector('span').innerText = 'Hide Points Details';
+            }
+        }
+
+        function renderCards(cards) {
+            if (cards.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 3rem;">No cards found in this category.</p>';
+                return;
+            }
+
+            container.innerHTML = cards.map((card, index) => `
+                <div class="card-ui cc-card">
+                    <span class="cc-badge badge-${card.category.toLowerCase()}">${card.category}</span>
+                    <h3 style="margin-bottom: 0.5rem;">${card.name}</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Best for: <strong>${card.best_for}</strong></p>
+                    
+                    <ul class="cc-benefits">
+                        <li><i class="fa-solid fa-star"></i> <span><strong>Rewards:</strong> ${card.rewards}</span></li>
+                        <li><i class="fa-solid fa-plane-up"></i> <span><strong>Lounge:</strong> ${card.lounge}</span></li>
+                        <li><i class="fa-solid fa-gift"></i> <span><strong>Benefit:</strong> ${card.key_benefit}</span></li>
+                    </ul>
+
+                    <div class="cc-fees">
+                        <div class="fee-item">
+                            <span class="fee-label">Joining Fee</span>
+                            <span class="fee-value">${card.joining_fee}</span>
+                        </div>
+                        <div class="fee-item">
+                            <span class="fee-label">Annual Fee</span>
+                            <span class="fee-value">${card.annual_fee}</span>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">
+                        <i class="fa-solid fa-circle-info" style="color:var(--primary)"></i> Waiver: ${card.waiver}
+                    </p>
+
+                    <button class="points-details-btn" onclick="this.togglePoints()">
+                        <i class="fa-solid fa-chevron-down"></i>
+                        <span>View Points Conversion</span>
+                    </button>
+
+                    <div class="points-panel">
+                        <div class="points-grid">
+                            <div class="points-item">
+                                <span class="points-label"><i class="fa-solid fa-coins"></i> Cash Conversion</span>
+                                <span class="points-value">${card.points_system.cash_conversion}</span>
+                            </div>
+                            <div class="points-item">
+                                <span class="points-label"><i class="fa-solid fa-plane-departure"></i> Flight Partners</span>
+                                <span class="points-value">${card.points_system.flight_conversion}</span>
+                            </div>
+                            <div class="points-item">
+                                <span class="points-label"><i class="fa-solid fa-hotel"></i> Hotel Partners</span>
+                                <span class="points-value">${card.points_system.hotel_conversion}</span>
+                            </div>
+                            <div class="points-item" style="border-left-color: var(--secondary);">
+                                <span class="points-label"><i class="fa-solid fa-map-location-dot"></i> Where to Convert</span>
+                                <span class="points-value">${card.points_system.where_to_use} <strong>(${card.points_system.redemption_portal})</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cc-source">
+                        Source: <a href="${card.source}" target="_blank">Official Info</a>
+                    </div>
+                </div>
+            `).join('');
+
+            // Attach event handlers manually because of template string innerHTML
+            document.querySelectorAll('.points-details-btn').forEach(btn => {
+                btn.togglePoints = function () {
+                    const panel = this.nextElementSibling;
+                    const isVisible = panel.classList.contains('active');
+
+                    if (isVisible) {
+                        panel.classList.remove('active');
+                        this.querySelector('i').className = 'fa-solid fa-chevron-down';
+                        this.querySelector('span').innerText = 'View Points Conversion';
+                    } else {
+                        panel.classList.add('active');
+                        this.querySelector('i').className = 'fa-solid fa-chevron-up';
+                        this.querySelector('span').innerText = 'Hide Points Details';
+                    }
+                };
+            });
+        }
+    });
+</script>
+{% endblock %}

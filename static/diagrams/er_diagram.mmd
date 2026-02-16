@@ -1,0 +1,111 @@
+erDiagram
+    %% Core Database Entity
+    USER {
+        int id PK "Primary Key"
+        string username UK "Unique, Not Null"
+        string password_hash "Not Null"
+    }
+
+    %% Logical Entities from CSV Files
+    TAX_HISTORY {
+        int user_id FK "Foreign Key to User"
+        decimal income "Annual Income"
+        decimal invested_80c "Section 80C Investments"
+        decimal premium_80d "Section 80D Premium"
+        decimal home_principal "Home Loan Principal"
+        decimal home_interest "Home Loan Interest"
+    }
+
+    TAX_DATA_NEW {
+        int user_id FK "Foreign Key to User"
+        decimal income "Annual Income"
+        timestamp timestamp "Calculation Timestamp"
+    }
+
+    EXPENDITURE {
+        int user_id FK "Foreign Key to User"
+        string category "Expense Category"
+        decimal amount "Expense Amount"
+        date date "Expense Date"
+        string payment_method "Payment Method"
+        string merchant "Merchant Name"
+        string location "Location"
+    }
+
+    STOCK_ANALYSIS {
+        int analysis_id PK "Primary Key"
+        int user_id FK "Foreign Key to User"
+        string stock_symbol "Stock Symbol"
+        date analysis_date "Analysis Date"
+        decimal close_price "Closing Price"
+        decimal return_rate "Return Rate"
+        decimal volatility "Volatility"
+        int cluster_label "K-Means Cluster"
+    }
+
+    FINANCIAL_RECOMMENDATIONS {
+        int recommendation_id PK "Primary Key"
+        int user_id FK "Foreign Key to User"
+        string recommendation_type "Type: Budget/Tax/Investment"
+        text recommendation_text "Recommendation Text"
+        timestamp created_at "Creation Timestamp"
+        int cluster_id "Related Cluster"
+    }
+
+    USER_CLUSTER {
+        int user_id FK "Foreign Key to User"
+        int cluster_id "Cluster Assignment"
+        decimal category_spending "Spending by Category"
+        date cluster_date "Cluster Date"
+    }
+
+    DASHBOARD_STATS {
+        int user_id FK "Foreign Key to User"
+        decimal total_savings "Total Savings"
+        decimal tax_saved "Tax Saved"
+        decimal investments "Total Investments"
+        int financial_score "Financial Health Score"
+        decimal monthly_income "Monthly Income"
+        decimal expenses "Monthly Expenses"
+        int savings_rate "Savings Rate Percentage"
+        timestamp last_updated "Last Update Timestamp"
+    }
+
+    SIP_GOAL {
+        int goal_id PK "Primary Key"
+        int user_id FK "Foreign Key to User"
+        decimal target_amount "Target Amount"
+        int years "Time in Years"
+        decimal annual_rate "Annual Interest Rate"
+        decimal monthly_sip "Calculated Monthly SIP"
+        timestamp created_at "Creation Timestamp"
+    }
+
+    BUDGET_PLAN {
+        int plan_id PK "Primary Key"
+        int user_id FK "Foreign Key to User"
+        decimal monthly_income "Monthly Income"
+        decimal needs_allocation "50% Needs"
+        decimal wants_allocation "30% Wants"
+        decimal savings_allocation "20% Savings"
+        timestamp created_at "Creation Timestamp"
+    }
+
+    %% Relationships
+    USER ||--o{ TAX_HISTORY : "has"
+    USER ||--o{ TAX_DATA_NEW : "calculates"
+    USER ||--o{ EXPENDITURE : "tracks"
+    USER ||--o{ STOCK_ANALYSIS : "analyzes"
+    USER ||--o{ FINANCIAL_RECOMMENDATIONS : "receives"
+    USER ||--o{ USER_CLUSTER : "belongs_to"
+    USER ||--|| DASHBOARD_STATS : "has"
+    USER ||--o{ SIP_GOAL : "plans"
+    USER ||--o{ BUDGET_PLAN : "creates"
+    USER_CLUSTER ||--o{ FINANCIAL_RECOMMENDATIONS : "generates"
+    EXPENDITURE ||--o{ USER_CLUSTER : "categorizes"
+
+    %% Notes on Data Storage
+    %% TAX_HISTORY: Stored in user_tax_history.csv
+    %% TAX_DATA_NEW: Stored in user_tax_data_new.csv
+    %% EXPENDITURE: Stored in expenditure.csv or uploaded CSV
+    %% Other entities are logical/conceptual for documentation

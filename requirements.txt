@@ -1,0 +1,14 @@
+flask
+flask-login
+flask-sqlalchemy
+werkzeug 
+requests
+pandas
+scikit-learn
+yfinance
+flask-wtf
+flask-limiter
+flask-talisman
+pytesseract
+Pillow
+pdfplumber

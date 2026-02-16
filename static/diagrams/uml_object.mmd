@@ -1,0 +1,73 @@
+graph TB
+    subgraph "Object Diagram - Tax Calculation Scenario"
+        U1[user1 : User<br/>id = 1<br/>username = 'john_doe'<br/>password_hash = '***']
+        
+        TC1[tc1 : TaxCalculator]
+        
+        TD1[taxData1 : TaxData<br/>user_id = 1<br/>income = 800000<br/>new_regime_tax = 45250<br/>old_regime_tax = 67500<br/>calculated_at = '2024-01-15']
+        
+        CM1[csvMgr1 : CSVManager<br/>tax_file = 'user_tax_data_new.csv']
+        
+        DB1[db1 : Database<br/>connection = 'sqlite:///fintelligent.db']
+    end
+    
+    subgraph "Object Diagram - Stock Analysis Scenario"
+        U2[user2 : User<br/>id = 2<br/>username = 'jane_smith'<br/>password_hash = '***']
+        
+        SA1[stockAnalyzer1 : StockAnalyzer<br/>api_key = '4GRU0IDWXX4SBVF6'<br/>api_url = 'alphavantage.co']
+        
+        SD1[stockData1 : StockData<br/>symbol = 'INFY'<br/>date = '2024-01-15'<br/>close = 1450.50<br/>return_rate = 0.025<br/>volatility = 0.15<br/>cluster = 2]
+        
+        SD2[stockData2 : StockData<br/>symbol = 'INFY'<br/>date = '2024-01-16'<br/>close = 1486.75<br/>return_rate = 0.028<br/>volatility = 0.16<br/>cluster = 2]
+    end
+    
+    subgraph "Object Diagram - Expenditure Analysis Scenario"
+        U3[user3 : User<br/>id = 3<br/>username = 'bob_wilson'<br/>password_hash = '***']
+        
+        EP1[expProcessor1 : ExpenditureProcessor]
+        
+        CE1[clusterEngine1 : ClusteringEngine<br/>n_clusters = 3]
+        
+        RG1[recGen1 : RecommendationGenerator]
+        
+        CM2[csvMgr2 : CSVManager<br/>expenditure_file = 'expenditure.csv']
+        
+        E1[exp1 : ExpenditureData<br/>user_id = 3<br/>category = 'groceries'<br/>amount = 5000<br/>date = '2024-01-10']
+        
+        E2[exp2 : ExpenditureData<br/>user_id = 3<br/>category = 'entertainment'<br/>amount = 3000<br/>date = '2024-01-12']
+    end
+    
+    subgraph "Object Diagram - SIP Calculator Scenario"
+        U4[user4 : User<br/>id = 4<br/>username = 'alice_jones'<br/>password_hash = '***']
+        
+        SIP1[sipCalc1 : SIPCalculator]
+        
+        SIP_RESULT1[sipResult1 : SIPResult<br/>target_amount = 1000000<br/>years = 10<br/>annual_rate = 12%<br/>monthly_sip = 4482.45]
+    end
+    
+    %% Relationships
+    U1 -->|uses| TC1
+    TC1 -->|creates| TD1
+    TD1 -->|saves to| CM1
+    U1 -->|stored in| DB1
+    
+    U2 -->|requests| SA1
+    SA1 -->|fetches| SD1
+    SA1 -->|fetches| SD2
+    
+    U3 -->|uploads| EP1
+    EP1 -->|processes| E1
+    EP1 -->|processes| E2
+    EP1 -->|uses| CE1
+    CE1 -->|generates clusters| RG1
+    RG1 -->|reads from| CM2
+    
+    U4 -->|uses| SIP1
+    SIP1 -->|calculates| SIP_RESULT1
+    
+    %% Styling
+    classDef object fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef data fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    
+    class U1,U2,U3,U4,TC1,SA1,EP1,CE1,RG1,CM1,CM2,DB1,SIP1 object
+    class TD1,SD1,SD2,E1,E2,SIP_RESULT1 data

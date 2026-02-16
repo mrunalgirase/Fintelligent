@@ -1,0 +1,98 @@
+graph TB
+    subgraph "fintelligent Package"
+        subgraph "fintelligent.auth"
+            AuthModels[auth.models<br/>User Model]
+            AuthRoutes[auth.routes<br/>Authentication Routes]
+        end
+        
+        subgraph "fintelligent.main"
+            MainRoutes[main.routes<br/>Dashboard Routes]
+        end
+        
+        subgraph "fintelligent.tax"
+            TaxRoutes[tax.routes<br/>Tax Calculation Routes]
+        end
+        
+        subgraph "fintelligent.stocks"
+            StockRoutes[stocks.routes<br/>Stock Analysis Routes]
+        end
+        
+        subgraph "fintelligent.recommendation"
+            RecRoutes[recommendation.routes<br/>Recommendation Routes]
+        end
+        
+        subgraph "fintelligent.education"
+            EduRoutes[education.routes<br/>Education Routes]
+        end
+        
+        subgraph "fintelligent.strategies"
+            StrategyRoutes[strategies.routes<br/>Strategy Routes]
+        end
+        
+        subgraph "fintelligent.monitoring"
+            MonitorRoutes[monitoring.routes<br/>Monitoring Routes]
+        end
+        
+        Extensions[extensions<br/>Database Extension]
+    end
+    
+    subgraph "Root Package"
+        AppModule[app.py<br/>Main Application]
+        Requirements[requirements.txt<br/>Dependencies]
+        StaticPackage[static<br/>Static Files]
+        TemplatePackage[templates<br/>HTML Templates]
+        InstancePackage[instance<br/>Database Instance]
+    end
+    
+    subgraph "External Packages"
+        FlaskPackage[flask<br/>Web Framework]
+        PandasPackage[pandas<br/>Data Processing]
+        SklearnPackage[sklearn<br/>Machine Learning]
+        SQLAlchemyPackage[sqlalchemy<br/>ORM]
+    end
+    
+    %% Package Dependencies
+    AppModule --> AuthModels
+    AppModule --> AuthRoutes
+    AppModule --> MainRoutes
+    AppModule --> TaxRoutes
+    AppModule --> StockRoutes
+    AppModule --> RecRoutes
+    AppModule --> EduRoutes
+    AppModule --> StrategyRoutes
+    AppModule --> MonitorRoutes
+    AppModule --> Extensions
+    
+    AuthRoutes --> AuthModels
+    AuthModels --> Extensions
+    AuthRoutes --> FlaskPackage
+    
+    TaxRoutes --> FlaskPackage
+    TaxRoutes --> PandasPackage
+    
+    StockRoutes --> FlaskPackage
+    StockRoutes --> PandasPackage
+    StockRoutes --> SklearnPackage
+    
+    RecRoutes --> FlaskPackage
+    RecRoutes --> PandasPackage
+    RecRoutes --> SklearnPackage
+    
+    EduRoutes --> FlaskPackage
+    
+    StrategyRoutes --> FlaskPackage
+    
+    Extensions --> SQLAlchemyPackage
+    Extensions --> FlaskPackage
+    
+    AppModule --> FlaskPackage
+    AppModule --> PandasPackage
+    AppModule --> SklearnPackage
+    
+    %% Styling
+    classDef package fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef module fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    
+    class AuthModels,AuthRoutes,MainRoutes,TaxRoutes,StockRoutes,RecRoutes,EduRoutes,StrategyRoutes,MonitorRoutes,Extensions,AppModule,Requirements,StaticPackage,TemplatePackage,InstancePackage package
+    class FlaskPackage,PandasPackage,SklearnPackage,SQLAlchemyPackage external

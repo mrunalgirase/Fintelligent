@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <header class="dashboard-header">
+        <div>
+            <h1>Receipts Hub</h1>
+            <p class="subtitle">Scan, track, and manage your financial documents</p>
+        </div>
+        <div class="header-actions">
+            <button onclick="toggleScanner()" class="btn btn-primary" id="scanner-toggle-btn">
+                <i class="fas fa-camera"></i> Scan Receipt
+            </button>
+        </div>
+    </header>
+
+    <!-- Integrated Scanner Section -->
+    <div id="scanner-container" class="animate-rise" style="display: none; margin-bottom: 2rem;">
+        <div class="card-ui"
+            style="max-width: 600px; margin: 0 auto; border: 2px dashed rgba(59, 130, 246, 0.3); background: rgba(30, 41, 59, 0.4);">
+            <div id="upload-section" style="text-align: center; padding: 2rem;">
+                <i class="fa-solid fa-cloud-arrow-up"
+                    style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3>Smart Scan</h3>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Upload a photo of your receipt. AI will
+                    extract details.</p>
+                <input type="file" id="receipt-input" accept="image/*" capture="environment" style="display: none;"
+                    onchange="handleImageUpload(this)">
+                <button onclick="document.getElementById('receipt-input').click()" class="btn-primary-ui">
+                    <i class="fa-solid fa-camera"></i> Select Image
+                </button>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-state" style="display: none; text-align: center; padding: 3rem;">
+                <div class="spinner"
+                    style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem auto;">
+                </div>
+                <p>AI is analyzing your receipt...</p>
+            </div>
+
+            <!-- Result Form -->
+            <div id="result-section" style="display: none; padding: 1.5rem; border-top: 1px solid var(--border-color);">
+                <h4 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-circle-check"
+                        style="color: var(--secondary);"></i> Review Details</h4>
+                <form id="expense-form">
+                    <div style="margin-bottom: 1rem;">
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">Merchant</label>
+                        <input type="text" id="merchant" class="input-ui" style="background: rgba(0,0,0,0.2);">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label
+                                style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">Date</label>
+                            <input type="date" id="date" class="input-ui" style="background: rgba(0,0,0,0.2);">
+                        </div>
+                        <div>
+                            <label
+                                style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">Amount
+                                (₹)</label>
+                            <input type="number" step="0.01" id="amount" class="input-ui"
+                                style="background: rgba(0,0,0,0.2);">
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label
+                            style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">Category</label>
+                        <select id="category" class="input-ui" style="background: rgba(0,0,0,0.2);">
+                            <option value="Food">Food & Dining</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Bills">Bills & Utilities</option>
+                            <option value="Other" selected>Other</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="button" class="btn-primary-ui" style="flex: 2; justify-content: center;"
+                            onclick="saveExpense()">
+                            <i class="fa-solid fa-floppy-disk"></i> Save to History
+                        </button>
+                        <button type="button" class="btn" style="flex: 1; border: 1px solid var(--border-color);"
+                            onclick="resetScanner()">
+                            Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                <i class="fas fa-receipt"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Scanned</h3>
+                <p class="stat-value">{{ expenses|length }}</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Value</h3>
+                <p class="stat-value">₹{{ "%.2f"|format(expenses|sum(attribute='amount')) }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-card mt-4">
+        <div class="card-header">
+            <h2>Recent Scans</h2>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Merchant</th>
+                        <th>Category</th>
+                        <th>Amount</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <div class="merchant-info">
+                                <span class="merchant-name">{{ expense.merchant or 'Unknown' }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="category-badge">{{ expense.category }}</span>
+                        </td>
+                        <td class="amount">₹{{ "%.2f"|format(expense.amount) }}</td>
+                        <td>
+                            <button class="btn btn-icon" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <p>No scanned receipts found. Start by scanning your first receipt!</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--border-color);
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .content-card {
+        background: var(--card-bg);
+        border-radius: 1rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th {
+        text-align: left;
+        padding: 1rem 1.5rem;
+        background: rgba(0, 0, 0, 0.02);
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .data-table td {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .merchant-name {
+        font-weight: 500;
+    }
+
+    .category-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 2rem;
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+        font-size: 0.8125rem;
+        font-weight: 500;
+    }
+
+    .amount {
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem !important;
+        color: var(--text-muted);
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+
+    .btn-icon {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        color: var(--text-muted);
+        transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+        background: rgba(0, 0, 0, 0.05);
+        color: var(--accent-color);
+    }
+</style>
+{% endblock %}

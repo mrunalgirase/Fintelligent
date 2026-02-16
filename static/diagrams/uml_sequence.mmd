@@ -1,0 +1,87 @@
+sequenceDiagram
+    participant User
+    participant WebBrowser
+    participant FlaskApp
+    participant AuthRoutes
+    participant UserModel
+    participant Database
+    
+    Note over User,Database: User Registration Sequence
+    User->>WebBrowser: Access Registration Page
+    WebBrowser->>FlaskApp: GET /register
+    FlaskApp->>AuthRoutes: register()
+    AuthRoutes->>WebBrowser: Render register.html
+    WebBrowser->>User: Display Registration Form
+    User->>WebBrowser: Submit Registration Data
+    WebBrowser->>FlaskApp: POST /register
+    FlaskApp->>AuthRoutes: register()
+    AuthRoutes->>UserModel: get_by_username(username)
+    UserModel->>Database: Query User
+    Database-->>UserModel: User not found
+    UserModel-->>AuthRoutes: None
+    AuthRoutes->>UserModel: Create User
+    UserModel->>UserModel: set_password(password)
+    AuthRoutes->>Database: Save User
+    Database-->>AuthRoutes: Success
+    AuthRoutes->>FlaskApp: login_user(user)
+    FlaskApp->>WebBrowser: Redirect to Dashboard
+    WebBrowser->>User: Show Dashboard
+    
+    Note over User,Database: Tax Calculation Sequence
+    User->>WebBrowser: Enter Tax Data
+    WebBrowser->>FlaskApp: POST /tax/calculate
+    FlaskApp->>TaxRoutes: calculate_tax()
+    TaxRoutes->>TaxCalculator: calculate_new_regime_tax(income)
+    TaxCalculator-->>TaxRoutes: new_regime_tax
+    TaxRoutes->>TaxCalculator: calculate_old_regime_tax(income)
+    TaxCalculator-->>TaxRoutes: old_regime_tax
+    TaxRoutes->>TaxRoutes: compare_regimes()
+    TaxRoutes->>CSVManager: save_tax_data(user_id, data)
+    CSVManager->>CSVManager: Write to CSV
+    CSVManager-->>TaxRoutes: Saved
+    TaxRoutes->>WebBrowser: JSON Response
+    WebBrowser->>User: Display Tax Results
+    
+    Note over User,Database: Stock Analysis Sequence
+    User->>WebBrowser: Enter Stock Symbol
+    WebBrowser->>FlaskApp: GET /get_clusters?symbol=INFY
+    FlaskApp->>StockRoutes: get_clusters()
+    StockRoutes->>StockAnalyzer: fetch_stock_data(symbol)
+    StockAnalyzer->>StockAPI: HTTP Request
+    StockAPI-->>StockAnalyzer: JSON Response
+    StockAnalyzer->>StockAnalyzer: process_stock_data()
+    StockAnalyzer->>StockAnalyzer: calculate_returns()
+    StockAnalyzer->>StockAnalyzer: calculate_volatility()
+    StockAnalyzer->>ClusteringEngine: perform_clustering()
+    ClusteringEngine->>ClusteringEngine: Normalize Data
+    ClusteringEngine->>ClusteringEngine: Apply K-Means
+    ClusteringEngine-->>StockAnalyzer: Cluster Labels
+    StockAnalyzer->>StockRoutes: Analysis Results
+    StockRoutes->>WebBrowser: JSON Response
+    WebBrowser->>User: Display Stock Analysis
+    
+    Note over User,Database: Expenditure Upload Sequence
+    User->>WebBrowser: Upload CSV File
+    WebBrowser->>FlaskApp: POST /upload
+    FlaskApp->>RecommendationRoutes: upload_page()
+    RecommendationRoutes->>ExpenditureProcessor: validate_csv(file)
+    ExpenditureProcessor-->>RecommendationRoutes: Validation Result
+    alt Valid CSV
+        RecommendationRoutes->>ExpenditureProcessor: parse_csv(filepath)
+        ExpenditureProcessor->>ExpenditureProcessor: Aggregate by Category
+        ExpenditureProcessor->>ExpenditureProcessor: Create Pivot Table
+        ExpenditureProcessor-->>RecommendationRoutes: Processed Data
+        RecommendationRoutes->>ClusteringEngine: perform_clustering(data)
+        ClusteringEngine->>ClusteringEngine: Determine Optimal K
+        ClusteringEngine->>ClusteringEngine: Apply K-Means
+        ClusteringEngine->>ClusteringEngine: Perform PCA
+        ClusteringEngine-->>RecommendationRoutes: Clusters & PCA
+        RecommendationRoutes->>RecommendationGenerator: generate_recommendations(data, clusters)
+        RecommendationGenerator->>RecommendationGenerator: Analyze Patterns
+        RecommendationGenerator-->>RecommendationRoutes: Recommendations
+        RecommendationRoutes->>WebBrowser: Render Results Page
+        WebBrowser->>User: Display Analytics & Recommendations
+    else Invalid CSV
+        RecommendationRoutes->>WebBrowser: Error Message
+        WebBrowser->>User: Show Error
+    end

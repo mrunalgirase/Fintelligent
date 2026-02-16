@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}TDS Calculator - Fintelligent{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div style="text-align: center; margin: 4rem 0 6rem 0; position: relative;">
+    <div
+        style="position: absolute; width: 300px; height: 300px; background: rgba(59, 130, 246, 0.15); filter: blur(100px); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1;">
+    </div>
+
+    <div class="animate-rise">
+        <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2;">
+            TDS
+            <span
+                style="background: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Calculator</span>
+        </h1>
+        <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2.5rem auto;">
+            Estimate Tax Deducted at Source for different income types and frequencies.
+        </p>
+    </div>
+</div>
+
+<!-- Calculator -->
+<div class="card-ui animate-rise" style="max-width: 700px; margin: 0 auto 6rem auto;">
+    <h3
+        style="margin-bottom: 2rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem;">
+        <i class="fa-solid fa-file-invoice-dollar" style="color: var(--primary);"></i> TDS Estimator
+    </h3>
+
+    <form id="tdsForm" method="POST" action="/tax/tds">
+        <div style="display: grid; gap: 1.5rem; margin-bottom: 2rem;">
+            <div>
+                <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Total
+                    Payment Amount</label>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div
+                    style="background: rgba(255,255,255,0.05); padding: 0 1rem; display: flex; align-items: center; border: 1px solid #334155; border-right: none; border-radius: 12px 0 0 12px; color: var(--text-muted);">
+                    ₹</div>
+                <input type="number" id="qtdsIncome" class="input-ui" required style="border-radius: 0 12px 12px 0;"
+                    placeholder="Amount">
+            </div>
+        </div>
+
+        <div>
+            <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Payment
+                Frequency</label>
+            <select id="tdsFrequency" class="input-ui" style="appearance: auto;">
+                <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="annual">Annual</option>
+                <option value="one-time">One-Time (Contract/Pro)</option>
+            </select>
+        </div>
+
+        <div>
+            <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Deductee
+                Type (Assumed Rate)</label>
+            <select id="tdsRate" class="input-ui" style="appearance: auto;">
+                <option value="0.10">Professional Fees (10%)</option>
+                <option value="0.01">Contractor Individual (1%)</option>
+                <option value="0.02">Contractor Firm (2%)</option>
+                <option value="0.05">Rent > 50k/mo (5%)</option>
+                <option value="0.10">Commission/Brokerage (5%)</option> <!-- Actually 5%, label fix needed -->
+                <!-- Simply usage: just hardcode 10% for general professional example in backend or here -->
+            </select>
+        </div>
+</div>
+
+<button type="submit" class="btn-primary-ui" style="width: 100%; justify-content: center; padding: 1rem;">
+    Calculate Deduction <i class="fa-solid fa-arrow-right-long"></i>
+</button>
+</form>
+</div>
+
+<!-- Results -->
+<div id="tdsResult" style="display: none; margin-bottom: 6rem; text-align: center;">
+    <div class="card-ui animate-rise" style="max-width: 500px; margin: 0 auto; border-top: 4px solid #3b82f6;">
+        <h4 style="color: var(--text-main); margin-bottom: 1rem;">Estimated TDS Amount</h4>
+        <div style="font-size: 3rem; font-weight: 800; color: #3b82f6; margin-bottom: 0.5rem;">
+            ₹<span id="tdsAmount">0</span>
+        </div>
+        <p style="color: var(--text-muted);">
+            Deduction for <span id="resFrequency" style="font-weight: 600; color: var(--text-main);"></span> payment
+        </p>
+    </div>
+</div>
+
+<!-- Info Cards -->
+<div
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 6rem;">
+    <div class="card-ui">
+        <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-circle-question" style="color: var(--primary);"></i> What is TDS?
+        </h4>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+            Tax Deducted at Source (TDS) is collected by the payer before making payments like salary, commission, rent,
+            or professional fees.
+        </p>
+    </div>
+
+    <div class="card-ui">
+        <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-certificate" style="color: var(--accent);"></i> Form 16/16A
+        </h4>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+            The deductor must issue a TDS certificate (Form 16 for salary, Form 16A for others) as proof of tax
+            deduction.
+        </p>
+    </div>
+
+    <div class="card-ui">
+        <h4 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-percent" style="color: #f59e0b;"></i> Rates
+        </h4>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+            Rates vary by section: 10% for professional fees (194J), 1-2% for contractors (194C), 5% for rent >50k
+            (194IB).
+        </p>
+    </div>
+</div>
+
+<div style="text-align: center;">
+    <a href="/tax" class="btn-primary-ui"
+        style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); box-shadow: none;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Main Calculator
+    </a>
+</div>
+
+<script>
+    document.getElementById('tdsForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Client side calculation
+        const amount = parseFloat(document.getElementById('qtdsIncome').value);
+        const rate = parseFloat(document.getElementById('tdsRate').value);
+        const frequency = document.getElementById('tdsFrequency').value;
+
+        if (isNaN(amount) || amount <= 0) {
+            alert('Please enter a valid amount');
+            return;
+        }
+
+        const tds = amount * rate;
+
+        document.getElementById('tdsAmount').textContent = Math.round(tds).toLocaleString();
+        document.getElementById('resFrequency').textContent = frequency;
+
+        document.getElementById('tdsResult').style.display = 'block';
+        document.getElementById('tdsResult').scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

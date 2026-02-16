@@ -1,0 +1,189 @@
+classDiagram
+    %% Core Models
+    class User {
+        -int id
+        -string username
+        -string password_hash
+        +set_password(password)
+        +check_password(password)
+        +get(user_id)
+        +get_by_username(username)
+    }
+    
+    %% Tax Calculation Classes
+    class TaxCalculator {
+        +calculate_new_regime_tax(income, deductions)
+        +calculate_old_regime_tax(income, deductions)
+        +calculate_tds(income, frequency)
+        +calculate_advance_tax(income, quarter)
+        +calculate_hra_exemption(basic, hra, rent, city)
+    }
+    
+    class TaxData {
+        -int user_id
+        -decimal income
+        -decimal new_regime_tax
+        -decimal old_regime_tax
+        -timestamp calculated_at
+        +save()
+        +load()
+    }
+    
+    %% Stock Analysis Classes
+    class StockAnalyzer {
+        -string api_key
+        -string api_url
+        +fetch_stock_data(symbol)
+        +process_stock_data(data)
+        +calculate_returns(prices)
+        +calculate_volatility(returns)
+        +perform_clustering(features)
+    }
+    
+    class StockData {
+        -string symbol
+        -date date
+        -decimal open
+        -decimal high
+        -decimal low
+        -decimal close
+        -decimal volume
+        -decimal return_rate
+        -decimal volatility
+        -int cluster
+    }
+    
+    %% Recommendation Classes
+    class ExpenditureProcessor {
+        +validate_csv(file)
+        +parse_csv(filepath)
+        +aggregate_by_category(data)
+        +aggregate_by_date(data)
+        +create_pivot_table(data)
+    }
+    
+    class ClusteringEngine {
+        -int n_clusters
+        -KMeans kmeans
+        +determine_optimal_k(data)
+        +perform_kmeans_clustering(data)
+        +perform_pca(data)
+        +calculate_cluster_profiles(clusters)
+    }
+    
+    class RecommendationGenerator {
+        +analyze_spending_patterns(data)
+        +check_category_thresholds(spending)
+        +compare_with_cluster_average(user, cluster)
+        +generate_budget_suggestions()
+        +create_personalized_messages()
+    }
+    
+    %% Financial Tools Classes
+    class SIPCalculator {
+        +validate_inputs(target, years, rate)
+        +calculate_monthly_rate(annual_rate)
+        +calculate_sip_amount(target, years, rate)
+    }
+    
+    class BudgetPlanner {
+        +apply_50_30_20_rule(income)
+        +calculate_needs(income)
+        +calculate_wants(income)
+        +calculate_savings(income)
+    }
+    
+    %% Data Access Classes
+    class Database {
+        +init_app(app)
+        +create_all()
+        +session
+    }
+    
+    class CSVManager {
+        +read_tax_history()
+        +write_tax_data(user_id, data)
+        +read_expenditure_data()
+        +write_expenditure_data(data)
+    }
+    
+    %% Route Classes (Blueprints)
+    class AuthRoutes {
+        +register()
+        +login()
+        +logout()
+    }
+    
+    class TaxRoutes {
+        +tax_home()
+        +calculate_tax()
+        +calculate_tds()
+        +calculate_hra()
+        +calculate_advance_tax()
+    }
+    
+    class StockRoutes {
+        +analyze_stock_page()
+        +get_clusters()
+    }
+    
+    class RecommendationRoutes {
+        +upload_expenditure()
+        +upload_page()
+    }
+    
+    class EducationRoutes {
+        +education_home()
+        +api_sip_goal()
+        +api_budget_advice()
+    }
+    
+    class MainRoutes {
+        +home()
+        +dashboard_stats()
+    }
+    
+    %% Application Class
+    class FlaskApp {
+        -Flask app
+        -dict config
+        +register_blueprint(blueprint)
+        +run(host, port)
+    }
+    
+    %% Relationships
+    FlaskApp --> AuthRoutes
+    FlaskApp --> TaxRoutes
+    FlaskApp --> StockRoutes
+    FlaskApp --> RecommendationRoutes
+    FlaskApp --> EducationRoutes
+    FlaskApp --> MainRoutes
+    FlaskApp --> Database
+    
+    AuthRoutes --> User
+    AuthRoutes --> Database
+    
+    TaxRoutes --> TaxCalculator
+    TaxRoutes --> TaxData
+    TaxRoutes --> CSVManager
+    
+    StockRoutes --> StockAnalyzer
+    StockRoutes --> StockData
+    
+    RecommendationRoutes --> ExpenditureProcessor
+    RecommendationRoutes --> ClusteringEngine
+    RecommendationRoutes --> RecommendationGenerator
+    RecommendationRoutes --> CSVManager
+    
+    EducationRoutes --> SIPCalculator
+    EducationRoutes --> BudgetPlanner
+    
+    TaxCalculator --> TaxData
+    StockAnalyzer --> StockData
+    ExpenditureProcessor --> ClusteringEngine
+    ClusteringEngine --> RecommendationGenerator
+    
+    TaxData --> CSVManager
+    RecommendationGenerator --> CSVManager
+    
+    User --> Database

@@ -1,0 +1,535 @@
+{% extends 'base.html' %}
+{% block title %}Union Budget 2026 - Youth & Student Benefits | Fintelligent{% endblock %}
+
+{% block content %}
+<style>
+    .budget-hero {
+        background: linear-gradient(135deg, #ff9933 0%, #ffffff 50%, #138808 100%);
+        padding: 0.5rem;
+        border-radius: 20px;
+        margin-bottom: 3rem;
+    }
+
+    .budget-hero-inner {
+        background: var(--bg-body);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+
+    .benefit-card {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .benefit-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(59, 130, 246, 0.4);
+        box-shadow: 0 12px 40px rgba(59, 130, 246, 0.2);
+    }
+
+    .benefit-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2rem;
+    }
+
+    .stat-highlight {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+
+    .category-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="budget-hero animate-rise">
+    <div class="budget-hero-inner">
+        <div
+            style="display: inline-block; padding: 0.5rem 1.5rem; background: rgba(255, 153, 51, 0.1); border: 1px solid rgba(255, 153, 51, 0.3); border-radius: 20px; margin-bottom: 1.5rem;">
+            <span style="color: #ff9933; font-weight: 700; font-size: 0.9rem;">🇮🇳 UNION BUDGET 2026-27</span>
+        </div>
+        <h1
+            style="font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 1rem; color: var(--text-main);">
+            Empowering India's Youth
+        </h1>
+        <p style="color: var(--text-muted); font-size: 1.3rem; max-width: 800px; margin: 0 auto 2rem;">
+            A comprehensive guide to all the benefits, schemes, and opportunities announced for students, youth, and
+            content creators
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <div
+                style="background: rgba(59, 130, 246, 0.1); padding: 1rem 2rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                <div style="font-size: 2rem; font-weight: 800; color: #3b82f6;">₹1.39L Cr</div>
+                <div style="color: var(--text-muted); font-size: 0.9rem;">Education Budget</div>
+            </div>
+            <div
+                style="background: rgba(16, 185, 129, 0.1); padding: 1rem 2rem; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                <div style="font-size: 2rem; font-weight: 800; color: #10b981;">15,000+</div>
+                <div style="color: var(--text-muted); font-size: 0.9rem;">AVGC Creator Labs</div>
+            </div>
+            <div
+                style="background: rgba(245, 158, 11, 0.1); padding: 1rem 2rem; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                <div style="font-size: 2rem; font-weight: 800; color: #f59e0b;">₹9,800 Cr</div>
+                <div style="color: var(--text-muted); font-size: 0.9rem;">Skill Development</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Navigation -->
+<div style="display: flex; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap; justify-content: center;">
+    <a href="#students"
+        style="padding: 0.75rem 1.5rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 20px; color: #3b82f6; font-weight: 600; transition: all 0.3s ease;">
+        📚 For Students
+    </a>
+    <a href="#creators"
+        style="padding: 0.75rem 1.5rem; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 20px; color: #f59e0b; font-weight: 600; transition: all 0.3s ease;">
+        🎨 For Creators
+    </a>
+    <a href="#skills"
+        style="padding: 0.75rem 1.5rem; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 20px; color: #10b981; font-weight: 600; transition: all 0.3s ease;">
+        💼 Skills & Jobs
+    </a>
+    <a href="#infrastructure"
+        style="padding: 0.75rem 1.5rem; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 20px; color: #8b5cf6; font-weight: 600; transition: all 0.3s ease;">
+        🏗️ Infrastructure
+    </a>
+</div>
+
+<!-- Students Section -->
+<div id="students" class="animate-rise" style="margin-bottom: 4rem;">
+    <h2
+        style="font-size: 2.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem;">
+        <i class="fa-solid fa-graduation-cap" style="color: #3b82f6;"></i>
+        Benefits for Students
+    </h2>
+    <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">
+        Major financial relief and educational opportunities for Indian students
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+        <!-- Overseas Education Tax Relief -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(59, 130, 246, 0.1);">
+                <i class="fa-solid fa-plane-departure" style="color: #3b82f6;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">TAX RELIEF</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Overseas Education Made
+                Affordable</h3>
+            <div class="stat-highlight">5% → 2%</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">TCS rate reduced from 5% to 2% on overseas
+                education remittances</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Complete TCS waiver on education loans (Section 80E)</li>
+                <li>Self-funded exemption increased from ₹7L to ₹10L</li>
+                <li>Saves thousands in upfront costs</li>
+            </ul>
+        </div>
+
+        <!-- Girls' Hostels -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(236, 72, 153, 0.1);">
+                <i class="fa-solid fa-building" style="color: #ec4899;"></i>
+            </div>
+            <span class="category-badge"
+                style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">INFRASTRUCTURE</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Girls' Hostels in Every
+                District</h3>
+            <div class="stat-highlight">750+</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">One girls' hostel in every district across India
+            </p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Improved access to higher education for women</li>
+                <li>Focus on STEM participation</li>
+                <li>Safe, affordable accommodation</li>
+            </ul>
+        </div>
+
+        <!-- University Townships -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(139, 92, 246, 0.1);">
+                <i class="fa-solid fa-city" style="color: #8b5cf6;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">NEW
+                CAMPUSES</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">5 University Townships</h3>
+            <div class="stat-highlight">5 Zones</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Planned academic zones near industrial corridors
+            </p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Diverse educational ecosystems</li>
+                <li>Industry-academia collaboration</li>
+                <li>World-class infrastructure</li>
+            </ul>
+        </div>
+
+        <!-- Healthcare Training -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(16, 185, 129, 0.1);">
+                <i class="fa-solid fa-user-doctor" style="color: #10b981;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">HEALTHCARE</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Allied Health Professionals
+                Training</h3>
+            <div class="stat-highlight">1 Lakh</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Training opportunities in healthcare sector</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Supported by higher education institutions</li>
+                <li>Addresses healthcare workforce shortage</li>
+                <li>Guaranteed job opportunities</li>
+            </ul>
+        </div>
+
+        <!-- Pharmaceutical Education -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(20, 184, 166, 0.1);">
+                <i class="fa-solid fa-flask" style="color: #14b8a6;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(20, 184, 166, 0.1); color: #14b8a6;">PHARMA</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">NIPERs Expansion</h3>
+            <div class="stat-highlight">3 New + 7 Upgraded</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">National Institutes of Pharmaceutical Education
+            </p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Boost to biopharma sector</li>
+                <li>Research opportunities</li>
+                <li>Industry-ready skills</li>
+            </ul>
+        </div>
+
+        <!-- Design Education -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(245, 158, 11, 0.1);">
+                <i class="fa-solid fa-palette" style="color: #f59e0b;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">DESIGN</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">National Institute of Design
+            </h3>
+            <div class="stat-highlight">Eastern India</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">New NID campus in Eastern India</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>World-class design education</li>
+                <li>Regional talent development</li>
+                <li>Creative industry boost</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Content Creators Section -->
+<div id="creators" class="animate-rise" style="margin-bottom: 4rem;">
+    <h2
+        style="font-size: 2.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem;">
+        <i class="fa-solid fa-video" style="color: #f59e0b;"></i>
+        Orange Economy: Content Creators
+    </h2>
+    <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">
+        Historic recognition and support for India's booming creator economy
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+        <!-- AVGC Labs -->
+        <div class="benefit-card animate-rise" style="border-left: 4px solid #f59e0b;">
+            <div class="benefit-icon" style="background: rgba(245, 158, 11, 0.1);">
+                <i class="fa-solid fa-gamepad" style="color: #f59e0b;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">GAME
+                CHANGER</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">AVGC Content Creator Labs</h3>
+            <div class="stat-highlight">15,500 Labs</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Animation, VFX, Gaming & Comics labs across India
+            </p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li><strong>15,000 secondary schools</strong> + 500 colleges</li>
+                <li>₹250 crore allocation for talent development</li>
+                <li>Supported by IICT Mumbai</li>
+                <li>2 million professionals needed by 2030</li>
+            </ul>
+        </div>
+
+        <!-- Creator Economy Recognition -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(236, 72, 153, 0.1);">
+                <i class="fa-solid fa-star" style="color: #ec4899;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">FORMAL
+                RECOGNITION</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Strategic Growth Sector</h3>
+            <div class="stat-highlight">$350B → $1T</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Creator economy influence on consumer spending</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Government recognizes creator economy</li>
+                <li>Projected to exceed $1 trillion by 2030</li>
+                <li>Support for startups and innovation</li>
+            </ul>
+        </div>
+
+        <!-- Digital Infrastructure -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(59, 130, 246, 0.1);">
+                <i class="fa-solid fa-server" style="color: #3b82f6;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">TECH BOOST</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Digital Infrastructure</h3>
+            <div class="stat-highlight">Tax Holiday</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Cloud services tax holiday until 2047</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Reduced technology costs</li>
+                <li>Better data center capacity</li>
+                <li>Support for AI and SaaS platforms</li>
+            </ul>
+        </div>
+
+        <!-- IT Services Tax Reform -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(16, 185, 129, 0.1);">
+                <i class="fa-solid fa-code" style="color: #10b981;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">TAX REFORM</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">IT Services Rationalization
+            </h3>
+            <div class="stat-highlight">15.5%</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Common safe harbor margin for IT services</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Threshold increased: ₹300 Cr → ₹2,000 Cr</li>
+                <li>Covers software dev, ITeS, KPO, R&D</li>
+                <li>Simplified compliance</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Skills & Employment Section -->
+<div id="skills" class="animate-rise" style="margin-bottom: 4rem;">
+    <h2
+        style="font-size: 2.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem;">
+        <i class="fa-solid fa-briefcase" style="color: #10b981;"></i>
+        Skills & Employment
+    </h2>
+    <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">
+        Massive investment in making youth job-ready and employable
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+        <!-- PM SETU -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(16, 185, 129, 0.1);">
+                <i class="fa-solid fa-tools" style="color: #10b981;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">SKILL
+                UPGRADE</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">PM SETU Scheme</h3>
+            <div class="stat-highlight">₹6,140 Cr</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Modernizing Industrial Training Institutes</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Upgraded ITIs aligned with industry needs</li>
+                <li>Modern equipment and curriculum</li>
+                <li>Better job placement rates</li>
+            </ul>
+        </div>
+
+        <!-- PM Internship -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(59, 130, 246, 0.1);">
+                <i class="fa-solid fa-handshake" style="color: #3b82f6;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">INTERNSHIPS</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">PM Internship Scheme</h3>
+            <div class="stat-highlight">₹4,788 Cr</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Professional development opportunities</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Real-world work experience</li>
+                <li>Industry exposure</li>
+                <li>Skill enhancement</li>
+            </ul>
+        </div>
+
+        <!-- Education to Employment -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(139, 92, 246, 0.1);">
+                <i class="fa-solid fa-link" style="color: #8b5cf6;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">ALIGNMENT</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Education-to-Employment
+                Committee</h3>
+            <div class="stat-highlight">High-Powered</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Aligning education with job market needs</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Focus on services sector</li>
+                <li>Study AI impact on jobs</li>
+                <li>Curriculum modernization</li>
+            </ul>
+        </div>
+
+        <!-- Divyangjan Skills -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(245, 158, 11, 0.1);">
+                <i class="fa-solid fa-universal-access" style="color: #f59e0b;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">INCLUSIVE</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Divyangjan Kaushal Yojana</h3>
+            <div class="stat-highlight">IT, AVGC, Hospitality</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Skill development for differently-abled</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Specialized training programs</li>
+                <li>Equal opportunity employment</li>
+                <li>Inclusive growth</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Infrastructure & Innovation -->
+<div id="infrastructure" class="animate-rise" style="margin-bottom: 4rem;">
+    <h2
+        style="font-size: 2.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem;">
+        <i class="fa-solid fa-rocket" style="color: #8b5cf6;"></i>
+        Infrastructure & Innovation
+    </h2>
+    <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem;">
+        Building the future with cutting-edge technology and research
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+        <!-- Semiconductor Boost -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(139, 92, 246, 0.1);">
+                <i class="fa-solid fa-microchip" style="color: #8b5cf6;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">TECH</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Semiconductor Boost</h3>
+            <div class="stat-highlight">₹40,000 Cr</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">AI and semiconductor development</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Make in India initiative</li>
+                <li>Tech self-reliance</li>
+                <li>Job creation in tech sector</li>
+            </ul>
+        </div>
+
+        <!-- Data Centers -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(59, 130, 246, 0.1);">
+                <i class="fa-solid fa-database" style="color: #3b82f6;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">DIGITAL</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Data Center Setup</h3>
+            <div class="stat-highlight">₹10,000 Cr</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Allocation for data center infrastructure</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Tax holiday until 2047</li>
+                <li>Global hub for digital services</li>
+                <li>Reduced cloud costs</li>
+            </ul>
+        </div>
+
+        <!-- Quantum Mission -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(236, 72, 153, 0.1);">
+                <i class="fa-solid fa-atom" style="color: #ec4899;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(236, 72, 153, 0.1); color: #ec4899;">RESEARCH</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">National Quantum Mission</h3>
+            <div class="stat-highlight">₹900 Cr</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Increased allocation for quantum research</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Cutting-edge research opportunities</li>
+                <li>Future technology leadership</li>
+                <li>Global competitiveness</li>
+            </ul>
+        </div>
+
+        <!-- Astronomy Infrastructure -->
+        <div class="benefit-card animate-rise">
+            <div class="benefit-icon" style="background: rgba(16, 185, 129, 0.1);">
+                <i class="fa-solid fa-satellite-dish" style="color: #10b981;"></i>
+            </div>
+            <span class="category-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">SPACE</span>
+            <h3 style="color: var(--text-main); margin-bottom: 1rem; font-size: 1.5rem;">Planetary Sciences</h3>
+            <div class="stat-highlight">New Telescopes</div>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">Telescope infrastructure for research</p>
+            <ul style="color: var(--text-muted); line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                <li>Astrophysics research</li>
+                <li>Astronomy education</li>
+                <li>Scientific innovation</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Key Takeaways -->
+<div class="card-ui animate-rise"
+    style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border: 2px solid rgba(59, 130, 246, 0.3); padding: 3rem; text-align: center;">
+    <h2 style="font-size: 2rem; font-weight: 700; color: var(--text-main); margin-bottom: 1.5rem;">
+        <i class="fa-solid fa-lightbulb" style="color: #fbbf24;"></i>
+        Key Takeaways
+    </h2>
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem;">
+        <div>
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎓</div>
+            <h4 style="color: var(--text-main); margin-bottom: 0.5rem;">Education First</h4>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">₹1.39 lakh crore investment in education
+                infrastructure</p>
+        </div>
+        <div>
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💰</div>
+            <h4 style="color: var(--text-main); margin-bottom: 0.5rem;">Tax Relief</h4>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Significant savings for students studying abroad</p>
+        </div>
+        <div>
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎨</div>
+            <h4 style="color: var(--text-main); margin-bottom: 0.5rem;">Creator Economy</h4>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">15,500 AVGC labs to nurture creative talent</p>
+        </div>
+        <div>
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">💼</div>
+            <h4 style="color: var(--text-main); margin-bottom: 0.5rem;">Skills & Jobs</h4>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">₹9,800 crore for skill development and employability
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div
+    style="text-align: center; margin-top: 4rem; padding: 3rem; background: rgba(30, 41, 59, 0.4); border-radius: 20px;">
+    <h3 style="color: var(--text-main); font-size: 2rem; margin-bottom: 1rem;">Ready to Leverage These Benefits?</h3>
+    <p
+        style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+        Use Fintelligent to track your finances, plan your education expenses, and make the most of these opportunities
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/dashboard" class="btn-primary-ui" style="font-size: 1.1rem; padding: 1rem 2rem;">
+            <i class="fa-solid fa-gauge-high"></i> Go to Dashboard
+        </a>
+        <a href="/tax" class="btn-primary-ui"
+            style="font-size: 1.1rem; padding: 1rem 2rem; background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <i class="fa-solid fa-calculator"></i> Tax Calculator
+        </a>
+    </div>
+</div>
+
+{% endblock %}

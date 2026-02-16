@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}Register - Fintelligent{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+    <div class="card-ui animate-rise" style="padding: 40px; width: 100%; max-width: 450px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div style="font-size: 3em; margin-bottom: 10px;">🚀</div>
+            <h2 style="margin: 0; color: var(--ink); font-weight: 700;">Create Account</h2>
+            <p style="color: #666; margin: 10px 0 0 0;">Join Fintelligent today</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div
+            style="background: #fee2e2; color: #dc2626; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fecaca; font-size: 0.9em; text-align: center;">
+            <i class="fa-solid fa-circle-exclamation"></i> {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="post" action="{{ url_for('auth.register') }}" onsubmit="return validateForm()">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; color: var(--ink); font-weight: 500;">Username</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-user"
+                        style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                    <input type="text" name="username" class="input-ui"
+                        style="width: 100%; padding-left: 45px; box-sizing: border-box;" required
+                        placeholder="Choose a username" minlength="3">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 8px; color: var(--ink); font-weight: 500;">Password</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-lock"
+                        style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                    <input type="password" id="password" name="password" class="input-ui"
+                        style="width: 100%; padding-left: 45px; box-sizing: border-box;" required
+                        placeholder="Create a password" minlength="4">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 8px; color: var(--ink); font-weight: 500;">Confirm
+                    Password</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-check-double"
+                        style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                    <input type="password" id="confirm_password" name="confirm_password" class="input-ui"
+                        style="width: 100%; padding-left: 45px; box-sizing: border-box;" required
+                        placeholder="Confirm your password">
+                </div>
+                <div id="password-error" style="color: #dc2626; font-size: 0.85em; margin-top: 6px; display: none;">
+                    Passwords do not match</div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 8px; color: var(--ink); font-weight: 500;">Referral Code
+                    <span style="color: #9ca3af; font-weight: 400;">(Optional)</span></label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-ticket"
+                        style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                    <input type="text" name="referral_code" class="input-ui"
+                        style="width: 100%; padding-left: 45px; box-sizing: border-box;"
+                        placeholder="Enter code if you have one">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary-ui"
+                style="width: 100%; justify-content: center; font-size: 1.05em;">
+                Create Account <i class="fa-solid fa-user-plus" style="margin-left: 8px;"></i>
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 25px; pt-4; border-top: 1px solid #eee; padding-top: 20px;">
+            <p style="color: #666; font-size: 0.95em; margin: 0;">
+                Already have an account?
+                <a href="{{ url_for('auth.login') }}"
+                    style="color: var(--brand); font-weight: 600; text-decoration: none;">Login Here</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("confirm_password").value;
+        var errorMsg = document.getElementById("password-error");
+
+        if (password != confirmPassword) {
+            errorMsg.style.display = "block";
+            return false;
+        } else {
+            errorMsg.style.display = "none";
+            return true;
+        }
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function () {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function (alert) {
+            alert.style.opacity = '0';
+            setTimeout(function () {
+                alert.style.display = 'none';
+            }, 500);
+        });
+    }, 5000);
+</script>
+{% endblock %}

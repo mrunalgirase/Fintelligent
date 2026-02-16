@@ -1,0 +1,148 @@
+user_id,date,category,amount,merchant,payment_method,location,notes,user_income
+1,2024-06-01,groceries,120,BigBazaar,UPI,Mumbai,"monthly groceries",5000
+1,2024-06-02,dining,45,Dominos,Credit Card,Mumbai,"pizza night",5000
+1,2024-06-03,utilities,80,TataPower,NetBanking,Mumbai,"electricity bill",5000
+1,2024-06-04,entertainment,60,PVR,Debit Card,Mumbai,"movie night",5000
+1,2024-06-05,groceries,135,SuperMart,Cash,Mumbai,"fruits and veggies",6000
+1,2024-06-06,dining,140,McDonalds,UPI,Mumbai,"lunch out",6000
+1,2024-06-07,utilities,75,MTNL,Credit Card,Mumbai,"phone bill",6000
+1,2024-06-08,entertainment,90,PVR,Debit Card,Mumbai,"concert",6000
+1,2024-06-09,groceries,110,BigBazaar,UPI,Mumbai,,6000
+1,2024-06-10,dining,55,Subway,Cash,Mumbai,"dinner",6000
+1,2024-06-11,utilities,70,TataPower,NetBanking,Mumbai,,6000
+1,2024-06-12,entertainment,100,PVR,Debit Card,Mumbai,"comedy show",6000
+1,2024-06-13,groceries,125,SuperMart,Cash,Mumbai,"fruits",6000
+1,2024-06-14,dining,65,Dominos,Credit Card,Mumbai,,6000
+1,2024-06-15,utilities,85,MTNL,UPI,Mumbai,,6000
+1,2024-06-16,entertainment,80,PVR,NetBanking,Mumbai,,6000
+1,2024-06-17,groceries,130,BigBazaar,UPI,Mumbai,,6000
+1,2024-06-18,dining,70,Dominos,Debit Card,Mumbai,"takeout",6000
+1,2024-06-19,utilities,75,TataPower,Cash,Mumbai,,6000
+1,2024-06-20,entertainment,105,PVR,NetBanking,Mumbai,,6000
+1,2024-06-21,groceries,115,SuperMart,UPI,Mumbai,,6000
+1,2024-06-22,dining,60,KFC,Cash,Mumbai,"family dinner",6000
+1,2024-06-23,utilities,72,MTNL,Credit Card,Mumbai,,6000
+1,2024-06-24,entertainment,110,PVR,Debit Card,Mumbai,,6000
+1,2024-06-25,groceries,118,BigBazaar,UPI,Mumbai,"monthly topup",6000
+1,2024-06-26,dining,67,Dominos,Credit Card,Mumbai,,6000
+1,2024-06-27,utilities,80,TataPower,NetBanking,Mumbai,"electricity bill",6000
+1,2024-06-28,entertainment,95,PVR,Debit Card,Mumbai,"play",6000
+1,2024-06-29,groceries,128,SuperMart,Cash,Mumbai,,6000
+1,2024-06-30,dining,75,Dominos,UPI,Mumbai,,6000
+1,2024-07-01,utilities,77,MTNL,Credit Card,Mumbai,,6000
+1,2024-07-02,entertainment,115,PVR,Debit Card,Mumbai,,6000
+1,2024-07-03,groceries,122,BigBazaar,Cash,Mumbai,,6000
+1,2024-07-04,dining,69,Subway,UPI,Mumbai,,6000
+1,2024-07-05,utilities,73,TataPower,NetBanking,Mumbai,,6000
+1,2024-07-06,entertainment,90,PVR,Debit Card,Mumbai,,6000
+1,2024-07-07,groceries,117,SuperMart,Cash,Mumbai,,6000
+1,2024-07-08,dining,72,KFC,Credit Card,Mumbai,,6000
+1,2024-07-09,utilities,79,MTNL,UPI,Mumbai,"internet",6000
+1,2024-07-10,entertainment,98,PVR,Debit Card,Mumbai,,6000
+1,2024-07-11,groceries,129,BigBazaar,UPI,Mumbai,,6000
+1,2024-07-12,dining,65,Dominos,Debit Card,Mumbai,,6000
+1,2024-07-13,utilities,81,TataPower,Credit Card,Mumbai,,6000
+1,2024-07-14,entertainment,102,PVR,NetBanking,Mumbai,,6000
+1,2024-07-15,groceries,134,SuperMart,UPI,Mumbai,,6000
+1,2024-07-16,dining,68,Subway,Cash,Mumbai,,6000
+1,2024-07-17,utilities,76,MTNL,Credit Card,Mumbai,,6000
+1,2024-07-18,entertainment,104,PVR,Debit Card,Mumbai,,6000
+1,2024-07-19,groceries,121,BigBazaar,UPI,Mumbai,,6000
+2,2024-06-01,groceries,100,Foodies,UPI,Pune,"weekly groceries",7000
+2,2024-06-02,utilities,70,MSEB,NetBanking,Pune,"electricity",7000
+2,2024-06-03,entertainment,90,INOX,Credit Card,Pune,"movie",7000
+2,2024-06-04,dining,50,Foodies,Debit Card,Pune,"lunch",7000
+2,2024-06-05,groceries,145,Foodies,UPI,Pune,"fruits and snacks",7000
+2,2024-06-06,dining,150,BurgerKing,Credit Card,Pune,"birthday treat",7000
+2,2024-06-07,utilities,80,MSEB,NetBanking,Pune,,7000
+2,2024-06-08,entertainment,110,INOX,Debit Card,Pune,,7000
+2,2024-06-09,groceries,105,StarMarket,Cash,Pune,,7000
+2,2024-06-10,dining,48,Foodies,UPI,Pune,"snack",7000
+2,2024-06-11,utilities,78,MSEB,Credit Card,Pune,,7000
+2,2024-06-12,entertainment,95,INOX,NetBanking,Pune,,7000
+2,2024-06-13,groceries,120,StarMarket,Cash,Pune,,7000
+2,2024-06-14,dining,70,BurgerKing,Debit Card,Pune,,7000
+2,2024-06-15,utilities,72,MSEB,UPI,Pune,,7000
+2,2024-06-16,entertainment,100,INOX,Credit Card,Pune,,7000
+2,2024-06-17,groceries,115,Foodies,Cash,Pune,,7000
+2,2024-06-18,dining,66,Foodies,UPI,Pune,,7000
+2,2024-06-19,utilities,95,MSEB,NetBanking,Pune,,7000
+2,2024-06-20,entertainment,104,INOX,Credit Card,Pune,,7000
+2,2024-06-21,groceries,130,StarMarket,UPI,Pune,,7000
+2,2024-06-22,dining,54,Foodies,Cash,Pune,"office lunch",7000
+2,2024-06-23,utilities,75,MSEB,NetBanking,Pune,,7000
+2,2024-06-24,entertainment,116,INOX,Debit Card,Pune,,7000
+2,2024-06-25,groceries,122,Foodies,UPI,Pune,,7000
+2,2024-06-26,dining,58,BurgerKing,Credit Card,Pune,,7000
+2,2024-06-27,utilities,70,MSEB,Debit Card,Pune,"mobile bill",7000
+2,2024-06-28,entertainment,94,INOX,UPI,Pune,"play",7000
+2,2024-06-29,groceries,128,StarMarket,Cash,Pune,,7000
+2,2024-06-30,dining,60,Foodies,UPI,Pune,,7000
+2,2024-07-01,utilities,80,MSEB,Debit Card,Pune,,7000
+2,2024-07-02,entertainment,120,INOX,Credit Card,Pune,,7000
+2,2024-07-03,groceries,109,StarMarket,NetBanking,Pune,,7000
+2,2024-07-04,dining,64,Foodies,Debit Card,Pune,,7000
+2,2024-07-05,utilities,87,MSEB,UPI,Pune,,7000
+2,2024-07-06,entertainment,111,INOX,Credit Card,Pune,,7000
+2,2024-07-07,groceries,99,Foodies,Cash,Pune,,7000
+2,2024-07-08,dining,75,BurgerKing,NetBanking,Pune,,7000
+2,2024-07-09,utilities,73,MSEB,Debit Card,Pune,,7000
+2,2024-07-10,entertainment,105,INOX,UPI,Pune,,7000
+2,2024-07-11,groceries,110,StarMarket,Debit Card,Pune,,7000
+2,2024-07-12,dining,61,Foodies,UPI,Pune,"snacks",7000
+2,2024-07-13,utilities,92,MSEB,Credit Card,Pune,,7000
+2,2024-07-14,entertainment,100,INOX,Debit Card,Pune,,7000
+2,2024-07-15,groceries,126,Foodies,Cash,Pune,,7000
+2,2024-07-16,dining,68,BurgerKing,NetBanking,Pune,,7000
+2,2024-07-17,utilities,80,MSEB,UPI,Pune,,7000
+2,2024-07-18,entertainment,103,INOX,Credit Card,Pune,,7000
+2,2024-07-19,groceries,120,StarMarket,Cash,Pune,,7000
+3,2024-06-01,groceries,150,QuickShop,Credit Card,Delhi,"first day shopping",8000
+3,2024-06-02,utilities,60,NDPL,NetBanking,Delhi,"electricity",8000
+3,2024-06-03,entertainment,40,Cinepolis,Debit Card,Delhi,"concert",8000
+3,2024-06-04,dining,30,KFC,Cash,Delhi,"street food",8000
+3,2024-06-05,groceries,155,QuickShop,Credit Card,Delhi,"groceries",8000
+3,2024-06-06,dining,160,KFC,Debit Card,Delhi,"lunch",8000
+3,2024-06-07,utilities,63,NDPL,NetBanking,Delhi,,8000
+3,2024-06-08,entertainment,105,Cinepolis,UPI,Delhi,,8000
+3,2024-06-09,groceries,142,RelianceFresh,Cash,Delhi,,8000
+3,2024-06-10,dining,50,QuickShop,UPI,Delhi,"brunch",8000
+3,2024-06-11,utilities,69,NDPL,Credit Card,Delhi,,8000
+3,2024-06-12,entertainment,92,Cinepolis,Debit Card,Delhi,,8000
+3,2024-06-13,groceries,148,RelianceFresh,Cash,Delhi,,8000
+3,2024-06-14,dining,55,KFC,Debit Card,Delhi,,8000
+3,2024-06-15,utilities,74,NDPL,NetBanking,Delhi,,8000
+3,2024-06-16,entertainment,89,Cinepolis,UPI,Delhi,,8000
+3,2024-06-17,groceries,140,QuickShop,Credit Card,Delhi,,8000
+3,2024-06-18,dining,60,KFC,Debit Card,Delhi,,8000
+3,2024-06-19,utilities,65,NDPL,Cash,Delhi,,8000
+3,2024-06-20,entertainment,110,Cinepolis,Debit Card,Delhi,"theatre",8000
+3,2024-06-21,groceries,136,QuickShop,UPI,Delhi,"baking",8000
+3,2024-06-22,dining,67,KFC,Credit Card,Delhi,,8000
+3,2024-06-23,utilities,72,NDPL,NetBanking,Delhi,,8000
+3,2024-06-24,entertainment,97,Cinepolis,UPI,Delhi,,8000
+3,2024-06-25,groceries,152,RelianceFresh,Cash,Delhi,,8000
+3,2024-06-26,dining,58,QuickShop,Debit Card,Delhi,"lunch",8000
+3,2024-06-27,utilities,78,NDPL,Credit Card,Delhi,"water bill",8000
+3,2024-06-28,entertainment,100,Cinepolis,Cash,Delhi,,8000
+3,2024-06-29,groceries,145,RelianceFresh,Credit Card,Delhi,,8000
+3,2024-06-30,dining,63,KFC,UPI,Delhi,,8000
+3,2024-07-01,utilities,71,NDPL,Debit Card,Delhi,"EB bill",8000
+3,2024-07-02,entertainment,108,Cinepolis,NetBanking,Delhi,,8000
+3,2024-07-03,groceries,153,QuickShop,Cash,Delhi,,8000
+3,2024-07-04,dining,65,RelianceFresh,UPI,Delhi,,8000
+3,2024-07-05,utilities,68,NDPL,Debit Card,Delhi,,8000
+3,2024-07-06,entertainment,92,Cinepolis,Debit Card,Delhi,,8000
+3,2024-07-07,groceries,150,QuickShop,Credit Card,Delhi,,8000
+3,2024-07-08,dining,70,KFC,NetBanking,Delhi,,8000
+3,2024-07-09,utilities,75,NDPL,UPI,Delhi,"internet",8000
+3,2024-07-10,entertainment,103,Cinepolis,Cash,Delhi,,8000
+3,2024-07-11,groceries,145,RelianceFresh,Debit Card,Delhi,,8000
+3,2024-07-12,dining,59,KFC,Debit Card,Delhi,,8000
+3,2024-07-13,utilities,80,NDPL,Credit Card,Delhi,,8000
+3,2024-07-14,entertainment,99,Cinepolis,UPI,Delhi,,8000
+3,2024-07-15,groceries,138,QuickShop,Cash,Delhi,,8000
+3,2024-07-16,dining,64,RelianceFresh,Debit Card,Delhi,"snacks",8000
+3,2024-07-17,utilities,68,NDPL,UPI,Delhi,,8000
+3,2024-07-18,entertainment,109,Cinepolis,Cash,Delhi,,8000
+3,2024-07-19,groceries,147,QuickShop,NetBanking,Delhi,,8000

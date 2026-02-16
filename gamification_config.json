@@ -1,0 +1,383 @@
+{
+    "system_meta": {
+        "version": "1.2",
+        "target_audience": "Indian students and young professionals",
+        "currency": "INR",
+        "goals": [
+            "Build daily financial habits",
+            "Reduce fear around budgeting",
+            "Encourage consistency",
+            "Promote student savings"
+        ]
+    },
+    "badges": [
+        {
+            "id": "badge_001",
+            "name": "First Month Budgeted",
+            "description": "Completed 30 full days of expense tracking.",
+            "behavioral_benefit": "Builds the foundational habit of awareness.",
+            "condition": {
+                "type": "streak",
+                "metric": "daily_login_and_log",
+                "count": 30
+            },
+            "icon": "🗓️",
+            "tier": "Bronze"
+        },
+        {
+            "id": "badge_002",
+            "name": "No-Spend Week",
+            "description": "7 consecutive days with zero discretionary spending.",
+            "behavioral_benefit": "Teaches impulse control and delayed gratification.",
+            "condition": {
+                "type": "streak",
+                "metric": "zero_discretionary_spend",
+                "count": 7
+            },
+            "icon": "🛑",
+            "tier": "Silver"
+        },
+        {
+            "id": "badge_003",
+            "name": "Saver Streak",
+            "description": "Saved money consistent for 5+ consecutive weeks.",
+            "behavioral_benefit": "Reinforces consistency over intensity.",
+            "condition": {
+                "type": "streak",
+                "metric": "weekly_savings_deposit",
+                "count": 5
+            },
+            "icon": "🐷",
+            "tier": "Gold"
+        },
+        {
+            "id": "badge_004",
+            "name": "Expense Aware",
+            "description": "Logged expenses everyday for 14 days.",
+            "behavioral_benefit": "Development of daily mindfulness regarding money.",
+            "condition": {
+                "type": "streak",
+                "metric": "daily_expense_log",
+                "count": 14
+            },
+            "icon": "👁️",
+            "tier": "Bronze"
+        },
+        {
+            "id": "badge_005",
+            "name": "Chai-Coffee Controller",
+            "description": "Reduced cafe spending by 20% compared to last month.",
+            "behavioral_benefit": "High-frequency small expense optimization.",
+            "condition": {
+                "type": "reduction",
+                "category": "dining_out",
+                "percent": 20
+            },
+            "icon": "☕",
+            "tier": "Silver"
+        },
+        {
+            "id": "badge_006",
+            "name": "Master Negotiator",
+            "description": "Saved ₹500+ cumulatively through street bargaining.",
+            "behavioral_benefit": "Encourages vocalizing value and efficient spending.",
+            "condition": {
+                "type": "cumulative",
+                "metric": "bargain_savings",
+                "count": 500
+            },
+            "icon": "🗣️",
+            "tier": "Silver"
+        },
+        {
+            "id": "badge_007",
+            "name": "Public Transport Hero",
+            "description": "Saved ₹1000 by choosing Bus/Metro over Cabs.",
+            "behavioral_benefit": "Promotes cost-effective and eco-friendly transport.",
+            "condition": {
+                "type": "cumulative",
+                "metric": "transport_savings",
+                "count": 1000
+            },
+            "icon": "🚌",
+            "tier": "Gold"
+        },
+        {
+            "id": "badge_homechef",
+            "name": "Home Chef Pro",
+            "description": "Successfully completed a No-Zomato Week.",
+            "behavioral_benefit": "Reduces dependency on high-fee delivery apps.",
+            "condition": {
+                "type": "streak",
+                "metric": "zero_food_app_spend",
+                "count": 7
+            },
+            "icon": "🍳",
+            "tier": "Silver"
+        },
+        {
+            "id": "badge_bookworm",
+            "name": "Bookworm",
+            "description": "Visited the library/study hall 5 times.",
+            "behavioral_benefit": "Encourages study habits.",
+            "condition": {
+                "type": "streak",
+                "metric": "library_visits",
+                "count": 5
+            },
+            "icon": "📚",
+            "tier": "Bronze"
+        },
+        {
+            "id": "badge_scholar",
+            "name": "Scholarship Scout",
+            "description": "Applied for a scholarship or grant.",
+            "behavioral_benefit": "Encourages seeking financial aid.",
+            "condition": {
+                "type": "one_time",
+                "metric": "scholarship_application",
+                "count": 1
+            },
+            "icon": "🎓",
+            "tier": "Gold"
+        },
+        {
+            "id": "badge_eco_student",
+            "name": "Eco-Student",
+            "description": "Saved by buying used books/materials.",
+            "behavioral_benefit": "Sustainable and frugal living.",
+            "condition": {
+                "type": "cumulative",
+                "metric": "used_book_savings",
+                "count": 500
+            },
+            "icon": "♻️",
+            "tier": "Silver"
+        }
+    ],
+    "levels": [
+        {
+            "level": 1,
+            "title": "Money Aware",
+            "entry_criteria": {
+                "xp_required": 0,
+                "action": "Sign up and log first expense"
+            },
+            "skills_learned": [
+                "Basic expense tracking",
+                "Categorization of spending",
+                "Daily mindfulness"
+            ],
+            "unlocks": [
+                "Basic Dashboard",
+                "Daily Tips",
+                "Standard Badges"
+            ]
+        },
+        {
+            "level": 2,
+            "title": "Smart Saver",
+            "entry_criteria": {
+                "xp_required": 500,
+                "badges_required": 2
+            },
+            "skills_learned": [
+                "Budgeting limits",
+                "Savings goals",
+                "Impulse control"
+            ],
+            "unlocks": [
+                "Savings Goal Tracker",
+                "Advanced Analytics",
+                "Custom Budget Alerts"
+            ]
+        },
+        {
+            "level": 3,
+            "title": "Early Investor",
+            "entry_criteria": {
+                "xp_required": 1500,
+                "badges_required": 5
+            },
+            "skills_learned": [
+                "Compound interest basics",
+                "Risk understanding",
+                "Portfolio diversification"
+            ],
+            "unlocks": [
+                "Investment Simulator",
+                "Market Insights Module",
+                "SIP Calculator"
+            ]
+        }
+    ],
+    "challenges": [
+        {
+            "id": "chal_001",
+            "title": "₹100/Day Challenge",
+            "description": "Limit your discretionary daily spending to just ₹100.",
+            "duration_days": 1,
+            "recurrence": "Weekly",
+            "input_type": "boolean",
+            "rules": [
+                "Groceries and bills excluded",
+                "Only counts discretionary spend (food, entertainment, travel)"
+            ],
+            "success_condition": "spend_discretionary <= 100",
+            "reward": {
+                "xp": 50,
+                "badge_id": null,
+                "streak_boost": 1
+            },
+            "audience": "Students"
+        },
+        {
+            "id": "chal_002",
+            "title": "No Zomato Week",
+            "description": "A full week of home-cooked meals only.",
+            "duration_days": 7,
+            "recurrence": "Monthly",
+            "input_type": "none",
+            "rules": [
+                "No transactions on Zomato, Swiggy, or similar apps",
+                "Dining out allowed max 1 time for social obligation"
+            ],
+            "success_condition": "food_app_spend == 0",
+            "reward": {
+                "xp": 200,
+                "badge_id": "badge_homechef",
+                "streak_boost": 0
+            },
+            "audience": "All"
+        },
+        {
+            "id": "chal_004",
+            "title": "Market Bargain Hunter",
+            "description": "Log your savings from street shopping negotiations.",
+            "duration_days": 30,
+            "recurrence": "Monthly",
+            "input_type": "saving_input",
+            "input_label": "Enter Amount Saved (₹)",
+            "input_placeholder": "e.g., Asked 500, Paid 400 = 100",
+            "rules": [
+                "Enter the difference between asking price and paid price",
+                "Be honest!"
+            ],
+            "success_condition": "cumulative_savings >= 500",
+            "reward": {
+                "xp": 100,
+                "badge_id": "badge_006",
+                "streak_boost": 0
+            },
+            "audience": "All"
+        },
+        {
+            "id": "chal_005",
+            "title": "Public Transport Hero",
+            "description": "Saved by taking Bus/Metro instead of Cab/Auto?",
+            "duration_days": 30,
+            "recurrence": "Monthly",
+            "input_type": "saving_input",
+            "input_label": "Enter Cab Fare Saved (₹)",
+            "input_placeholder": "e.g., Cab 300 - Metro 40 = 260",
+            "rules": [
+                "Calculate: Cab Fare (Estimated) - Actual Ticket Cost",
+                "Log it every time you commute"
+            ],
+            "success_condition": "cumulative_savings >= 1000",
+            "reward": {
+                "xp": 150,
+                "badge_id": "badge_007",
+                "streak_boost": 0
+            },
+            "audience": "Commuters"
+        },
+        {
+            "id": "chal_006",
+            "title": "Library Regular",
+            "description": "Visit the library or study hall 5 times this week.",
+            "duration_days": 7,
+            "recurrence": "Weekly",
+            "input_type": "boolean",
+            "rules": [
+                "Check in when you visit the library",
+                "Spend at least 1 hour"
+            ],
+            "success_condition": "checkins >= 5",
+            "reward": {
+                "xp": 100,
+                "badge_id": "badge_bookworm",
+                "streak_boost": 1
+            },
+            "audience": "Students"
+        },
+        {
+            "id": "chal_007",
+            "title": "Scholarship Hunter",
+            "description": "Apply for at least one scholarship or grant.",
+            "duration_days": 30,
+            "recurrence": "Yearly",
+            "input_type": "boolean",
+            "rules": [
+                "Find a scholarship applicable to you",
+                "Submit the application"
+            ],
+            "success_condition": "applied == true",
+            "reward": {
+                "xp": 300,
+                "badge_id": "badge_scholar",
+                "streak_boost": 0
+            },
+            "audience": "Students"
+        },
+        {
+            "id": "chal_008",
+            "title": "Used Book Champion",
+            "description": "Save money by buying used books or pdfs.",
+            "duration_days": 30,
+            "recurrence": "Monthly",
+            "input_type": "saving_input",
+            "input_label": "Enter Amount Saved (₹)",
+            "input_placeholder": "Difference from new book price",
+            "rules": [
+                "Compare with MRP of new book",
+                "Borrowing from seniors counts too!"
+            ],
+            "success_condition": "cumulative_savings >= 500",
+            "reward": {
+                "xp": 150,
+                "badge_id": "badge_eco_student",
+                "streak_boost": 0
+            },
+            "audience": "Students"
+        }
+    ],
+    "rewards_logic": {
+        "feedback_tone": "Friends, motivating, non-judgmental",
+        "messages": {
+            "streak_encouragement": [
+                "You're on fire! 🔥 3 days in a row!",
+                "Consistency is key, and you're nailing it! 🚀",
+                "Keep it up, money master in the making! 💪"
+            ],
+            "gentle_warnings": [
+                "Whoops, looks like we went a bit over budget. Easy to fix tomorrow! 🛠️",
+                "Choti si slip-up, koi baat nahi. Let's get back on track! 👍",
+                "Budget alert! Maybe cook dinner tonight? 🍳"
+            ],
+            "celebrations": [
+                "Party time! You hit your savings goal! 🎉",
+                "Waah! Level up! You're now a Smart Saver! 🎓",
+                "Badhai ho! New Badge Unlocked: Expense Aware! 🏆"
+            ]
+        },
+        "currency_symbol": "₹",
+        "xp_gain_actions": {
+            "log_expense": 10,
+            "review_weekly_report": 20,
+            "stay_under_budget_daily": 15,
+            "complete_challenge_easy": 50,
+            "complete_challenge_hard": 200
+        }
+    }
+}

@@ -1,0 +1,98 @@
+flowchart TD
+    Start([Stock Analysis Start])
+    ReceiveRequest[Receive GET Request<br/>/get_clusters?symbol=INFY]
+    GetSymbol[Get Symbol Parameter<br/>request.args.get symbol<br/>Default: INFY]
+    
+    BuildAPIURL[Build API URL<br/>alphavantage.co/query]
+    MakeRequest[Make HTTP Request<br/>requests.get]
+    
+    CheckResponse{API Response<br/>Valid?}
+    ReturnError1[Return Error 400<br/>API limit reached or<br/>invalid symbol]
+    
+    ParseJSON[Parse JSON Response]
+    ExtractTimeSeries[Extract Time Series<br/>Daily Data]
+    
+    ConvertToDF[Convert to DataFrame<br/>pd.DataFrame]
+    RenameColumns[Rename Columns<br/>1. open -> Open, etc.]
+    ConvertIndex[Convert Index to Datetime<br/>pd.to_datetime]
+    
+    CalcReturns[Calculate Returns<br/>df Close.pct_change]
+    CalcVolatility[Calculate Volatility<br/>df Return.rolling 20.std]
+    
+    PrepareFeatures[Prepare Features Array<br/>Return, Volatility]
+    DropNA[Drop NaN Values]
+    
+    CheckDataLength{Data Points<br/>>= 3?}
+    ReturnError2[Return Error 400<br/>Not enough data<br/>for clustering]
+    
+    NormalizeData[Normalize Data<br/>StandardScaler]
+    FitScaler[Fit Scaler]
+    TransformData[Transform Data]
+    
+    InitKMeans[Initialize K-Means<br/>n_clusters=3<br/>random_state=42]
+    FitKMeans[Fit K-Means Model<br/>kmeans.fit_predict]
+    AssignClusters[Assign Cluster Labels<br/>df Cluster = labels]
+    
+    SelectColumns[Select Columns<br/>Close, Return, Volatility, Cluster]
+    GetLast30[Get Last 30 Records<br/>tail 30]
+    ResetIndex[Reset Index]
+    RenameIndex[Rename index to Date]
+    
+    ConvertToDict[Convert to Dictionary<br/>to_dict orient records]
+    BuildResponse[Build JSON Response<br/>clusters, total_clusters]
+    ReturnJSON[Return JSON<br/>jsonify response]
+    
+    End([End])
+    
+    %% Flow
+    Start --> ReceiveRequest
+    ReceiveRequest --> GetSymbol
+    GetSymbol --> BuildAPIURL
+    BuildAPIURL --> MakeRequest
+    MakeRequest --> CheckResponse
+    
+    CheckResponse -->|Invalid| ReturnError1
+    CheckResponse -->|Valid| ParseJSON
+    
+    ParseJSON --> ExtractTimeSeries
+    ExtractTimeSeries --> ConvertToDF
+    ConvertToDF --> RenameColumns
+    RenameColumns --> ConvertIndex
+    ConvertIndex --> CalcReturns
+    CalcReturns --> CalcVolatility
+    CalcVolatility --> PrepareFeatures
+    PrepareFeatures --> DropNA
+    DropNA --> CheckDataLength
+    
+    CheckDataLength -->|No| ReturnError2
+    CheckDataLength -->|Yes| NormalizeData
+    
+    NormalizeData --> FitScaler
+    FitScaler --> TransformData
+    TransformData --> InitKMeans
+    InitKMeans --> FitKMeans
+    FitKMeans --> AssignClusters
+    AssignClusters --> SelectColumns
+    SelectColumns --> GetLast30
+    GetLast30 --> ResetIndex
+    ResetIndex --> RenameIndex
+    RenameIndex --> ConvertToDict
+    ConvertToDict --> BuildResponse
+    BuildResponse --> ReturnJSON
+    ReturnJSON --> End
+    
+    ReturnError1 --> End
+    ReturnError2 --> End
+    
+    %% Styling
+    classDef startEnd fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
+    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef decision fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef ml fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    
+    class Start,End startEnd
+    class ReceiveRequest,GetSymbol,BuildAPIURL,MakeRequest,ParseJSON,ExtractTimeSeries,ConvertToDF,RenameColumns,ConvertIndex,CalcReturns,CalcVolatility,PrepareFeatures,DropNA,SelectColumns,GetLast30,ResetIndex,RenameIndex,ConvertToDict,BuildResponse,ReturnJSON process
+    class CheckResponse,CheckDataLength decision
+    class ReturnError1,ReturnError2 error
+    class NormalizeData,FitScaler,TransformData,InitKMeans,FitKMeans,AssignClusters ml

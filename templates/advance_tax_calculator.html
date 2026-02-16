@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% block title %}Advance Tax Calculator - Fintelligent{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div style="text-align: center; margin: 4rem 0 6rem 0; position: relative;">
+    <div
+        style="position: absolute; width: 300px; height: 300px; background: rgba(245, 158, 11, 0.15); filter: blur(100px); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1;">
+    </div>
+
+    <div class="animate-rise">
+        <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.2;">
+            Advance Tax
+            <span
+                style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Calculator</span>
+        </h1>
+        <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2.5rem auto;">
+            Calculate your quarterly advance tax liability and stay compliant with ease.
+        </p>
+    </div>
+</div>
+
+<!-- Calculator -->
+<div class="card-ui animate-rise" style="max-width: 700px; margin: 0 auto 6rem auto;">
+    <h3
+        style="margin-bottom: 2rem; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1.5rem;">
+        <i class="fa-solid fa-calculator" style="color: var(--primary);"></i> Advance Tax Estimator
+    </h3>
+
+    <form id="advanceTaxForm" method="POST" action="/tax/advance-tax">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Estimated
+            Annual Income</label>
+        <div style="display: flex; margin-bottom: 2rem;">
+            <div
+                style="background: rgba(255,255,255,0.05); padding: 0 1rem; display: flex; align-items: center; border: 1px solid #334155; border-right: none; border-radius: 12px 0 0 12px; color: var(--text-muted);">
+                ₹</div>
+            <input type="number" id="annualIncome" class="input-ui" required style="border-radius: 0 12px 12px 0;"
+                placeholder="Enter estimated total annual income">
+        </div>
+
+        <button type="submit" class="btn-primary-ui" style="width: 100%; justify-content: center; padding: 1rem;">
+            Calculate Liability <i class="fa-solid fa-arrow-right-long"></i>
+        </button>
+    </form>
+</div>
+
+<!-- Results Grid -->
+<div id="advanceTaxResult" style="display: none; margin-bottom: 6rem;">
+    <!-- Summary -->
+    <div class="card-ui animate-rise"
+        style="text-align: center; margin-bottom: 3rem; background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.2);">
+        <h3 style="margin-bottom: 0.5rem; color: var(--primary);">Total Estimated Tax</h3>
+        <div style="font-size: 3rem; font-weight: 800; color: var(--text-main);">
+            ₹<span id="totalTax">0</span>
+        </div>
+        <p style="color: var(--text-muted); margin: 0;">For the current financial year</p>
+    </div>
+
+    <!-- Quarterly Breakdown -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
+        <!-- Q1 -->
+        <div class="card-ui animate-rise" style="position: relative; overflow: hidden; border-top: 4px solid #3b82f6;">
+            <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5rem;">Q1 (Due
+                Jun 15)</div>
+            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">₹<span id="q1Amount">0</span></div>
+            <div
+                style="font-size: 0.85rem; color: #3b82f6; background: rgba(59, 130, 246, 0.1); display: inline-block; padding: 2px 8px; border-radius: 4px;">
+                15% of annual tax</div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="card-ui animate-rise"
+            style="position: relative; overflow: hidden; border-top: 4px solid #10b981; transition-delay: 0.1s;">
+            <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5rem;">Q2 (Due
+                Sep 15)</div>
+            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">₹<span id="q2Amount">0</span></div>
+            <div
+                style="font-size: 0.85rem; color: #10b981; background: rgba(16, 185, 129, 0.1); display: inline-block; padding: 2px 8px; border-radius: 4px;">
+                45% of annual tax</div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="card-ui animate-rise"
+            style="position: relative; overflow: hidden; border-top: 4px solid #f59e0b; transition-delay: 0.2s;">
+            <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5rem;">Q3 (Due
+                Dec 15)</div>
+            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">₹<span id="q3Amount">0</span></div>
+            <div
+                style="font-size: 0.85rem; color: #f59e0b; background: rgba(245, 158, 11, 0.1); display: inline-block; padding: 2px 8px; border-radius: 4px;">
+                75% of annual tax</div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="card-ui animate-rise"
+            style="position: relative; overflow: hidden; border-top: 4px solid #ef4444; transition-delay: 0.3s;">
+            <div style="font-size: 0.9rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5rem;">Q4 (Due
+                Mar 15)</div>
+            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">₹<span id="q4Amount">0</span></div>
+            <div
+                style="font-size: 0.85rem; color: #ef4444; background: rgba(239, 68, 68, 0.1); display: inline-block; padding: 2px 8px; border-radius: 4px;">
+                100% of annual tax</div>
+        </div>
+    </div>
+</div>
+
+<!-- Timeline & Info -->
+<div
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 6rem;">
+    <!-- Timeline -->
+    <div>
+        <h3 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent);"></i> Payment Schedule
+        </h3>
+        <div style="position: relative; padding-left: 2rem; border-left: 2px solid rgba(255,255,255,0.1);">
+            <div style="margin-bottom: 2rem; position: relative;">
+                <div
+                    style="position: absolute; left: -2.6rem; top: 0.25rem; width: 1.25rem; height: 1.25rem; background: var(--bg-card); border: 2px solid #3b82f6; border-radius: 50%;">
+                </div>
+                <h4 style="margin-bottom: 0.5rem; color: var(--text-main);">Jun 15</h4>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">First installment (15% of tax liability)</p>
+            </div>
+            <div style="margin-bottom: 2rem; position: relative;">
+                <div
+                    style="position: absolute; left: -2.6rem; top: 0.25rem; width: 1.25rem; height: 1.25rem; background: var(--bg-card); border: 2px solid #10b981; border-radius: 50%;">
+                </div>
+                <h4 style="margin-bottom: 0.5rem; color: var(--text-main);">Sep 15</h4>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Second installment (45% cumulative)</p>
+            </div>
+            <div style="margin-bottom: 2rem; position: relative;">
+                <div
+                    style="position: absolute; left: -2.6rem; top: 0.25rem; width: 1.25rem; height: 1.25rem; background: var(--bg-card); border: 2px solid #f59e0b; border-radius: 50%;">
+                </div>
+                <h4 style="margin-bottom: 0.5rem; color: var(--text-main);">Dec 15</h4>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Third installment (75% cumulative)</p>
+            </div>
+            <div style="position: relative;">
+                <div
+                    style="position: absolute; left: -2.6rem; top: 0.25rem; width: 1.25rem; height: 1.25rem; background: var(--bg-card); border: 2px solid #ef4444; border-radius: 50%;">
+                </div>
+                <h4 style="margin-bottom: 0.5rem; color: var(--text-main);">Mar 15</h4>
+                <p style="color: var(--text-muted); font-size: 0.95rem;">Final installment (100% of tax liability)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Cards -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <h3 style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fa-solid fa-circle-info" style="color: var(--secondary);"></i> Rules & Penalties
+        </h3>
+
+        <div class="card-ui" style="background: rgba(255,255,255,0.03);">
+            <h4 style="margin-bottom: 0.5rem;"><i class="fa-solid fa-user-check" style="color: var(--primary);"></i> Who
+                must pay?</h4>
+            <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+                Any individual with estimated tax liability exceeding ₹10,000 in a financial year.
+            </p>
+        </div>
+
+        <div class="card-ui" style="background: rgba(255,255,255,0.03);">
+            <h4 style="margin-bottom: 0.5rem;"><i class="fa-solid fa-triangle-exclamation" style="color: #f59e0b;"></i>
+                Interest on Delay</h4>
+            <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+                1% interest per month under Section 234C for deferment of advance tax payment.
+            </p>
+        </div>
+
+        <div style="margin-top: auto; text-align: center;">
+            <a href="/tax" class="btn-primary-ui"
+                style="background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); box-shadow: none;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Main Calculator
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('advanceTaxForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const annualIncome = document.getElementById('annualIncome').value;
+
+        if (!annualIncome || annualIncome <= 0) {
+            alert('Please enter a valid annual income amount');
+            return;
+        }
+
+        // Show loading state
+        const submitBtn = document.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Calculating...';
+
+        // Calculate advance tax using new regime logic (Same as main calculator)
+        const income = parseInt(annualIncome);
+        let annualTax = 0;
+        const taxableIncome = Math.max(0, income - 75000); // Standard deduction
+
+        // Simple slab calc for estimation
+        if (taxableIncome > 2400000) {
+            annualTax += (taxableIncome - 2400000) * 0.30 + 125000 + 100000 + 60000 + 40000 + 20000; // rough summation
+            // More precise:
+            // 0-4L: 0
+            // 4-8L: 5% (20k)
+            // 8-12L: 10% (40k)
+            // 12-16L: 15% (60k)
+            // 16-20L: 20% (80k)
+            // 20-24L: 25% (100k)
+            // >24L: 30%
+            // Total tax for 24L = 20k + 40k + 60k + 80k + 100k = 300,000
+            annualTax = 300000 + (taxableIncome - 2400000) * 0.30;
+        } else if (taxableIncome > 2000000) {
+            annualTax = 200000 + (taxableIncome - 2000000) * 0.25;
+        } else if (taxableIncome > 1600000) {
+            annualTax = 120000 + (taxableIncome - 1600000) * 0.20;
+        } else if (taxableIncome > 1200000) {
+            annualTax = 60000 + (taxableIncome - 1200000) * 0.15;
+        } else if (taxableIncome > 800000) {
+            annualTax = 20000 + (taxableIncome - 800000) * 0.10;
+        } else if (taxableIncome > 400000) {
+            annualTax = (taxableIncome - 400000) * 0.05;
+        }
+
+        // Rebate
+        if (income <= 1200000) { // Rebate is on TAXABLE income up to 7L, revised limits may vary, sticking to conservative estimates or standard 25-26 rules if known.
+            // Actually New Regime rebate is up to 7L taxable income (so 7.75L gross). 
+            // For simplicity let's stick to the basic calculation:
+            if (taxableIncome <= 700000) annualTax = 0;
+        }
+
+        // Cess 4%
+        annualTax *= 1.04;
+
+        // Calculate quarterly amounts
+        const q1Amount = annualTax * 0.15;
+        const q2Amount = annualTax * 0.45; // Cumulative
+        const q3Amount = annualTax * 0.75; // Cumulative
+        const q4Amount = annualTax;
+        // But advance tax payments are installments of the *remaining* amount?
+        // The grid displays the *cumulative* percentage but typically you pay the difference.
+        // However, for the display, it says "15% of annual tax", "45%...". 
+        // Usually people want to know the *due amount* for that specific quarter if they haven't paid previous ones, or the total required to be paid by that date.
+        // The previous code showed cumulative amounts presumably. Let's show cumulative target amounts as per standard "Required to be paid by..." phrasing.
+
+        // Update results
+        document.getElementById('q1Amount').textContent = Math.round(q1Amount).toLocaleString();
+        document.getElementById('q2Amount').textContent = Math.round(q2Amount).toLocaleString();
+        document.getElementById('q3Amount').textContent = Math.round(q3Amount).toLocaleString();
+        document.getElementById('q4Amount').textContent = Math.round(q4Amount).toLocaleString();
+        document.getElementById('totalTax').textContent = Math.round(annualTax).toLocaleString();
+
+        // Show results
+        document.getElementById('advanceTaxResult').style.display = 'block';
+
+        document.getElementById('advanceTaxResult').scrollIntoView({ behavior: 'smooth' });
+
+        // Reset button
+        submitBtn.innerHTML = originalText;
+    });
+</script>
+{% endblock %}

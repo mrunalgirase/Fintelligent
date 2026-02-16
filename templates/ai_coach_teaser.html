@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}AI Financial Coach - Upgrade to Pro{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 40px auto; text-align: center;">
+    <div style="margin-bottom: 30px;">
+        <i class="fa-solid fa-robot" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px;"></i>
+        <h1
+            style="font-size: 2.5rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            Meet Your Personal AI Coach</h1>
+        <p style="color: var(--text-muted); font-size: 1.2rem; margin-top: 15px;">
+            Imagine a financial expert who knows your spending habits and guides you 24/7.
+        </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; text-align: left;">
+        <div class="card-ui" style="padding: 25px; border: 1px solid rgba(59, 130, 246, 0.2);">
+            <div style="color: var(--primary); font-size: 1.5rem; margin-bottom: 15px;">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <h3 style="color: var(--text-main); margin-bottom: 10px;">Predictive Alerts</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">"You've spent ₹500 more on Zomato this week than
+                usual. Want to skip today's order and save?"</p>
+        </div>
+        <div class="card-ui" style="padding: 25px; border: 1px solid rgba(16, 185, 129, 0.2);">
+            <div style="color: var(--secondary); font-size: 1.5rem; margin-bottom: 15px;">
+                <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <h3 style="color: var(--text-main); margin-bottom: 10px;">Goal Tracking</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">"You're ₹2,000 away from your goal of buying a new
+                phone. I can help you find where to save."</p>
+        </div>
+    </div>
+
+    <div class="card-ui"
+        style="padding: 40px; background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.6) 100%);">
+        <h2 style="color: var(--text-main); margin-bottom: 20px;">Unlock AI Coaching with Pro</h2>
+        <p style="color: var(--text-muted); margin-bottom: 30px;">
+            Get unlimited 24/7 access to the AI coach, personalized advice based on your data, and more.
+        </p>
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <a href="{{ url_for('main.pricing') }}" class="btn-primary-ui" style="padding: 12px 30px;">
+                <i class="fa-solid fa-crown"></i> Upgrade Now - ₹99/mo
+            </a>
+            <a href="{{ url_for('main.dashboard') }}"
+                style="color: var(--text-muted); text-decoration: none; padding: 12px 20px;">
+                Maybe Later
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

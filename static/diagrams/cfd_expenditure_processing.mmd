@@ -1,0 +1,195 @@
+flowchart TD
+    Start([Expenditure Processing Start])
+    ReceiveRequest[Receive POST Request<br/>/upload]
+    
+    CheckFile{File in<br/>Request?}
+    ReturnError1[Return Error<br/>No file part]
+    
+    CheckFilename{Filename<br/>Empty?}
+    ReturnError2[Return Error<br/>No selected file]
+    
+    SaveFile[Save File<br/>/tmp/filename]
+    ReadCSV[Read CSV File<br/>pd.read_csv]
+    
+    TryBlock[TRY Block]
+    
+    CheckColumns{Required Columns<br/>Present?<br/>user_id, category, amount}
+    ReturnError3[Return Error<br/>Missing required columns]
+    
+    AggregateCategory[Aggregate by Category<br/>groupby category sum amount]
+    AggregateDate[Aggregate by Date<br/>groupby date sum amount]
+    
+    CheckPaymentMethod{Payment Method<br/>Column Exists?}
+    AggregatePayment[Aggregate by Payment Method]
+    
+    CheckMerchant{Merchant<br/>Column Exists?}
+    AggregateMerchant[Aggregate by Merchant]
+    
+    CheckLocation{Location<br/>Column Exists?}
+    AggregateLocation[Aggregate by Location]
+    
+    CheckIncome{User Income<br/>Column Exists?}
+    CalcSpendIncome[Calculate Spend vs Income<br/>spend / income]
+    
+    CreatePivot[Create Pivot Table<br/>user_id × category × amount]
+    FillMissing[Fill Missing Values<br/>fill_value=0]
+    
+    CheckPivotLength{Pivot Rows<br/>> 1?}
+    SetK1[Set K = 1]
+    
+    DetermineK[Determine Optimal K<br/>Loop: k = 2 to min 6, len pivot]
+    CalcInertias[Calculate Inertias<br/>K-Means inertia]
+    FindElbow[Find Elbow Point<br/>Best K]
+    SetOptimalK[Set Optimal K]
+    
+    FitKMeans[Fit K-Means<br/>n_clusters=optimal_k]
+    AssignClusters[Assign Cluster Labels]
+    
+    TryPCA[TRY PCA Block]
+    InitPCA[Initialize PCA<br/>n_components=2]
+    FitPCA[Fit PCA on Pivot]
+    TransformPCA[Transform Pivot Data]
+    TransformCenters[Transform Cluster Centers]
+    
+    CatchPCA[CATCH PCA]
+    SetDefaultCoords[Set Default Coordinates<br/>0,0]
+    
+    CreatePCAPoints[Create PCA Points Array<br/>user_id, x, y, cluster]
+    CreateCenters[Create Center Points Array<br/>x, y, cluster]
+    
+    CalcClusterProfiles[Calculate Cluster Profiles<br/>mean spending per category]
+    BuildProfileDict[Build Profile Dictionary]
+    
+    LoopUsers[FOR Each User in Pivot]
+    AnalyzePatterns[Analyze Spending Patterns]
+    
+    CheckEntertainment{Entertainment<br/>> 20% Total?}
+    AddRec1[Add Recommendation<br/>High entertainment spending]
+    
+    CheckGroceries{Groceries<br/>< 10% Total?}
+    AddRec2[Add Recommendation<br/>Low grocery spend]
+    
+    CheckTotalSpend{Total Spend<br/>< 50% Income?}
+    AddRec3[Add Recommendation<br/>Great job saving]
+    
+    DefaultRec[Default Recommendation<br/>Balanced spender]
+    
+    BuildRecDict[Build Recommendations Dictionary]
+    
+    RenderTemplate[Render Template<br/>upload.html]
+    PassData[Pass Data:<br/>recommendations, analytics,<br/>PCA points, cluster profiles]
+    
+    CatchBlock[CATCH Block]
+    HandleException[Handle Exception]
+    SetError[Set Error Message]
+    RenderError[Render Template with Error]
+    
+    End([End - Return Template])
+    
+    %% Flow
+    Start --> ReceiveRequest
+    ReceiveRequest --> CheckFile
+    CheckFile -->|No| ReturnError1
+    CheckFile -->|Yes| CheckFilename
+    
+    CheckFilename -->|Yes| ReturnError2
+    CheckFilename -->|No| SaveFile
+    
+    SaveFile --> ReadCSV
+    ReadCSV --> TryBlock
+    
+    TryBlock --> CheckColumns
+    CheckColumns -->|No| ReturnError3
+    CheckColumns -->|Yes| AggregateCategory
+    
+    AggregateCategory --> AggregateDate
+    AggregateDate --> CheckPaymentMethod
+    CheckPaymentMethod -->|Yes| AggregatePayment
+    CheckPaymentMethod -->|No| CheckMerchant
+    AggregatePayment --> CheckMerchant
+    
+    CheckMerchant -->|Yes| AggregateMerchant
+    CheckMerchant -->|No| CheckLocation
+    AggregateMerchant --> CheckLocation
+    
+    CheckLocation -->|Yes| AggregateLocation
+    CheckLocation -->|No| CheckIncome
+    AggregateLocation --> CheckIncome
+    
+    CheckIncome -->|Yes| CalcSpendIncome
+    CheckIncome -->|No| CreatePivot
+    CalcSpendIncome --> CreatePivot
+    
+    CreatePivot --> FillMissing
+    FillMissing --> CheckPivotLength
+    
+    CheckPivotLength -->|No| SetK1
+    CheckPivotLength -->|Yes| DetermineK
+    
+    SetK1 --> FitKMeans
+    DetermineK --> CalcInertias
+    CalcInertias --> FindElbow
+    FindElbow --> SetOptimalK
+    SetOptimalK --> FitKMeans
+    
+    FitKMeans --> AssignClusters
+    AssignClusters --> TryPCA
+    
+    TryPCA --> InitPCA
+    InitPCA --> FitPCA
+    FitPCA --> TransformPCA
+    TransformPCA --> TransformCenters
+    TransformCenters --> CreatePCAPoints
+    
+    TryPCA -.->|Exception| CatchPCA
+    CatchPCA --> SetDefaultCoords
+    SetDefaultCoords --> CreatePCAPoints
+    
+    CreatePCAPoints --> CreateCenters
+    CreateCenters --> CalcClusterProfiles
+    CalcClusterProfiles --> BuildProfileDict
+    BuildProfileDict --> LoopUsers
+    
+    LoopUsers --> AnalyzePatterns
+    AnalyzePatterns --> CheckEntertainment
+    CheckEntertainment -->|Yes| AddRec1
+    CheckEntertainment -->|No| CheckGroceries
+    AddRec1 --> CheckGroceries
+    
+    CheckGroceries -->|Yes| AddRec2
+    CheckGroceries -->|No| CheckTotalSpend
+    AddRec2 --> CheckTotalSpend
+    
+    CheckTotalSpend -->|Yes| AddRec3
+    CheckTotalSpend -->|No| DefaultRec
+    AddRec3 --> BuildRecDict
+    DefaultRec --> BuildRecDict
+    
+    BuildRecDict --> RenderTemplate
+    RenderTemplate --> PassData
+    PassData --> End
+    
+    TryBlock -.->|Exception| CatchBlock
+    CatchBlock --> HandleException
+    HandleException --> SetError
+    SetError --> RenderError
+    RenderError --> End
+    
+    ReturnError1 --> End
+    ReturnError2 --> End
+    ReturnError3 --> End
+    
+    %% Styling
+    classDef startEnd fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
+    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef decision fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef ml fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef loop fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    
+    class Start,End startEnd
+    class ReceiveRequest,SaveFile,ReadCSV,AggregateCategory,AggregateDate,AggregatePayment,AggregateMerchant,AggregateLocation,CalcSpendIncome,CreatePivot,FillMissing,SetK1,DetermineK,CalcInertias,FindElbow,SetOptimalK,AssignClusters,InitPCA,FitPCA,TransformPCA,TransformCenters,CreatePCAPoints,CreateCenters,CalcClusterProfiles,BuildProfileDict,AnalyzePatterns,AddRec1,AddRec2,AddRec3,DefaultRec,BuildRecDict,RenderTemplate,PassData process
+    class CheckFile,CheckFilename,CheckColumns,CheckPaymentMethod,CheckMerchant,CheckLocation,CheckIncome,CheckPivotLength,CheckEntertainment,CheckGroceries,CheckTotalSpend decision
+    class ReturnError1,ReturnError2,ReturnError3,CatchBlock,HandleException,SetError,RenderError error
+    class FitKMeans,TryPCA,CatchPCA,SetDefaultCoords ml
+    class LoopUsers loop

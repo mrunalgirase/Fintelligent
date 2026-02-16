@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% block title %}Analyze Stock - Fintelligent{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div style="text-align: center; margin-bottom: 2.5rem;">
+  <h1
+    style="font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(to right, #f472b6, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+    Stock Analysis
+  </h1>
+  <p style="color: var(--text-muted); font-size: 1.1rem; margin: 0;">
+    Analyze stock trends and volatility patterns with AI clustering
+  </p>
+</div>
+
+<!-- Search Bar -->
+<div class="card-ui animate-rise" style="max-width: 600px; margin: 0 auto 2rem auto; padding: 1.5rem;">
+  <form id="symbol-form" onsubmit="return false;" style="display: flex; gap: 12px; align-items: center;">
+    <div style="flex: 1;">
+      <label for="symbol"
+        style="display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">Enter Stock Symbol
+        (NSE/BSE)</label>
+      <div style="position: relative;">
+        <input id="symbol" name="symbol" value="INFY" class="input-ui"
+          style="padding-left: 2.5rem; font-weight: 600; text-transform: uppercase;">
+        <i class="fa-solid fa-magnifying-glass"
+          style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"></i>
+      </div>
+    </div>
+    <button onclick="loadClusters()" class="btn-primary-ui" style="margin-top: 1.35rem;">
+      Analyze
+    </button>
+  </form>
+  <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+    Popular: <span class="chip" onclick="setSymbol('RELIANCE')" style="cursor: pointer;">RELIANCE</span>
+    <span class="chip" onclick="setSymbol('TCS')" style="cursor: pointer;">TCS</span>
+    <span class="chip" onclick="setSymbol('HDFCBANK')" style="cursor: pointer;">HDFCBANK</span>
+  </div>
+</div>
+
+<!-- Results Area -->
+<div id="results-area" style="display: none;">
+  <!-- Chart Card -->
+  <div class="card-ui animate-rise" style="margin-bottom: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <h3 style="margin: 0; color: var(--text-main);">Price Trend</h3>
+      <span id="cluster-count" class="chip"></span>
+    </div>
+    <div style="position: relative; height: 350px;">
+      <canvas id="chart"></canvas>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="card-ui animate-rise">
+    <h3 style="margin-bottom: 1.5rem; color: var(--text-main);">Historical Data & Clusters</h3>
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; color: var(--text-main);">
+        <thead>
+          <tr style="border-bottom: 1px solid var(--border); text-align: left;">
+            <th style="padding: 1rem; color: var(--text-muted); font-weight: 500;">Date</th>
+            <th style="padding: 1rem; color: var(--text-muted); font-weight: 500;">Close (₹)</th>
+            <th style="padding: 1rem; color: var(--text-muted); font-weight: 500;">Return</th>
+            <th style="padding: 1rem; color: var(--text-muted); font-weight: 500;">Volatility</th>
+            <th style="padding: 1rem; color: var(--text-muted); font-weight: 500;">Cluster</th>
+          </tr>
+        </thead>
+        <tbody id="result-body"></tbody>
+      </table>
+    </div>
+    <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); text-align: right;">
+      Data provider: Yahoo Finance (Unofficial). Delayed market data.
+    </div>
+  </div>
+</div>
+
+<script>
+  function setSymbol(sym) {
+    document.getElementById('symbol').value = sym;
+    loadClusters();
+  }
+
+  async function loadClusters() {
+    const symbol = document.getElementById('symbol').value.trim() || 'INFY';
+    // UI Loading State
+    const btn = document.querySelector('button');
+    const originalBtn = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
+    btn.disabled = true;
+
+    const resultsArea = document.getElementById('results-area');
+
+    try {
+      const resp = await fetch(`/get_clusters?symbol=${encodeURIComponent(symbol)}`);
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        throw new Error(data.error || 'Failed to fetch clusters');
+      }
+
+      resultsArea.style.display = 'block';
+
+      document.getElementById('cluster-count').textContent = `Total Clusters: ${data.total_clusters}`;
+      const tbody = document.getElementById('result-body');
+      tbody.innerHTML = '';
+
+      data.clusters.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+
+        const date = r.Date || r.date;
+        const close = Number(r.Close ?? r.close).toFixed(2);
+        const ret = Number(r.Return ?? r.return).toFixed(4);
+        const vol = Number(r.Volatility ?? r.volatility).toFixed(4);
+        const cluster = r.Cluster ?? r.cluster;
+
+        tr.innerHTML = `
+        <td style="padding: 1rem;">${date ? new Date(date).toLocaleDateString() : ''}</td>
+        <td style="padding: 1rem; font-weight: 600;">₹${close}</td>
+        <td style="padding: 1rem; color: ${ret >= 0 ? '#10b981' : '#ef4444'};">${ret}</td>
+        <td style="padding: 1rem;">${vol}</td>
+        <td style="padding: 1rem;"><span class="chip" style="font-size: 0.8em;">#${cluster}</span></td>`;
+        tbody.appendChild(tr);
+      });
+
+      renderChart(data.clusters);
+      showToast('Analysis Complete', `Intelligence report generated for ${symbol}`, 'success');
+
+    } catch (e) {
+      showToast('Analysis Failed', e.message, 'error');
+      resultsArea.style.display = 'none';
+    } finally {
+      btn.innerHTML = originalBtn;
+      btn.disabled = false;
+    }
+  }
+
+  let chart;
+  function renderChart(rows) {
+    const ctx = document.getElementById('chart').getContext('2d');
+    const labels = rows.map(r => r.Date || r.date);
+    const close = rows.map(r => r.Close ?? r.close);
+
+    if (chart) chart.destroy();
+
+    // Create gradient
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.5)');
+    gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Stock Price (₹)',
+          data: close,
+          borderColor: '#3b82f6',
+          backgroundColor: gradient,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleColor: '#fff',
+            bodyColor: '#cbd5e1',
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 1
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false, color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: '#64748b', maxTicksLimit: 8 }
+          },
+          y: {
+            grid: { color: 'rgba(255,255,255,0.05)' },
+            ticks: { color: '#64748b' }
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        }
+      }
+    });
+  }
+
+  // Auto load default
+  loadClusters();
+</script>
+
+<style>
+  .chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 0.85em;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .chip:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+</style>
+{% endblock %}

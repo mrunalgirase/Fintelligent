@@ -1,0 +1,324 @@
+{% extends 'base.html' %}
+{% block title %}Student Finance Hub - Fintelligent{% endblock %}
+{% block content %}
+
+<!-- Header -->
+<div style="text-align: center; margin-bottom: 3rem;">
+  <h1
+    style="font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(to right, #facc15, #f59e0b); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+    Student Finance Hub (India)
+  </h1>
+  <p style="color: var(--text-muted); font-size: 1.1rem; margin: 0;">
+    Smart money lessons to level up your financial game. 🚀
+  </p>
+</div>
+
+<!-- Info Grid -->
+<div
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+  <!-- Card 1 -->
+  <div class="card-ui animate-rise">
+    <div style="font-size: 2rem; margin-bottom: 1rem;">🏦</div>
+    <h3 style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">Banking &
+      Budgeting</h3>
+    <ul style="padding-left: 1.25rem; color: var(--text-muted); line-height: 1.6; list-style-type: disc;">
+      <li style="margin-bottom: 0.5rem;">Open a student savings account; enable UPI.</li>
+      <li style="margin-bottom: 0.5rem;">Track spends: Needs (50%), Wants (30%), Savings (20%).</li>
+      <li>Build a 3–6 months emergency fund.</li>
+      </table>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="card-ui animate-rise" style="transition-delay: 0.1s;">
+    <div style="font-size: 2rem; margin-bottom: 1rem;">🛡️</div>
+    <h3 style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">Insurance
+      & Safety</h3>
+    <ul style="padding-left: 1.25rem; color: var(--text-muted); line-height: 1.6; list-style-type: disc;">
+      <li style="margin-bottom: 0.5rem;">Health insurance is essential; personal accident cover is cheap.</li>
+      <li>Keep documents organized; automate premium reminders.</li>
+    </ul>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="card-ui animate-rise" style="transition-delay: 0.2s;">
+    <div style="font-size: 2rem; margin-bottom: 1rem;">⚖️</div>
+    <h3 style="margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem;">Income
+      Tax: AY 2025-26</h3>
+    <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+      New regime is default (₹75k std deduction). Rebate up to ₹60k for income <= ₹12L. </p>
+        <a href="/tax" class="btn-primary-ui"
+          style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); box-shadow: none; justify-content: center; width: 100%;">
+          Compare Regimes <i class="fa-solid fa-arrow-right" style="font-size: 0.8em;"></i>
+        </a>
+  </div>
+</div>
+
+<!-- Tools Grid -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem;">
+
+  <!-- SIP Calculator -->
+  <div class="card-ui animate-rise">
+    <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+      <i class="fa-solid fa-bullseye" style="color: var(--accent);"></i> SIP Goal Planner
+    </h3>
+    <div style="display: grid; gap: 1rem;">
+      <div>
+        <label class="d-block mb-1 text-muted text-sm">Target Amount (₹)</label>
+        <input id="sip-target" type="number" value="500000" class="input-ui">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div>
+          <label class="d-block mb-1 text-muted text-sm">Years</label>
+          <input id="sip-years" type="number" value="5" class="input-ui">
+        </div>
+        <div>
+          <label class="d-block mb-1 text-muted text-sm">Return p.a. (%)</label>
+          <input id="sip-rate" type="number" value="12" class="input-ui">
+        </div>
+      </div>
+      <button onclick="calcSIP()" class="btn-primary-ui" style="justify-content: center; margin-top: 0.5rem;">
+        Calculate SIP
+      </button>
+    </div>
+    <div id="sip-result"
+      style="margin-top: 1.5rem; font-weight: 600; color: var(--accent); text-align: center; min-height: 1.5em;"></div>
+  </div>
+
+  <!-- Budget Planner -->
+  <div class="card-ui animate-rise">
+    <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+      <i class="fa-solid fa-wallet" style="color: var(--primary);"></i> Budget Planner
+    </h3>
+    <div style="display: flex; gap: 1rem; align-items: end; margin-bottom: 1.5rem;">
+      <div style="flex: 1;">
+        <label class="d-block mb-1 text-muted text-sm">Monthly Stipend (₹)</label>
+        <input id="bud-income" type="number" value="15000" class="input-ui">
+      </div>
+      <button onclick="calcBudget()" class="btn-primary-ui">Plan</button>
+    </div>
+
+    <div id="bud-result">
+      <!-- Placeholder for results -->
+      <div
+        style="text-align: center; color: var(--text-muted); font-size: 0.9rem; padding: 2rem; border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px;">
+        Enter income to see breakdown
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pizza vs SIP (The Real ROI) -->
+<div class="card-ui animate-rise"
+  style="grid-column: 1 / -1; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid var(--accent); position: relative; overflow: hidden; margin-top: 2rem;">
+  <div style="position: absolute; top: -20px; right: -20px; font-size: 8rem; opacity: 0.05; transform: rotate(15deg);">
+    🍕</div>
+  <div
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; align-items: center;">
+    <div>
+      <h3 style="margin-bottom: 1rem; color: var(--accent); font-size: 1.5rem;">🍕 The "Pizza vs SIP" Reality Check</h3>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
+        That one weekend pizza (₹500) might feel good now, but what if it was a 10-year SIP?
+        See the power of compounding on small habits.
+      </p>
+      <div style="display: flex; gap: 1rem; align-items: end;">
+        <div style="flex: 1;">
+          <label class="d-block mb-1 text-muted text-sm">Amount per Pizza (₹)</label>
+          <input id="pizza-amt" type="number" value="500" class="input-ui" style="border-color: var(--accent);">
+        </div>
+        <div style="flex: 1;">
+          <label class="d-block mb-1 text-muted text-sm">Years</label>
+          <input id="pizza-years" type="number" value="10" class="input-ui" style="border-color: var(--accent);">
+        </div>
+        <button onclick="calcPizzaSIP()" class="btn-primary-ui"
+          style="background: var(--accent); color: #000; font-weight: 700;">FOMO Check</button>
+      </div>
+    </div>
+    <div id="pizza-result" style="text-align: center;">
+      <div
+        style="padding: 2rem; border: 2px dashed rgba(245, 158, 11, 0.2); border-radius: 20px; color: var(--text-muted);">
+        Hit "FOMO Check" to see the magic 🪄
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Intern / Stipend Tax Guide -->
+<div class="card-ui animate-rise" style="grid-column: 1 / -1; border-top: 4px solid #10b981; margin-top: 2rem;">
+  <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+    <i class="fa-solid fa-briefcase" style="color: #10b981;"></i> Internship & Stipend: The Tax Lowdown
+  </h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+    <div>
+      <h4 style="color: var(--text-main); margin-bottom: 0.5rem;">Is my stipend taxable?</h4>
+      <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+        Yes, technically. But if your total annual income is below ₹7.5 Lakhs (New Regime), you owe **Zero Tax**.
+        However, companies might still deduct 10% TDS under Section 194J.
+      </p>
+    </div>
+    <div>
+      <h4 style="color: var(--text-main); margin-bottom: 0.5rem;">How to get my TDS back?</h4>
+      <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+        File your Income Tax Return (ITR-1 or ITR-4) next July. The "refund" will be credited directly to your
+        bank account. It's like a forced savings account! 💸
+      </p>
+    </div>
+    <div>
+      <h4 style="color: var(--text-main); margin-bottom: 0.5rem;">The 194J vs 192 Hack</h4>
+      <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;">
+        If you're an intern, you're often treated as a "Professional" (194J - 10% TDS) rather than an
+        "Employee" (192 - Slab rates). Always check your offer letter!
+      </p>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+  async function calcSIP() {
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+    const payload = {
+      target: document.getElementById('sip-target').value,
+      years: document.getElementById('sip-years').value,
+      rate: document.getElementById('sip-rate').value
+    };
+
+    try {
+      const res = await fetch('/api/sip-goal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast('Calculation Error', data.error || 'Check your inputs', 'error');
+        document.getElementById('sip-result').innerHTML = '';
+      } else {
+        document.getElementById('sip-result').innerHTML = `
+          <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: 16px; padding: 1.5rem; text-align: center; animation: fadeIn 0.5s ease;">
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Monthly SIP Required</div>
+            <div style="font-size: 2rem; font-weight: 800; color: var(--accent); font-family: 'Poppins', sans-serif;">₹${Number(data.monthly_sip).toLocaleString()}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">To reach your ₹${Number(payload.target).toLocaleString()} goal in ${payload.years} years</div>
+          </div>`;
+        showToast('Success!', 'SIP calculation completed.', 'success');
+      }
+    } catch (e) {
+      showToast('Connection Error', 'Failed to connect to the analysis engine.', 'error');
+    } finally {
+      btn.innerHTML = originalText;
+    }
+  }
+
+  async function calcBudget() {
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+    const payload = { income: document.getElementById('bud-income').value };
+
+    try {
+      const res = await fetch('/api/budget-advice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast('Budget Error', data.error || 'Check your inputs', 'error');
+        document.getElementById('bud-result').innerHTML = '';
+      } else {
+        document.getElementById('bud-result').innerHTML = `
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap:12px; animation: fadeIn 0.5s ease;">
+              <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius:16px; padding:1.25rem; text-align: center; transition: transform 0.3s ease;">
+                <div style="font-size:1.5rem; margin-bottom: 0.5rem;">🧾</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; text-transform: uppercase;">Needs (50%)</div>
+                <div style="font-weight:700; color: var(--text-main); font-size: 1.1rem;">₹${Number(data.needs).toLocaleString()}</div>
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius:16px; padding:1.25rem; text-align: center; transition: transform 0.3s ease;">
+                <div style="font-size:1.5rem; margin-bottom: 0.5rem;">🎮</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem; text-transform: uppercase;">Wants (30%)</div>
+                <div style="font-weight:700; color: var(--text-main); font-size: 1.1rem;">₹${Number(data.wants).toLocaleString()}</div>
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius:16px; padding:1.25rem; text-align: center; transition: transform 0.3s ease; border-left: 4px solid #10b981;">
+                <div style="font-size:1.5rem; margin-bottom: 0.5rem;">💼</div>
+                <div style="font-size: 0.75rem; color: #10b981; margin-bottom: 0.25rem; text-transform: uppercase;">Savings (20%)</div>
+                <div style="font-weight:700; color: #10b981; font-size: 1.1rem;">₹${Number(data.savings).toLocaleString()}</div>
+              </div>
+            </div>`;
+        showToast('Plan Ready!', 'Your 50/30/20 budget has been generated.', 'success');
+      }
+    } catch (e) {
+      showToast('Connection Error', 'Failed to connect to the advisor service.', 'error');
+    } finally {
+      btn.innerHTML = originalText;
+    }
+  }
+
+  async function calcPizzaSIP() {
+    const btn = event.target;
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+    const payload = {
+      amount: document.getElementById('pizza-amt').value,
+      years: document.getElementById('pizza-years').value,
+      rate: 12 // Using a realistic 12% for the example
+    };
+
+    try {
+      const res = await fetch('/api/pizza-sip', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        showToast('Error', data.error || 'Check inputs', 'error');
+      } else {
+        document.getElementById('pizza-result').innerHTML = `
+          <div style="animation: bounceIn 0.8s cubic-bezier(0.36, 0, 0.66, -0.56) both;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.25rem;">Future Value of Pizzas</div>
+            <div style="font-size: 3rem; font-weight: 800; color: var(--accent); line-height: 1;">₹${Number(data.future_value).toLocaleString()}</div>
+            <div style="color: #10b981; font-weight: 600; margin-top: 0.5rem;">Wealth Gained: ₹${Number(data.wealth_gained).toLocaleString()}</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); mt-2;">By sacrificing ${data.pizzas_sacrificed} pizzas over ${payload.years} years.</p>
+          </div>`;
+        showToast('Magic!', 'The power of compounding is real.', 'success');
+      }
+    } catch (e) {
+      showToast('Error', 'Failed to reach reality engine.', 'error');
+    } finally {
+      btn.innerHTML = originalText;
+    }
+  }
+</script>
+
+<style>
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.3);
+    }
+
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+
+    70% {
+      transform: scale(0.9);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+</style>
+{% endblock %}

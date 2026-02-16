@@ -1,0 +1,107 @@
+graph TB
+    subgraph "Web Layer"
+        Browser[Web Browser]
+        Templates[HTML Templates]
+        StaticFiles[Static Files<br/>CSS, JS, Images]
+    end
+    
+    subgraph "Application Layer"
+        FlaskApp[Flask Application<br/>app.py]
+        Blueprints[Flask Blueprints]
+    end
+    
+    subgraph "Route Layer"
+        AuthRoutes[Auth Routes<br/>Registration, Login, Logout]
+        TaxRoutes[Tax Routes<br/>Tax Calculation, TDS, HRA]
+        StockRoutes[Stock Routes<br/>Stock Analysis]
+        RecRoutes[Recommendation Routes<br/>Expenditure, Clustering]
+        EduRoutes[Education Routes<br/>SIP, Budget]
+        MainRoutes[Main Routes<br/>Dashboard, Home]
+        MonitorRoutes[Monitoring Routes]
+        StrategyRoutes[Strategy Routes<br/>Tax Planning]
+    end
+    
+    subgraph "Business Logic Layer"
+        TaxCalc[Tax Calculator<br/>New/Old Regime, TDS, HRA]
+        StockAnalyzer[Stock Analyzer<br/>Data Fetching, Processing]
+        ClusteringEngine[Clustering Engine<br/>K-Means, PCA]
+        RecommendationEngine[Recommendation Engine<br/>Pattern Analysis]
+        FinancialTools[Financial Tools<br/>SIP, Budget Calculator]
+    end
+    
+    subgraph "Data Access Layer"
+        Database[SQLAlchemy ORM<br/>User Database]
+        CSVManager[CSV Manager<br/>Tax & Expenditure Data]
+        FileSystem[File System<br/>Temporary Storage]
+    end
+    
+    subgraph "External Services"
+        StockAPI[Stock Market API<br/>Alpha Vantage]
+    end
+    
+    subgraph "Data Storage"
+        SQLiteDB[(SQLite Database<br/>fintelligent.db)]
+        TaxCSV[(CSV Files<br/>Tax History & Data)]
+        TempStorage[(Temporary Storage<br/>/tmp)]
+    end
+    
+    %% Web Layer Connections
+    Browser --> Templates
+    Browser --> StaticFiles
+    Browser --> FlaskApp
+    
+    %% Application Layer
+    FlaskApp --> Blueprints
+    
+    %% Blueprint Connections
+    Blueprints --> AuthRoutes
+    Blueprints --> TaxRoutes
+    Blueprints --> StockRoutes
+    Blueprints --> RecRoutes
+    Blueprints --> EduRoutes
+    Blueprints --> MainRoutes
+    Blueprints --> MonitorRoutes
+    Blueprints --> StrategyRoutes
+    
+    %% Route to Business Logic
+    AuthRoutes --> Database
+    TaxRoutes --> TaxCalc
+    TaxRoutes --> CSVManager
+    StockRoutes --> StockAnalyzer
+    RecRoutes --> ClusteringEngine
+    RecRoutes --> RecommendationEngine
+    RecRoutes --> CSVManager
+    EduRoutes --> FinancialTools
+    
+    %% Business Logic Connections
+    TaxCalc --> CSVManager
+    StockAnalyzer --> StockAPI
+    ClusteringEngine --> RecommendationEngine
+    RecommendationEngine --> CSVManager
+    FinancialTools --> CSVManager
+    
+    %% Data Access Connections
+    Database --> SQLiteDB
+    CSVManager --> TaxCSV
+    CSVManager --> FileSystem
+    FileSystem --> TempStorage
+    
+    %% External Service
+    StockAPI -.->|HTTP Requests| StockAPI
+    
+    %% Styling
+    classDef web fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef app fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef route fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef business fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef data fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef external fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef storage fill:#eceff1,stroke:#455a64,stroke-width:2px
+    
+    class Browser,Templates,StaticFiles web
+    class FlaskApp,Blueprints app
+    class AuthRoutes,TaxRoutes,StockRoutes,RecRoutes,EduRoutes,MainRoutes,MonitorRoutes,StrategyRoutes route
+    class TaxCalc,StockAnalyzer,ClusteringEngine,RecommendationEngine,FinancialTools business
+    class Database,CSVManager,FileSystem data
+    class StockAPI external
+    class SQLiteDB,TaxCSV,TempStorage storage

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Tax Strategies - Fintelligent{% endblock %}
+{% block content %}
+
+<!-- Header Section -->
+<div style="text-align: center; margin-bottom: 2.5rem;">
+    <h1
+        style="font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(to right, #10b981, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        Tax Strategies & Planning
+    </h1>
+    <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+        Optimize your tax savings with personalized strategies for 2024-25 under the New Tax Regime
+    </p>
+</div>
+
+<!-- Important Alert -->
+<div class="card-ui animate-rise"
+    style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); margin-bottom: 2rem; display: flex; gap: 1rem; align-items: start;">
+    <i class="fa-solid fa-lightbulb" style="color: #f59e0b; font-size: 1.25rem; margin-top: 0.2rem;"></i>
+    <div>
+        <h4 style="color: #f59e0b; margin-bottom: 0.5rem; font-size: 1.05rem;">Important Update for 2024-25</h4>
+        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+            Sections 80C and 80D deductions are no longer available under the New Tax Regime.
+            The new regime offers higher standard deduction (₹75,000) and enhanced rebate (₹60,000) instead.
+        </p>
+    </div>
+</div>
+
+<!-- Main Calculator -->
+<div class="card-ui animate-rise" style="max-width: 600px; margin: 0 auto 2rem auto;">
+    <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem;">
+        <i class="fa-solid fa-calculator" style="color: var(--primary);"></i> Quick Tax Calculator
+    </h3>
+
+    <form method="post" action="/strategies">
+        <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Annual
+            Income</label>
+        <div style="display: flex; margin-bottom: 1.5rem;">
+            <div
+                style="background: rgba(255,255,255,0.05); padding: 0 1rem; display: flex; align-items: center; border: 1px solid #334155; border-right: none; border-radius: 12px 0 0 12px; color: var(--text-muted);">
+                ₹</div>
+            <input type="number" name="income" class="input-ui" required style="border-radius: 0 12px 12px 0;"
+                value="{{ user_input.get('income', '') if user_input else '' }}"
+                placeholder="Enter your total annual income">
+        </div>
+
+        <button type="submit" class="btn-primary-ui" style="width: 100%; justify-content: center;">
+            Calculate Tax & Get Strategies <i class="fa-solid fa-arrow-right-long"></i>
+        </button>
+    </form>
+</div>
+
+<!-- Strategy Result -->
+{% if plan %}
+<div class="card-ui animate-rise" style="margin-bottom: 2rem; border-left: 4px solid var(--secondary);">
+    <h3 style="color: var(--secondary); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+        <i class="fa-solid fa-clipboard-check"></i> Personalized Strategy
+    </h3>
+
+    <div style="color: var(--text-main); font-size: 1.05rem; line-height: 1.7;">
+        {{ plan|safe }}
+    </div>
+</div>
+{% endif %}
+
+<!-- Footer CTA -->
+<div style="text-align: center; margin-top: 3rem;">
+    <p style="color: var(--text-muted);">Need a more detailed breakdown?</p>
+    <a href="/tax" class="btn-primary-ui"
+        style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); box-shadow: none;">
+        <i class="fa-solid fa-calculator"></i> Open Advanced Calculator
+    </a>
+</div>
+
+<style>
+    /* Scoped styles for the strategy content rendered from backend */
+    strong {
+        color: var(--primary);
+        font-weight: 600;
+    }
+
+    ul {
+        padding-left: 1.5rem;
+        color: var(--text-muted);
+    }
+
+    li {
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,133 @@
+flowchart TD
+    Start([Tax Calculation Start])
+    ReceiveRequest[Receive POST Request<br/>/tax/calculate]
+    
+    TryBlock[TRY Block]
+    GetJSON[Get JSON Data<br/>request.get_json]
+    ExtractIncome[Extract Income<br/>int data.get income]
+    ExtractDeductions[Extract Deductions<br/>data.get deductions]
+    
+    ValidateIncome{Income<br/>> 0?}
+    ReturnError400[Return Error 400<br/>Invalid Income]
+    
+    CalcNewRegime[Calculate New Regime Tax<br/>calculate_new_regime_tax]
+    CalcOldRegime[Calculate Old Regime Tax<br/>calculate_old_regime_tax]
+    
+    CalcTDS[Calculate Monthly TDS<br/>calculate_tds income/12]
+    CalcAdvTaxQ1[Calculate Advance Tax Q1<br/>calculate_advance_tax income, 1]
+    CalcAdvTaxQ2[Calculate Advance Tax Q2<br/>calculate_advance_tax income, 2]
+    CalcAdvTaxQ3[Calculate Advance Tax Q3<br/>calculate_advance_tax income, 3]
+    CalcAdvTaxQ4[Calculate Advance Tax Q4<br/>calculate_advance_tax income, 4]
+    
+    CompareRegimes{New Regime<br/>Tax < Old<br/>Regime Tax?}
+    SetBetterRegime1[Set: New Regime]
+    SetBetterRegime2[Set: Old Regime]
+    
+    CalcSavings[Calculate Savings<br/>abs new_tax - old_tax]
+    CalcEffRateNew[Calculate Effective Rate New<br/>new_tax / income * 100]
+    CalcEffRateOld[Calculate Effective Rate Old<br/>old_tax / income * 100]
+    
+    BuildResult[Build Result Dictionary]
+    RoundValues[Round All Values]
+    ReturnJSON[Return JSON Response<br/>jsonify result]
+    
+    CatchBlock[CATCH Block]
+    HandleException[Handle Exception]
+    ReturnError500[Return Error 500<br/>jsonify error]
+    
+    End([End])
+    
+    %% Flow
+    Start --> ReceiveRequest
+    ReceiveRequest --> TryBlock
+    TryBlock --> GetJSON
+    GetJSON --> ExtractIncome
+    ExtractIncome --> ExtractDeductions
+    ExtractDeductions --> ValidateIncome
+    
+    ValidateIncome -->|No| ReturnError400
+    ValidateIncome -->|Yes| CalcNewRegime
+    
+    CalcNewRegime --> CalcOldRegime
+    CalcOldRegime --> CalcTDS
+    CalcTDS --> CalcAdvTaxQ1
+    CalcAdvTaxQ1 --> CalcAdvTaxQ2
+    CalcAdvTaxQ2 --> CalcAdvTaxQ3
+    CalcAdvTaxQ3 --> CalcAdvTaxQ4
+    
+    CalcAdvTaxQ4 --> CompareRegimes
+    CompareRegimes -->|Yes| SetBetterRegime1
+    CompareRegimes -->|No| SetBetterRegime2
+    
+    SetBetterRegime1 --> CalcSavings
+    SetBetterRegime2 --> CalcSavings
+    
+    CalcSavings --> CalcEffRateNew
+    CalcEffRateNew --> CalcEffRateOld
+    CalcEffRateOld --> BuildResult
+    BuildResult --> RoundValues
+    RoundValues --> ReturnJSON
+    ReturnJSON --> End
+    
+    TryBlock -.->|Exception| CatchBlock
+    CatchBlock --> HandleException
+    HandleException --> ReturnError500
+    ReturnError500 --> End
+    
+    ReturnError400 --> End
+    
+    %% Sub-flow: New Regime Calculation
+    subgraph NewRegime["New Regime Calculation Flow"]
+        NR1[Apply Standard Deduction<br/>income - 75000]
+        NR2{Taxable Income<br/>> 400000?}
+        NR3{Taxable Income<br/>> 800000?}
+        NR4{Taxable Income<br/>> 1200000?}
+        NR5[Apply Progressive Slabs<br/>5%, 10%, 15%, 20%, 25%, 30%]
+        NR6{Income<br/><= 1200000?}
+        NR7[Apply Section 87A Rebate<br/>tax - 60000]
+        NR8[Return Tax]
+        
+        NR1 --> NR2
+        NR2 -->|Yes| NR3
+        NR2 -->|No| NR8
+        NR3 -->|Yes| NR4
+        NR3 -->|No| NR5
+        NR4 -->|Yes| NR5
+        NR4 -->|No| NR5
+        NR5 --> NR6
+        NR6 -->|Yes| NR7
+        NR6 -->|No| NR8
+        NR7 --> NR8
+    end
+    
+    %% Sub-flow: Old Regime Calculation
+    subgraph OldRegime["Old Regime Calculation Flow"]
+        OR1[Apply Basic Exemption<br/>income - 250000]
+        OR2[Apply Deductions<br/>80C, 80D, etc.]
+        OR3{Taxable Income<br/>> 0?}
+        OR4[Apply Progressive Slabs<br/>5%, 20%, 30%]
+        OR5{Income<br/><= 500000?}
+        OR6[Apply Section 87A Rebate<br/>tax - 12500]
+        OR7[Return Tax]
+        
+        OR1 --> OR2
+        OR2 --> OR3
+        OR3 -->|Yes| OR4
+        OR3 -->|No| OR7
+        OR4 --> OR5
+        OR5 -->|Yes| OR6
+        OR5 -->|No| OR7
+        OR6 --> OR7
+    end
+    
+    %% Styling
+    classDef startEnd fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
+    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef decision fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef calculation fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    
+    class Start,End startEnd
+    class ReceiveRequest,TryBlock,GetJSON,ExtractIncome,ExtractDeductions,CalcNewRegime,CalcOldRegime,CalcTDS,CalcAdvTaxQ1,CalcAdvTaxQ2,CalcAdvTaxQ3,CalcAdvTaxQ4,SetBetterRegime1,SetBetterRegime2,CalcSavings,CalcEffRateNew,CalcEffRateOld,BuildResult,RoundValues,ReturnJSON calculation
+    class ValidateIncome,CompareRegimes decision
+    class ReturnError400,CatchBlock,HandleException,ReturnError500 error

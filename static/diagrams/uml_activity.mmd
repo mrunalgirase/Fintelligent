@@ -1,0 +1,113 @@
+flowchart TD
+    Start([Start])
+    Login[User Login]
+    CheckAuth{Valid<br/>Credentials?}
+    Dashboard[View Dashboard]
+    SelectFeature{Select Feature}
+    
+    %% Tax Calculation Flow
+    TaxFlow[Tax Calculation Flow]
+    EnterIncome[Enter Income & Deductions]
+    CalcNewRegime[Calculate New Regime Tax]
+    CalcOldRegime[Calculate Old Regime Tax]
+    CompareRegimes[Compare Tax Regimes]
+    ShowTaxResults[Display Tax Results]
+    
+    %% Stock Analysis Flow
+    StockFlow[Stock Analysis Flow]
+    EnterSymbol[Enter Stock Symbol]
+    FetchData[Fetch Stock Data from API]
+    ProcessData[Process Stock Data]
+    CalculateMetrics[Calculate Returns & Volatility]
+    PerformClustering[Perform K-Means Clustering]
+    ShowStockResults[Display Analysis Results]
+    
+    %% Expenditure Analysis Flow
+    ExpFlow[Expenditure Analysis Flow]
+    UploadCSV[Upload Expenditure CSV]
+    ValidateCSV{Valid CSV?}
+    ProcessExp[Process Expenditure Data]
+    AggregateData[Aggregate by Category/Date]
+    ClusterExp[Perform Spending Clustering]
+    GenerateRec[Generate Recommendations]
+    ShowExpResults[Display Analytics & Recommendations]
+    
+    %% SIP Calculator Flow
+    SIPFlow[SIP Calculator Flow]
+    EnterGoal[Enter Target Amount & Years]
+    CalcSIP[Calculate Monthly SIP]
+    ShowSIPResult[Display SIP Amount]
+    
+    %% Budget Flow
+    BudgetFlow[Budget Advice Flow]
+    EnterIncome2[Enter Monthly Income]
+    ApplyRule[Apply 50-30-20 Rule]
+    ShowBudget[Display Budget Allocation]
+    
+    %% End
+    End([End])
+    
+    Start --> Login
+    Login --> CheckAuth
+    CheckAuth -->|No| Login
+    CheckAuth -->|Yes| Dashboard
+    Dashboard --> SelectFeature
+    
+    SelectFeature -->|Tax| TaxFlow
+    SelectFeature -->|Stock| StockFlow
+    SelectFeature -->|Expenditure| ExpFlow
+    SelectFeature -->|SIP| SIPFlow
+    SelectFeature -->|Budget| BudgetFlow
+    
+    %% Tax Flow
+    TaxFlow --> EnterIncome
+    EnterIncome --> CalcNewRegime
+    CalcNewRegime --> CalcOldRegime
+    CalcOldRegime --> CompareRegimes
+    CompareRegimes --> ShowTaxResults
+    ShowTaxResults --> Dashboard
+    
+    %% Stock Flow
+    StockFlow --> EnterSymbol
+    EnterSymbol --> FetchData
+    FetchData -->|API Success| ProcessData
+    FetchData -->|API Error| StockFlow
+    ProcessData --> CalculateMetrics
+    CalculateMetrics --> PerformClustering
+    PerformClustering --> ShowStockResults
+    ShowStockResults --> Dashboard
+    
+    %% Expenditure Flow
+    ExpFlow --> UploadCSV
+    UploadCSV --> ValidateCSV
+    ValidateCSV -->|Invalid| ExpFlow
+    ValidateCSV -->|Valid| ProcessExp
+    ProcessExp --> AggregateData
+    AggregateData --> ClusterExp
+    ClusterExp --> GenerateRec
+    GenerateRec --> ShowExpResults
+    ShowExpResults --> Dashboard
+    
+    %% SIP Flow
+    SIPFlow --> EnterGoal
+    EnterGoal --> CalcSIP
+    CalcSIP --> ShowSIPResult
+    ShowSIPResult --> Dashboard
+    
+    %% Budget Flow
+    BudgetFlow --> EnterIncome2
+    EnterIncome2 --> ApplyRule
+    ApplyRule --> ShowBudget
+    ShowBudget --> Dashboard
+    
+    Dashboard --> SelectFeature
+    Dashboard --> End
+    
+    %% Styling
+    classDef startEnd fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
+    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef decision fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px
+    
+    class Start,End startEnd
+    class Login,Dashboard,EnterIncome,CalcNewRegime,CalcOldRegime,CompareRegimes,ShowTaxResults,EnterSymbol,FetchData,ProcessData,CalculateMetrics,PerformClustering,ShowStockResults,UploadCSV,ProcessExp,AggregateData,ClusterExp,GenerateRec,ShowExpResults,EnterGoal,CalcSIP,ShowSIPResult,EnterIncome2,ApplyRule,ShowBudget process
+    class CheckAuth,ValidateCSV decision

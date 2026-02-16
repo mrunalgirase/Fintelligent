@@ -1,0 +1,14 @@
+sequenceDiagram
+  participant User as Browser
+  participant Rec as recommendation/routes.py
+  participant TPL as templates/upload.html
+  participant FS as /tmp CSV
+  participant SK as sklearn KMeans
+
+  User->>Rec: POST /upload (file)
+  Rec->>FS: Save file
+  Rec->>Rec: Read CSV, pivot(user_id x category)
+  Rec->>SK: Fit KMeans(n=3)
+  SK-->>Rec: labels
+  Rec-->>User: Render upload.html (analytics + recs)
+

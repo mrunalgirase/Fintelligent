@@ -1,0 +1,462 @@
+{% extends 'base.html' %}
+{% block title %}FinGame - Level Up Your Finances{% endblock %}
+
+{% block head %}
+<style>
+    /* Custom Gamification Styles */
+    .game-hero {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 3rem;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 3rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .game-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+        border-radius: 50%;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .level-badge {
+        width: 120px;
+        height: 120px;
+        background: var(--bg-card);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.5rem;
+        border: 4px solid var(--primary);
+        box-shadow: 0 0 30px rgba(37, 99, 235, 0.4);
+        position: relative;
+        z-index: 1;
+    }
+
+    .level-badge::after {
+        content: 'LEVEL';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 2px 10px;
+        border-radius: 20px;
+        letter-spacing: 1px;
+    }
+
+    .xp-bar-container {
+        height: 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+        margin-top: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .xp-bar-fill {
+        height: 100%;
+        background: var(--primary-gradient);
+        border-radius: 20px;
+        position: relative;
+        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    .xp-bar-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    .stat-card {
+        background: rgba(30, 41, 59, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.2s;
+        min-width: 100px;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        background: rgba(30, 41, 59, 0.6);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .challenge-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .challenge-card {
+        background: var(--bg-card);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .challenge-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+        border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .challenge-card.active {
+        border-left: 4px solid var(--success);
+    }
+
+    .challenge-header {
+        padding: 1.5rem;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0) 100%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .challenge-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .badge-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+
+    .badge-item {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: all 0.3s;
+        aspect-ratio: 1;
+    }
+
+    .badge-item.earned {
+        background: linear-gradient(145deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.8));
+        border-color: rgba(245, 158, 11, 0.3);
+        box-shadow: 0 10px 30px -10px rgba(245, 158, 11, 0.15);
+    }
+
+    .badge-item.locked {
+        opacity: 0.5;
+    }
+
+    .badge-item.locked i {
+        color: var(--text-muted);
+    }
+
+    .badge-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .badge-item:hover .badge-icon {
+        transform: scale(1.2) rotate(10deg);
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        background: linear-gradient(90deg, #fff, #94a3b8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .leaderboard-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s;
+    }
+
+    .leaderboard-row:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero / Progress Section -->
+<div class="game-hero animate-rise">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 3rem; position: relative; z-index: 1;">
+        <!-- Avatar/Level -->
+        <div style="text-align: center;">
+            <div class="level-badge">
+                {{ user.level }}
+            </div>
+        </div>
+
+        <!-- Info -->
+        <div style="flex-grow: 1; min-width: 300px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem;">
+                <div>
+                    <h5
+                        style="color: var(--primary); font-weight: 700; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 1px;">
+                        Current Rank</h5>
+                    <h1 style="font-size: 3rem; margin: 0; line-height: 1;">{{ user.title }}</h1>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 1.5rem; font-weight: 700; color: white;">{{ user.xp }}</span>
+                    <span style="color: var(--text-muted); font-weight: 500;">/ {{ user.next_level_xp }} XP</span>
+                </div>
+            </div>
+
+            <!-- XP Bar -->
+            <div class="xp-bar-container">
+                <div class="xp-bar-fill" style="width: {{ (user.xp / user.next_level_xp) * 100 }}%;"></div>
+            </div>
+            <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.95rem;">
+                <i class="fa-solid fa-rocket" style="color: var(--warning); margin-right: 0.5rem;"></i>
+                You're just <strong>{{ user.next_level_xp - user.xp }} XP</strong> away from the next level!
+            </p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div style="display: flex; gap: 1rem;">
+            <div class="stat-card">
+                <i class="fa-solid fa-fire"
+                    style="color: var(--warning); font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <span style="font-size: 1.25rem; font-weight: 700;">{{ user.active_challenges|length }}</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Active<br>Missions</span>
+            </div>
+            <div class="stat-card">
+                <i class="fa-solid fa-medal" style="color: #a855f7; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <span style="font-size: 1.25rem; font-weight: 700;">{{ user.badges_earned|length }}</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">Badges<br>Earned</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="display: flex; flex-wrap: wrap; gap: 2rem;">
+    <!-- Left Column: Challenges (Main focus) -->
+    <div style="flex: 2; min-width: 300px;">
+        <h2 class="section-title">
+            <i class="fa-solid fa-scroll" style="color: var(--accent);"></i> Available Missions
+        </h2>
+
+        <div class="challenge-grid">
+            {% for challenge in config.challenges %}
+            {% set is_active = challenge.id in user.active_challenges %}
+
+            <div class="challenge-card animate-rise {% if is_active %}active{% endif %}">
+                <div class="challenge-header">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <h3 style="font-size: 1.1rem; margin: 0; font-weight: 600;">{{ challenge.title }}</h3>
+                        {% if is_active %}
+                        <span
+                            style="background: rgba(16, 185, 129, 0.2); color: var(--success); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700;">ACTIVE</span>
+                        {% else %}
+                        <span
+                            style="background: rgba(255,255,255,0.1); color: var(--text-muted); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 600;">{{
+                            challenge.audience }}</span>
+                        {% endif %}
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.4;">
+                        {{ challenge.description }}
+                    </p>
+                </div>
+
+                <div class="challenge-body">
+                    <!-- Rewards -->
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+                        <div
+                            style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: var(--primary); font-weight: 600;">
+                            <i class="fa-solid fa-bolt"></i> {{ challenge.reward.xp }} XP
+                        </div>
+                        {% if challenge.reward.badge_id %}
+                        <div
+                            style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: #a855f7; font-weight: 600;">
+                            <i class="fa-solid fa-medal"></i> Badge
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Interactive Area -->
+                    <div style="margin-top: auto;">
+                        {% if is_active %}
+                        <!-- Active Controls -->
+                        {% if challenge.input_type == 'saving_input' %}
+                        {% set chal_obj = user['challenge_objects'][challenge.id] %}
+                        <div
+                            style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">Current Progress</span>
+                                <span style="font-weight: 700; color: var(--success);">₹{{
+                                    chal_obj.progress.get('savings', 0) }}</span>
+                            </div>
+                            <form action="{{ url_for('gamification.update_challenge') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                                <input type="number" name="amount" class="input-ui" placeholder="Log Amount (₹)"
+                                    required style="padding: 0.6rem; font-size: 0.9rem; margin-bottom: 0.75rem;">
+                                <button type="submit" class="btn-primary-ui"
+                                    style="width: 100%; justify-content: center; font-size: 0.9rem; padding: 0.6rem;">
+                                    Update
+                                </button>
+                            </form>
+                        </div>
+                        {% elif challenge.input_type == 'boolean' %}
+                        {% set chal_obj = user['challenge_objects'][challenge.id] %}
+                        <div style="text-align: center;">
+                            <div
+                                style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">
+                                {{ chal_obj.progress.get('checkins', 0) }} <span
+                                    style="font-size: 0.9rem; color: var(--text-muted); font-weight: 400;">/ {{
+                                    challenge.success_condition.split('>=')[-1].strip() if '>=' in
+                                    challenge.success_condition else 'Goal' }}</span>
+                            </div>
+                            <form action="{{ url_for('gamification.update_challenge') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                                <input type="hidden" name="amount" value="1">
+                                <button type="submit" class="btn-primary-ui"
+                                    style="width: 100%; justify-content: center;">
+                                    <i class="fa-solid fa-check-circle"></i> Check In
+                                </button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <!-- Auto tracked -->
+                        <div
+                            style="background: rgba(30, 41, 59, 0.4); padding: 0.75rem; border-radius: 12px; text-align: center;">
+                            <i class="fa-solid fa-robot"
+                                style="font-size: 1.25rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Tracking automatically.
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        {% else %}
+                        <form action="{{ url_for('gamification.join_challenge') }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                            <button type="submit" class="btn-primary-ui"
+                                style="width: 100%; justify-content: center; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primary); color: var(--primary); box-shadow: none;">
+                                Accept Mission
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Right Column: Trophies & Stats -->
+    <div style="flex: 1; min-width: 250px;">
+        <h2 class="section-title">
+            <i class="fa-solid fa-trophy" style="color: var(--warning);"></i> Trophy Case
+        </h2>
+
+        <div class="badge-grid">
+            {% for badge in config.badges %}
+            {% set is_earned = badge.id in user.badges_earned %}
+            <div class="badge-item animate-rise {% if is_earned %}earned{% else %}locked{% endif %}"
+                title="{{ badge.description }}">
+                <div class="badge-icon">
+                    {{ badge.icon }}
+                </div>
+                <h4 style="font-size: 0.8rem; margin: 0; color: var(--text-main); font-weight: 600; line-height: 1.2;">
+                    {{ badge.name }}</h4>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Leaderboard Card -->
+        <div style="margin-top: 3rem;">
+            <div class="card-ui" style="padding: 1.5rem;">
+                <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-solid fa-ranking-star" style="color: #f59e0b;"></i> Top Students
+                </h3>
+
+                <div style="display: flex; flex-direction: column;">
+                    <div class="leaderboard-row" style="border: 1px solid var(--warning);">
+                        <div style="font-weight: 700; color: var(--warning);">#1</div>
+                        <div
+                            style="width: 28px; height: 28px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: black;">
+                            A</div>
+                        <div style="flex-grow: 1; font-size: 0.9rem;">Aryan S.</div>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Lvl 8</div>
+                    </div>
+                    <div class="leaderboard-row">
+                        <div style="font-weight: 700; color: #cbd5e1;">#2</div>
+                        <div
+                            style="width: 28px; height: 28px; background: #94a3b8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: black;">
+                            P</div>
+                        <div style="flex-grow: 1; font-size: 0.9rem;">Priya M.</div>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Lvl 7</div>
+                    </div>
+                    <div class="leaderboard-row"
+                        style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primary);">
+                        <div style="font-weight: 700; color: var(--primary);">#{{ user.level + 12 }}</div>
+                        <div
+                            style="width: 28px; height: 28px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white;">
+                            You</div>
+                        <div style="flex-grow: 1; font-size: 0.9rem;">{{ current_user.username }}</div>
+                        <div style="font-size: 0.8rem; font-weight: 700; color: white;">Lvl {{ user.level }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

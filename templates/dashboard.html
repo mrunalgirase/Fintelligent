@@ -1,0 +1,1053 @@
+{% extends 'base.html' %}
+{% block title %}Financial Command Center - Fintelligent{% endblock %}
+
+{% block content %}
+<!-- Setup Dashboard Variables for CSS -->
+<style>
+    :root {
+        --health-color: {
+                {
+                dashboard_data.health_score.color if (dashboard_data and dashboard_data.health_score) else 'var(--primary)'
+            }
+        }
+
+        ;
+    }
+</style>
+
+<!-- Dashboard Data for JavaScript -->
+<script id="dashboard-data-json" type="application/json">
+    {{ dashboard_data | tojson }}
+</script>
+
+<!-- Confetti Canvas for Celebrations -->
+<canvas id="confetti-canvas"
+    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; display: none;"></canvas>
+
+<!-- Hero Section with Persona Badge -->
+<div class="animate-rise" style="margin-bottom: 3rem; text-align: center; position: relative;">
+    <div
+        style="background: var(--primary-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">
+        <h1 style="font-size: 3rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem;">
+            Dashboard
+        </h1>
+    </div>
+    <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto;">
+        Welcome to your personal financial command center. Track, analyze, and optimize your wealth.
+    </p>
+
+    {% if dashboard_data and dashboard_data.health_score %}
+    <!-- Gamified Persona Badge -->
+    <div class="animate-rise"
+        style="display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(255, 255, 255, 0.05); padding: 0.5rem 1.25rem; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">
+        <i class="fa-solid fa-crown" style="color: var(--health-color);"></i>
+        <span style="color: var(--text-main); font-weight: 600; font-size: 0.95rem;">
+            Status: <span style="color: var(--health-color);">{{ dashboard_data.health_score.level }}</span>
+        </span>
+    </div>
+    {% if not current_user.is_premium %}
+    <div style="margin-top: 1rem;">
+        <button onclick="upgradeToPro()" class="btn-primary-ui"
+            style="background: var(--pro-gradient); font-weight: 700; border: none; padding: 0.5rem 1.5rem; border-radius: 50px; box-shadow: 0 4px 15px rgba(167, 139, 250, 0.3);">
+            <i class="fa-solid fa-bolt"></i> Go Pro
+        </button>
+    </div>
+    {% else %}
+    <div style="margin-top: 1rem;">
+        <span
+            style="color: #a78bfa; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+            <i class="fa-solid fa-star"></i> Fintelligent Pro Member
+        </span>
+    </div>
+    {% endif %}
+</div>
+
+<!-- High Priority Predictive Alert -->
+{% if dashboard_data and dashboard_data.budget.status == 'broke_alert' %}
+<div class="animate-rise"
+    style="margin-bottom: 2rem; padding: 1.25rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 16px; display: flex; align-items: center; gap: 1rem; backdrop-filter: blur(10px);">
+    <div
+        style="width: 45px; height: 45px; background: #ef4444; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);">
+        <i class="fa-solid fa-triangle-exclamation" style="color: white; font-size: 1.2rem;"></i>
+    </div>
+    <div style="flex-grow: 1;">
+        <h4 style="color: #f87171; margin-bottom: 0.2rem; font-weight: 700;">Predictive "Broke" Alert!</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">
+            Based on your current spending of <b>₹{{ "{:,.0f}".format(dashboard_data.budget.burn_rate) }} / day</b>, you
+            are projected to reach <b>₹{{ "{:,.0f}".format(dashboard_data.budget.forecast) }}</b> by month-end.
+        </p>
+    </div>
+    <button onclick="updateBudget()" class="btn-primary-ui"
+        style="background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.5rem 1rem; font-size: 0.85rem; color: #f87171;">
+        Fix Now
+    </button>
+</div>
+{% endif %}
+
+<!-- Section: Market Intelligence -->
+<div class="animate-rise" style="margin-bottom: 2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+        <div>
+            <h2
+                style="font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fa-solid fa-chart-line" style="color: var(--primary);"></i>
+                Market Intelligence
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                <i class="fa-solid fa-circle-info" style="font-size: 0.85rem; margin-right: 0.25rem;"></i>
+                Real-time market data and AI-powered insights to guide your financial decisions
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Market Pulse & AI Insights Grid -->
+<div class="animate-rise"
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+    <!-- Market Pulse Widget -->
+    <div class="card-ui glass-layer" style="padding: 1.5rem; border-color: rgba(59, 130, 246, 0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-main);">
+                <i class="fa-solid fa-earth-asia" style="color: var(--primary); margin-right: 0.5rem;"></i> Market Pulse
+                (NSE)
+            </h3>
+            <span
+                style="font-size: 0.75rem; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 10px;">LIVE</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">NIFTY 50</span>
+                <div style="text-align: right;">
+                    <div style="font-weight: 700; color: var(--text-main);">22,147.50</div>
+                    <div style="font-size: 0.8rem; color: #10b981;">+142.30 (0.65%)</div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">SENSEX</span>
+                <div style="text-align: right;">
+                    <div style="font-weight: 700; color: var(--text-main);">73,088.33</div>
+                    <div style="font-size: 0.8rem; color: #10b981;">+482.70 (0.66%)</div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">BANK NIFTY</span>
+                <div style="text-align: right;">
+                    <div style="font-weight: 700; color: var(--text-main);">46,919.80</div>
+                    <div style="font-size: 0.8rem; color: #ef4444;">-85.40 (0.18%)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Insight Snack -->
+    <div class="card-ui glass-layer" style="padding: 1.5rem; border-color: rgba(168, 85, 247, 0.2);">
+        <h3 style="margin: 0 0 1rem 0; font-size: 1rem; font-weight: 700; color: var(--text-main);">
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #a855f7; margin-right: 0.5rem;"></i> AI Command
+            Insight
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem;">
+            "You've spent ₹12,400 more on <b>Dining Out</b> than last month. Consider shifting funds to your <b>ELSS
+                Investment</b> to hit your 80C target."
+        </p>
+        <div style="display: flex; gap: 0.75rem;">
+            <a href="/ai-coach" class="btn-primary-ui"
+                style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); color: #a855f7; font-size: 0.8rem; padding: 0.5rem 1rem;">
+                Ask Coach
+            </a>
+            <a href="/tax" class="btn-primary-ui"
+                style="background: var(--primary-gradient); font-size: 0.8rem; padding: 0.5rem 1rem;">
+                Optimize Tax
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Section: Daily Quests -->
+<div class="animate-rise" style="margin-bottom: 3rem;">
+    <div style="margin-bottom: 1.5rem;">
+        <h2
+            style="font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fa-solid fa-trophy" style="color: #f59e0b;"></i>
+            Daily Quests
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+            <i class="fa-solid fa-circle-info" style="font-size: 0.85rem; margin-right: 0.25rem;"></i>
+            Complete these tasks to earn XP and improve your financial habits
+        </p>
+    </div>
+    <div class="animate-rise" style="margin-bottom: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">Daily Quests</h2>
+            <span
+                style="font-size: 0.85rem; color: var(--accent); background: rgba(245, 158, 11, 0.1); padding: 4px 12px; border-radius: 20px; font-weight: 600;">
+                <i class="fa-solid fa-bolt"></i> +50 XP Available
+            </span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            <!-- Quest 1 -->
+            <div class="card-ui quest-card" style="padding: 1.25rem; border-left: 4px solid #3b82f6;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div
+                        style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #3b82f6;">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <h4 style="margin: 0; font-size: 1rem;">Paper Trail</h4>
+                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Scan 1 more receipt today</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px;">0/1</div>
+                        <div style="width: 40px; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px;">
+                            <div style="width: 0%; height: 100%; background: #3b82f6; border-radius: 2px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quest 2 -->
+            <div class="card-ui quest-card" style="padding: 1.25rem; border-left: 4px solid #10b981;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div
+                        style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #10b981;">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <h4 style="margin: 0; font-size: 1rem;">Data Diver</h4>
+                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Check Analytics insights</p>
+                    </div>
+                    <button class="btn"
+                        style="padding: 4px 10px; font-size: 0.75rem; background: rgba(16, 185, 129, 0.1); color: #10b981;">Claim</button>
+                </div>
+            </div>
+
+            <!-- Quest 3 -->
+            <div class="card-ui quest-card" style="padding: 1.25rem; border-left: 4px solid #f59e0b;">
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <div
+                        style="width: 40px; height: 40px; background: rgba(245, 158, 11, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #f59e0b;">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div style="flex-grow: 1;">
+                        <h4 style="margin: 0; font-size: 1rem;">Wealth Wisdom</h4>
+                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Read 1 Strategy guide</p>
+                    </div>
+                    <div style="color: #f59e0b;"><i class="fa-solid fa-circle-check"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .quest-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .quest-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: scale(1.02);
+        }
+    </style>
+
+    <!-- Section: Quick Actions -->
+    <div class="animate-rise" style="margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <h2
+                style="font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fa-solid fa-bolt" style="color: var(--primary);"></i>
+                Quick Actions
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                <i class="fa-solid fa-circle-info" style="font-size: 0.85rem; margin-right: 0.25rem;"></i>
+                Access your most-used financial tools in one click
+            </p>
+        </div>
+    </div>
+
+    <div class="features-grid" style="margin-bottom: 3rem;">
+        <!-- Advanced Analytics Card -->
+        <div class="card-ui animate-rise glass-layer"
+            style="border-color: rgba(59, 130, 246, 0.2); background: rgba(30, 41, 59, 0.4);">
+            <a href="{{ url_for('recommendation.financial_analytics') }}"
+                style="text-decoration: none; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; border-radius: 16px; transition: all 0.3s ease;">
+                <div
+                    style="width: 60px; height: 60px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-chart-pie" style="font-size: 1.5rem; color: #3b82f6;"></i>
+                </div>
+                <h3 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 1.25rem; font-weight: 700;">
+                    Advanced
+                    Analytics</h3>
+                <p style="color: var(--text-muted); text-align: center; font-size: 0.9rem; margin-bottom: 0;">
+                    AI-driven deep insights<br>
+                    <span style="font-size: 0.8rem; opacity: 0.6;">Cluster analysis & projections</span>
+                </p>
+            </a>
+        </div>
+
+        <!-- Receipts History Card -->
+        <div class="card-ui animate-rise glass-layer"
+            style="border-color: rgba(16, 185, 129, 0.2); background: rgba(30, 41, 59, 0.4);">
+            <a href="{{ url_for('receipts.receipts_history') }}"
+                style="text-decoration: none; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem; border-radius: 16px; transition: all 0.3s ease;">
+                <div
+                    style="width: 60px; height: 60px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-receipt" style="font-size: 1.5rem; color: #10b981;"></i>
+                </div>
+                <h3 style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 1.25rem; font-weight: 700;">
+                    Receipts
+                    Hub</h3>
+                <p style="color: var(--text-muted); text-align: center; font-size: 0.9rem; margin-bottom: 0;">
+                    Manage scanned expenses<br>
+                    <span style="font-size: 0.8rem; opacity: 0.6;">History & Smart Matching</span>
+                </p>
+            </a>
+        </div>
+
+        <!-- Quick Stats (Only visible if data exists) -->
+        {% if dashboard_data %}
+        <div class="card-ui animate-rise"
+            style="display: flex; flex-direction: column; justify-content: center; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2);">
+            <div style="margin-bottom: 1rem;">
+                <h3
+                    style="color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                    Total Spending</h3>
+                <div style="font-size: 2.5rem; font-weight: 800; color: var(--text-main);">
+                    ₹{{ "{:,.0f}".format(dashboard_data.total_spending) }}
+                </div>
+            </div>
+            <div
+                style="color: var(--text-muted); font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+                <span>Historical Avg: ₹{{ "{:,.0f}".format(dashboard_data.total_spending * 0.9) }}</span>
+                <span style="color: #10b981; font-weight: 600;">{{ dashboard_data.health_score.level }}</span>
+            </div>
+        </div>
+
+        <!-- Budget Forecast Card -->
+        <div class="card-ui animate-rise"
+            style="display: flex; flex-direction: column; justify-content: center; background: {% if dashboard_data.budget.status == 'broke_alert' %}rgba(239, 68, 68, 0.05){% else %}rgba(59, 130, 246, 0.05){% endif %}; border: 1px solid {% if dashboard_data.budget.status == 'broke_alert' %}rgba(239, 68, 68, 0.2){% else %}rgba(59, 130, 246, 0.2){% endif %};">
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <h3
+                        style="color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">
+                        Month-End Forecast</h3>
+                    <span
+                        style="padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: {% if dashboard_data.budget.status == 'broke_alert' %}#ef4444{% elif dashboard_data.budget.status == 'warning' %}#f59e0b{% else %}#3b82f6{% endif %}; color: white;">
+                        {{ dashboard_data.budget.status.replace('_', ' ') }}
+                    </span>
+                </div>
+                <div
+                    style="font-size: 2.5rem; font-weight: 800; color: {% if dashboard_data.budget.status == 'broke_alert' %}#f87171{% else %}var(--text-main){% endif %};">
+                    ₹{{ "{:,.0f}".format(dashboard_data.budget.forecast) }}
+                </div>
+            </div>
+            <div
+                style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden;">
+                <div
+                    style="height: 100%; width: {{ (dashboard_data.budget.spent / dashboard_data.budget.limit * 100)|round }}%; background: {% if dashboard_data.budget.status == 'broke_alert' %}#ef4444{% else %}#3b82f6{% endif %}; border-radius: 10px; transition: width 1s ease;">
+                </div>
+            </div>
+            <div style="color: var(--text-muted); font-size: 0.85rem; display: flex; justify-content: space-between;">
+                <span style="cursor: pointer;" onclick="updateBudget()">Goal: ₹{{
+                    "{:,.0f}".format(dashboard_data.budget.limit) }} <i class="fa-solid fa-pen-to-square"
+                        style="font-size: 0.7rem; margin-left: 2px;"></i></span>
+                <span>{{ dashboard_data.budget.days_remaining }} days left</span>
+            </div>
+        </div>
+        <!-- Health Score Card -->
+        {% if dashboard_data.health_score %}
+        <div class="card-ui animate-rise"
+            style="position: relative; overflow: hidden; background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));">
+            <div style="position: absolute; top: -20px; right: -20px; font-size: 8rem; opacity: 0.05; color: white;">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <h3
+                style="color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem;">
+                Financial Health Score</h3>
+
+            <div style="display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;">
+                <span class="counter"
+                    style="font-size: 3.5rem; font-weight: 800; color: {{ dashboard_data.health_score.color }}; line-height: 1;">
+                    {{ dashboard_data.health_score.score }}
+                </span>
+                <span style="color: var(--text-muted); font-size: 1.25rem;">/ 100</span>
+            </div>
+            <p style="color: var(--text-main); font-weight: 500; margin-bottom: 0.5rem;">{{
+                dashboard_data.health_score.message }}</p>
+            <div
+                style="height: 6px; width: 100%; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden;">
+                <div
+                    style="height: 100%; width: {{ dashboard_data.health_score.score }}%; background: {{ dashboard_data.health_score.color }}; border-radius: 3px;">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% else %}
+        <!-- Empty State Placeholders -->
+        <div class="card-ui"
+            style="opacity: 0.5; pointer-events: none; display: flex; align-items: center; justify-content: center; text-align: center;">
+            <div>
+                <i class="fa-solid fa-chart-line"
+                    style="font-size: 2rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                <h3 style="color: var(--text-muted); font-size: 1rem;">Check your stats</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Upload data to see insights</p>
+            </div>
+        </div>
+        <div class="card-ui"
+            style="opacity: 0.5; pointer-events: none; display: flex; align-items: center; justify-content: center; text-align: center;">
+            <div>
+                <i class="fa-solid fa-heart-pulse"
+                    style="font-size: 2rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                <h3 style="color: var(--text-muted); font-size: 1rem;">Financial Health</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Get your score instantly</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if error %}
+    <div class="animate-rise"
+        style="margin-bottom: 2rem; padding: 1rem 1.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 12px; color: #f87171; display: flex; align-items: center; gap: 1rem;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    {% if dashboard_data %}
+
+    <!-- Section: Health Breakdown -->
+    <div class="animate-rise" style="margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <h2
+                style="font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fa-solid fa-stethoscope" style="color: var(--primary);"></i>
+                Health Breakdown
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
+                <i class="fa-solid fa-circle-info" style="font-size: 0.85rem; margin-right: 0.25rem;"></i>
+                Detailed analysis of your financial health factors - Savings rate, Budget status, and Spending pace
+            </p>
+        </div>
+    </div>
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        {% for factor_name, factor_data in dashboard_data.health_score.factors.items() %}
+        <div class="card-ui animate-rise" style="border-left: 4px solid {{ dashboard_data.health_score.color }};">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="color: var(--text-muted); font-size: 0.9rem; text-transform: capitalize;">{{ factor_name
+                    }}</span>
+                <span
+                    style="color: var(--text-main); font-weight: 700; font-size: 0.85rem; padding: 2px 8px; border-radius: 4px; background: {% if factor_data.status == 'Good' %}rgba(16, 185, 129, 0.2){% elif factor_data.status == 'Safe' %}rgba(59, 130, 246, 0.2){% else %}rgba(251, 191, 36, 0.2){% endif %};">
+                    {{ factor_data.status }}
+                </span>
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
+                {{ factor_data.score|round }}%
+            </div>
+            <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden;">
+                <div
+                    style="height: 100%; width: {{ factor_data.score|round }}%; background: {{ dashboard_data.health_score.color }}; transition: width 1s ease;">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Visualization Grid -->
+    <div class="viz-grid">
+
+        <!-- Spend Trends -->
+        <div class="card-ui animate-rise" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; color: var(--text-main); font-size: 1.1rem;">
+                    <i class="fa-solid fa-arrow-trend-up" style="color: #3b82f6; margin-right: 0.5rem;"></i> Monthly
+                    Trends
+                </h3>
+            </div>
+            <div style="height: 300px; position: relative;">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Category Breakdown (Doughnut) -->
+        <div class="card-ui animate-rise" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; color: var(--text-main); font-size: 1.1rem;">
+                    <i class="fa-solid fa-chart-pie" style="color: #10b981; margin-right: 0.5rem;"></i> Spending Mix
+                </h3>
+            </div>
+            <div style="height: 300px; position: relative;">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Clusters Analysis -->
+    <div class="card-ui animate-rise" style="margin-bottom: 3rem;">
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <h3 style="margin: 0; color: var(--text-main); font-size: 1.25rem;">
+                <i class="fa-solid fa-fingerprint" style="color: #f59e0b; margin-right: 0.5rem;"></i> AI Spending
+                Clusters
+            </h3>
+            <span
+                style="font-size: 0.85rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 0.25rem 0.75rem; border-radius: 20px;">
+                <i class="fa-solid fa-robot"></i> K-Means Analysis
+            </span>
+        </div>
+
+        <div class="cluster-container"
+            style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 2rem;">
+            <div class="card-ui"
+                style="padding: 2rem; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px;">
+                <div style="height: 400px; position: relative;">
+                    <canvas id="clusterChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="detailed-cluster-grid">
+            {% for cluster_id, stats in dashboard_data.cluster_stats.items() %}
+            {% set colors = [
+            {'bg': 'rgba(99, 102, 241, 0.05)', 'border': 'rgba(99, 102, 241, 0.3)', 'accent': '#6366f1', 'pill':
+            'rgba(99,
+            102, 241, 0.1)'},
+            {'bg': 'rgba(6, 182, 212, 0.05)', 'border': 'rgba(6, 182, 212, 0.3)', 'accent': '#06b6d4', 'pill': 'rgba(6,
+            182,
+            212, 0.1)'},
+            {'bg': 'rgba(244, 63, 94, 0.05)', 'border': 'rgba(244, 63, 94, 0.3)', 'accent': '#f43f5e', 'pill':
+            'rgba(244,
+            63, 94, 0.1)'}
+            ] %}
+            {% set theme = colors[loop.index0 % 3] %}
+
+            <div class="cluster-card" style="background: {{ theme.bg }}; border: 1.5px solid {{ theme.border }};">
+                <!-- Header -->
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <div
+                        style="width: 44px; height: 44px; background: {{ theme.accent }}; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; box-shadow: 0 4px 12px {{ theme.accent }}40;">
+                        {{ cluster_id }}
+                    </div>
+                    <div>
+                        <h4 style="margin: 0; font-size: 1.15rem; color: var(--text-main);">Cluster {{ cluster_id }}
+                        </h4>
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">{{ stats.count }}
+                            transactions</span>
+                    </div>
+                </div>
+
+                <!-- Primary Metrics -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Avg Amount
+                        </div>
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">₹{{
+                            "{:,.0f}".format(stats.avg_amount) }}</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Total</div>
+                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">₹{{
+                            "{:,.0f}".format(stats.total_amount) }}</div>
+                    </div>
+                </div>
+
+                <!-- Secondary Metrics -->
+                <div
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <div>
+                        <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Frequency
+                            Score
+                        </div>
+                        <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">{{
+                            stats.frequency_score
+                            }}</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Spend Ratio
+                        </div>
+                        <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">{{ stats.spend_ratio
+                            }}%
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tags Sections -->
+                <div class="tag-section">
+                    <h6>Top Categories:</h6>
+                    <div class="pill-container">
+                        {% for cat, count in stats.categories.items()|sort(attribute='1', reverse=True) %}
+                        {% if loop.index <= 3 %} <span class="data-pill"
+                            style="background: {{ theme.pill }}; color: var(--text-main);">{{ cat }}</span>
+                            {% endif %}
+                            {% endfor %}
+                    </div>
+                </div>
+
+                <div class="tag-section">
+                    <h6>Top Merchants:</h6>
+                    <div class="pill-container">
+                        {% if stats.top_merchants %}
+                        {% for merchant, count in stats.top_merchants.items() %}
+                        <span class="data-pill" style="background: {{ theme.pill }}; color: var(--text-main);">{{
+                            merchant
+                            }}</span>
+                        {% endfor %}
+                        {% else %}
+                        <span style="color: var(--text-muted); font-size: 0.8rem; font-style: italic;">No merchant
+                            data</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="tag-section">
+                    <h6>Payment Methods:</h6>
+                    <div class="pill-container">
+                        {% for method, count in stats.payment_methods.items() %}
+                        <span class="data-pill" style="background: {{ theme.pill }}; color: var(--text-main);">{{ method
+                            }}
+                            ({{ count }})</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Recent Activity / Scanned Expenses -->
+    <div class="card-ui animate-rise" style="margin-bottom: 3rem;">
+        <!-- Upcoming Bill Reminders -->
+        {% set unpaid_bills = expenses | selectattr('is_bill', 'equalto', True) | selectattr('is_paid', 'equalto',
+        False) |
+        list %}
+        {% if unpaid_bills %}
+        <div style="margin-bottom: 2rem;">
+            <h2
+                style="font-size: 1.25rem; font-weight: 700; color: #fbbf24; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-bell-concierge"></i> Upcoming Bill Reminders
+            </h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                {% for bill in unpaid_bills %}
+                <div class="card-ui"
+                    style="border-left: 4px solid #f59e0b; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+                    <div>
+                        <div style="font-weight: 700; color: var(--text-main); font-size: 1.1rem;">{{ bill.merchant }}
+                        </div>
+                        <div style="color: #f87171; font-size: 0.85rem; font-weight: 600; margin-top: 4px;">
+                            <i class="fa-solid fa-calendar-day"></i> Due: {{ bill.due_date.strftime('%d %b, %Y') if
+                            bill.due_date else 'Soon' }}
+                        </div>
+                    </div>
+                    <div style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); mb-2">₹{{
+                        "{:,.2f}".format(bill.amount) }}</div>
+                    <button
+                        onclick="copyUPILink({{ (current_user.upi_id or 'bill@upi') | tojson | safe }}, {{ bill.amount }}, {{ bill.merchant | tojson | safe }})"
+                        class="btn-primary-ui"
+                        style="background: #f59e0b; border: none; padding: 6px 15px; font-size: 0.8rem;">
+                        Pay Now
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">Activity Feed</h2>
+            <div style="display: flex; gap: 0.75rem;">
+                <a href="/expenses" class="btn-primary-ui"
+                    style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); font-size: 0.85rem; padding: 0.5rem 1rem;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> History
+                </a>
+                <a href="/receipts" class="btn-primary-ui"
+                    style="background: var(--primary-gradient); font-size: 0.85rem; padding: 0.5rem 1rem;">
+                    <i class="fa-solid fa-plus"></i> New Scan
+                </a>
+            </div>
+        </div>
+
+        {% if expenses %}
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for exp in expenses[:5] %}
+            <div class="card-ui glass-layer"
+                style="padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; border-color: rgba(255,255,255,0.03);">
+                <div style="display: flex; gap: 1.25rem; align-items: center;">
+                    <div
+                        style="width: 48px; height: 48px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.25rem;">
+                        <i
+                            class="fa-solid {% if exp.category == 'Food' %}fa-burger{% elif exp.category == 'Shopping' %}fa-bag-shopping{% else %}fa-credit-card{% endif %}"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; color: var(--text-main); font-size: 1rem;">{{ exp.merchant }}
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                            {{ exp.category }} &bull; {{ exp.date.strftime('%d %b, %H:%M') }}
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-weight: 800; color: var(--text-main); font-size: 1.15rem;">₹{{
+                        "{:,.2f}".format(exp.amount) }}</div>
+                    <div style="font-size: 0.7rem; color: #10b981; font-weight: 600; text-transform: uppercase;">
+                        Completed
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 4rem 2rem; color: var(--text-muted);">
+            <i class="fa-solid fa-ghost" style="font-size: 3rem; margin-bottom: 1.5rem; opacity: 0.2;"></i>
+            <p>No activity detected. Complete your first scan to begin tracking.</p>
+        </div>
+        {% endif %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+        <i class="fa-solid fa-basket-shopping" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+        <p>No transactions yet. Start by scanning a receipt!</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function copyUPILink(upiId, halfAmount, merchant) {
+        // Mock UPI Deep Link: upi://pay?pa=ID&pn=NAME&am=AMOUNT&tn=NOTE
+        const note = encodeURIComponent(`Split for ${merchant}`);
+        const link = `upi://pay?pa=${upiId}&am=${halfAmount}&tn=${note}`;
+
+        // Copy to clipboard
+        const el = document.createElement('textarea');
+        el.value = link;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+
+        showToast('UPI Link Copied!', `₹${halfAmount} split link ready for WhatsApp`, 'success');
+    }
+</script>
+
+<!-- Insights & Recommendations -->
+{% if dashboard_data.insights or dashboard_data.health_score.recommendations %}
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem;">
+    <!-- Insights -->
+    {% if dashboard_data.insights %}
+    <div class="card-ui animate-rise">
+        <h3 style="margin-bottom: 1.5rem; color: var(--text-main); font-size: 1.25rem;">
+            <i class="fa-solid fa-lightbulb" style="color: #fbbf24; margin-right: 0.5rem;"></i> Smart Insights
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for insight in dashboard_data.insights %}
+            <div
+                style="display: flex; gap: 1rem; padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 10px; border: 1px solid {% if insight.type == 'warning' %}rgba(239, 68, 68, 0.2){% elif insight.type == 'success' %}rgba(16, 185, 129, 0.2){% else %}rgba(59, 130, 246, 0.2){% endif %};">
+                <div style="margin-top: 0.2rem;">
+                    {% if insight.type == 'warning' %}
+                    <i class="fa-solid fa-triangle-exclamation" style="color: #f87171;"></i>
+                    {% elif insight.type == 'success' %}
+                    <i class="fa-solid fa-circle-check" style="color: #34d399;"></i>
+                    {% else %}
+                    <i class="fa-solid fa-circle-info" style="color: #60a5fa;"></i>
+                    {% endif %}
+                </div>
+                <div>
+                    <div style="font-weight: 600; color: var(--text-main); font-size: 0.95rem; margin-bottom: 0.25rem;">
+                        {{ insight.title }}</div>
+                    <div style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">{{ insight.message }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recommendations -->
+    {% if dashboard_data.health_score.recommendations %}
+    <div class="card-ui animate-rise">
+        <h3 style="margin-bottom: 1.5rem; color: var(--text-main); font-size: 1.25rem;">
+            <i class="fa-solid fa-clipboard-check" style="color: #a78bfa; margin-right: 0.5rem;"></i> Action Plan
+        </h3>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
+            {% for rec in dashboard_data.health_score.recommendations %}
+            <li style="display: flex; gap: 1rem; align-items: start;">
+                <div
+                    style="width: 24px; height: 24px; border-radius: 50%; background: rgba(167, 139, 250, 0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;">
+                    <span style="font-size: 0.75rem; font-weight: 700; color: #a78bfa;">{{ loop.index }}</span>
+                </div>
+                <span style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">{{ rec }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <div style="margin-top: 2rem; text-align: center;">
+            <button onclick="window.print()" class="btn-primary-ui" style="width: 100%; justify-content: center;">
+                <i class="fa-solid fa-file-export"></i> Download Full Report
+            </button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endif %}
+
+<!-- Chart.js and Confetti Logic -->
+{% if dashboard_data %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<script>
+    // Load dashboard data from the JSON block
+    const dashboardDataElement = document.getElementById('dashboard-data-json');
+    const dashboardData = dashboardDataElement ? JSON.parse(dashboardDataElement.textContent) : null;
+
+    if (dashboardData) {
+        // Theme Constants
+        const isDark = true;
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+        const tickColor = isDark ? '#94a3b8' : '#64748b';
+
+        Chart.defaults.color = tickColor;
+        Chart.defaults.borderColor = gridColor;
+
+        // --- 1. Spending Trend Chart ---
+        const ctxTrend = document.getElementById('trendChart');
+        if (ctxTrend) {
+            new Chart(ctxTrend.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: dashboardData.monthly_trend.labels || [],
+                    datasets: [{
+                        label: 'Spending',
+                        data: dashboardData.monthly_trend.data || [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: gridColor }, ticks: { callback: v => '₹' + v } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // --- 2. Category Distribution Chart ---
+        const ctxCategory = document.getElementById('categoryChart');
+        if (ctxCategory) {
+            const categoryData = dashboardData.category_distribution || {};
+            new Chart(ctxCategory.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categoryData),
+                    datasets: [{
+                        data: Object.values(categoryData),
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { color: tickColor, boxWidth: 10 } } }
+                }
+            });
+        }
+
+        // --- 3. Spending Clusters Chart ---
+        const ctxCluster = document.getElementById('clusterChart');
+        if (ctxCluster && dashboardData.n_clusters > 0) {
+            const datasets = [];
+            for (let i = 0; i < dashboardData.n_clusters; i++) {
+                datasets.push({
+                    label: `Cluster ${i}`,
+                    data: (dashboardData.pca_points || []).filter(p => p.cluster === i).map(p => ({ x: p.x, y: p.y })),
+                    backgroundColor: dashboardData.cluster_colors[i] || '#ccc',
+                    pointRadius: 5
+                });
+            }
+            // Add Centers
+            if (dashboardData.centers_points) {
+                datasets.push({
+                    label: 'Centers',
+                    data: dashboardData.centers_points.map(c => ({ x: c.x, y: c.y })),
+                    pointStyle: 'star',
+                    pointRadius: 10,
+                    backgroundColor: '#fff'
+                });
+            }
+
+            new Chart(ctxCluster.getContext('2d'), {
+                type: 'scatter',
+                data: { datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: tickColor, usePointStyle: true } } },
+                    scales: { x: { display: false }, y: { display: false } }
+                }
+            });
+        }
+
+        // --- 4. Celebration Confetti ---
+        const score = dashboardData.health_score ? dashboardData.health_score.score : 0;
+        if (score >= 80) {
+            window.addEventListener('load', () => {
+                const duration = 2000;
+                const end = Date.now() + duration;
+                (function frame() {
+                    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 } });
+                    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 } });
+                    if (Date.now() < end) { requestAnimationFrame(frame); }
+                }());
+            });
+        }
+    }
+
+    function upgradeToPro() {
+        if (confirm("Experience Fintelligent Pro for ₹499/month? (Demo: This will unlock Premium Features immediately)")) {
+            fetch('/upgrade-premium', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token() }}' }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('Upgrade Complete', data.message, 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    }
+                });
+        }
+    }
+
+    function updateBudget() {
+        const currentBudget = dashboardData && dashboardData.budget ? dashboardData.budget.limit : 20000;
+        const newBudget = prompt("Enter your monthly budget limit (₹):", currentBudget);
+        if (newBudget !== null && !isNaN(newBudget) && newBudget > 0) {
+            fetch('/api/update-budget', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ budget: parseFloat(newBudget) })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('Budget Updated', data.message, 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showToast('Error', data.message, 'error');
+                    }
+                })
+                .catch(err => showToast('Error', 'Failed to update budget', 'error'));
+        }
+    }
+</script>
+{% endif %}
+
+<style>
+    /* Dashboard Specific Styles */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .card-ui {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .card-ui:hover {
+        transform: translateY(-5px) scale(1.01) !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 0 15px rgba(59, 130, 246, 0.1) !important;
+        border-color: rgba(59, 130, 246, 0.4) !important;
+    }
+
+    @media (max-width: 768px) {
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .viz-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .cluster-container {
+            grid-template-columns: 1fr !important;
+        }
+
+        .cluster-chart-box {
+            height: 300px !important;
+        }
+
+        .cluster-legend {
+            max-height: none !important;
+        }
+
+        #categoryChart {
+            max-height: 250px;
+        }
+    }
+
+    .viz-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .detailed-cluster-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .cluster-card {
+        border-radius: 20px;
+        padding: 2.5rem 1.75rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cluster-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .tag-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .tag-section h6 {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+    }
+
+    .pill-container {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .data-pill {
+        padding: 0.4rem 0.9rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,79 @@
+flowchart TD
+    Start([Application Start])
+    InitFlask[Initialize Flask App]
+    InitConfig[Load Configuration]
+    InitDB[Initialize Database]
+    RegisterBP[Register Blueprints]
+    InitLogin[Initialize Flask-Login]
+    CreateTables[Create Database Tables]
+    StartServer[Start Flask Server<br/>Port 5001]
+    
+    WaitRequest[Wait for HTTP Request]
+    
+    RouteRequest{Route<br/>Request}
+    
+    %% Route branches
+    AuthRoute["Auth Routes<br/>register, login, logout"]
+    MainRoute["Main Routes<br/>Home, Dashboard Stats"]
+    TaxRoute["Tax Routes<br/>tax calculator"]
+    StockRoute["Stock Routes<br/>analyze-stock, get_clusters"]
+    RecRoute["Recommendation Routes<br/>upload, upload_expenditure"]
+    EduRoute["Education Routes<br/>education pages"]
+    StrategyRoute["Strategy Routes<br/>strategies"]
+    MonitorRoute["Monitoring Routes<br/>monitoring"]
+    
+    ProcessRequest[Process Request]
+    ExecuteRoute[Execute Route Handler]
+    ReturnResponse[Return Response]
+    
+    Continue{Continue<br/>Server?}
+    
+    End([Shutdown])
+    
+    %% Flow
+    Start --> InitFlask
+    InitFlask --> InitConfig
+    InitConfig --> InitDB
+    InitDB --> RegisterBP
+    RegisterBP --> InitLogin
+    InitLogin --> CreateTables
+    CreateTables --> StartServer
+    StartServer --> WaitRequest
+    
+    WaitRequest --> RouteRequest
+    
+    RouteRequest -->|/register, /login, /logout| AuthRoute
+    RouteRequest -->|/, /api/*| MainRoute
+    RouteRequest -->|/tax/*| TaxRoute
+    RouteRequest -->|/analyze-stock, /get_clusters| StockRoute
+    RouteRequest -->|/upload| RecRoute
+    RouteRequest -->|/education/*| EduRoute
+    RouteRequest -->|/strategies| StrategyRoute
+    RouteRequest -->|/monitoring| MonitorRoute
+    
+    AuthRoute --> ProcessRequest
+    MainRoute --> ProcessRequest
+    TaxRoute --> ProcessRequest
+    StockRoute --> ProcessRequest
+    RecRoute --> ProcessRequest
+    EduRoute --> ProcessRequest
+    StrategyRoute --> ProcessRequest
+    MonitorRoute --> ProcessRequest
+    
+    ProcessRequest --> ExecuteRoute
+    ExecuteRoute --> ReturnResponse
+    ReturnResponse --> Continue
+    
+    Continue -->|Yes| WaitRequest
+    Continue -->|No| End
+    
+    %% Styling
+    classDef startEnd fill:#c8e6c9,stroke:#2e7d32,stroke-width:3px
+    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef decision fill:#e1bee7,stroke:#7b1fa2,stroke-width:2px
+    classDef route fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    
+    class Start,End startEnd
+    class InitFlask,InitConfig,InitDB,RegisterBP,InitLogin,CreateTables,StartServer,WaitRequest,ProcessRequest,ExecuteRoute,ReturnResponse process
+    class RouteRequest,Continue decision
+    class AuthRoute,MainRoute,TaxRoute,StockRoute,RecRoute,EduRoute,StrategyRoute,MonitorRoute route

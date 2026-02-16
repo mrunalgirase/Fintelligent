@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% block title %}Financial Education - Fintelligent{% endblock %}
+{% block content %}
+
+<!-- Header -->
+<div style="text-align: center; margin-bottom: 2.5rem;">
+  <h1
+    style="font-size: 2.5rem; margin-bottom: 0.5rem; background: linear-gradient(to right, #818cf8, #3b82f6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+    Financial Education
+  </h1>
+  <p style="color: var(--text-muted); font-size: 1.1rem; margin: 0;">
+    Master budgeting, taxes, and investing with interactive tools and curated resources.
+  </p>
+</div>
+
+<!-- Main Learning Tracks -->
+<div
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+  <!-- Track 1 -->
+  <div class="card-ui animate-rise" style="display: flex; flex-direction: column; height: 100%;">
+    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🧭</div>
+    <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Budgeting Basics</h3>
+    <p style="color: var(--text-muted); flex: 1; margin-bottom: 1.5rem;">
+      Learn the 50/30/20 rule, zero-based budgeting, and how to track expenses effectively.
+    </p>
+    <a href="/education/students" class="btn-primary-ui" style="justify-content: center; width: 100%;">
+      Start Learning <i class="fa-solid fa-arrow-right" style="font-size: 0.8em;"></i>
+    </a>
+  </div>
+
+  <!-- Track 2 -->
+  <div class="card-ui animate-rise"
+    style="display: flex; flex-direction: column; height: 100%; transition-delay: 0.1s;">
+    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🛡️</div>
+    <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Safety Net</h3>
+    <p style="color: var(--text-muted); flex: 1; margin-bottom: 1.5rem;">
+      Understand why emergency funds and insurance are critical for financial stability.
+    </p>
+    <a href="/education/students" class="btn-primary-ui"
+      style="justify-content: center; width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); box-shadow: none;">
+      Explore Module
+    </a>
+  </div>
+
+  <!-- Track 3 -->
+  <div class="card-ui animate-rise"
+    style="display: flex; flex-direction: column; height: 100%; transition-delay: 0.2s;">
+    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🧮</div>
+    <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Taxes Simplified</h3>
+    <p style="color: var(--text-muted); flex: 1; margin-bottom: 1.5rem;">
+      Demystify Indian taxes. Compare New vs Old regime and maximize your refunds.
+    </p>
+    <a href="/tax" class="btn-primary-ui"
+      style="justify-content: center; width: 100%; background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); box-shadow: none;">
+      Try Calculator
+    </a>
+  </div>
+
+  <!-- Track 4 -->
+  <div class="card-ui animate-rise"
+    style="display: flex; flex-direction: column; height: 100%; transition-delay: 0.3s;">
+    <div style="font-size: 2.5rem; margin-bottom: 1rem;">📊</div>
+    <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Smart Investing</h3>
+    <p style="color: var(--text-muted); flex: 1; margin-bottom: 1.5rem;">
+      Discover the power of compounding, SIPs, and how to analyze stocks like a pro.
+    </p>
+    <a href="/analyze-stock" class="btn-primary-ui"
+      style="justify-content: center; width: 100%; background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); box-shadow: none;">
+      Analyze Stock
+    </a>
+  </div>
+</div>
+
+<!-- Highlighted Resources -->
+<div
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+
+  <!-- Student Hub -->
+  <div class="card-ui animate-rise"
+    style="background: linear-gradient(145deg, rgba(30, 41, 59, 1) 0%, rgba(15, 23, 42, 1) 100%); border-left: 4px solid var(--accent);">
+    <div style="display: flex; gap: 1.5rem; align-items: start;">
+      <div style="font-size: 2rem;">🎓</div>
+      <div>
+        <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Student Finance Hub</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem;">
+          A curated hub specifically for Indian students — clear explanations, practical tools, and relatable examples.
+        </p>
+        <a href="/education/students"
+          style="color: var(--accent); font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+          Visit Hub <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- External Courses -->
+  <div class="card-ui animate-rise" style="border: 1px dashed rgba(255,255,255,0.1);">
+    <h3 style="margin-bottom: 1rem; color: var(--text-main); font-size: 1.2rem;">
+      <i class="fa-solid fa-external-link-alt" style="margin-right: 0.5rem; color: var(--text-muted);"></i>
+      Free External Courses (Coursera)
+    </h3>
+    <ul style="padding-left: 1.5rem; color: var(--text-muted); margin: 0; font-size: 0.95rem; list-style-type: disc;">
+      <li style="margin-bottom: 0.75rem;">
+        <a href="https://www.coursera.org/courses?query=financial%20planning" target="_blank"
+          style="text-decoration: underline;">Fundamentals of Financial Planning</a> (Goldman Sachs)
+      </li>
+      <li style="margin-bottom: 0.75rem;">
+        <a href="https://www.coursera.org/courses?query=financial%20planning" target="_blank"
+          style="text-decoration: underline;">Financial Planning</a> (Indian School of Business)
+      </li>
+      <li style="margin-bottom: 0.75rem;">
+        <a href="https://www.coursera.org/courses?query=financial%20planning" target="_blank"
+          style="text-decoration: underline;">Personal Financial Planning</a> (Univ. of Florida)
+      </li>
+    </ul>
+  </div>
+
+  <!-- Glossary Hub -->
+  <div class="card-ui animate-rise"
+    style="background: linear-gradient(145deg, rgba(236, 72, 153, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border-left: 4px solid #ec4899; transition-delay: 0.1s;">
+    <div style="display: flex; gap: 1.5rem; align-items: start;">
+      <div style="font-size: 2rem;">💅</div>
+      <div>
+        <h3 style="margin-bottom: 0.5rem; color: var(--text-main);">Gen-Z Finance Glossary</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem;">
+          No cap, finance is confusing. We break down the jargon using slang you actually use.
+        </p>
+        <a href="/education/glossary"
+          style="color: #ec4899; font-weight: 600; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+          Get Enlightened <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,93 @@
+graph TB
+    %% Actors
+    User((User))
+    Admin((Administrator))
+    StockAPI((Stock Market API))
+    
+    %% Use Cases - Authentication
+    UC1[Register Account]
+    UC2[Login]
+    UC3[Logout]
+    UC4[Manage Session]
+    
+    %% Use Cases - Dashboard
+    UC5[View Dashboard]
+    UC6[View Statistics]
+    
+    %% Use Cases - Tax Management
+    UC7[Calculate Tax - New Regime]
+    UC8[Calculate Tax - Old Regime]
+    UC9[Compare Tax Regimes]
+    UC10[Calculate TDS]
+    UC11[Calculate HRA Exemption]
+    UC12[Calculate Advance Tax]
+    UC13[View Tax History]
+    
+    %% Use Cases - Stock Analysis
+    UC14[Analyze Stock]
+    UC15[View Stock Clusters]
+    UC16[Get Stock Data from API]
+    
+    %% Use Cases - Financial Recommendations
+    UC17[Upload Expenditure CSV]
+    UC18[View Spending Analytics]
+    UC19[Get Financial Recommendations]
+    UC20[View Clustering Results]
+    UC21[Generate Tax Strategy]
+    
+    %% Use Cases - Education & Tools
+    UC22[Calculate SIP Goal]
+    UC23[Get Budget Advice]
+    UC24[View Educational Content]
+    
+    %% Use Cases - Financial Monitoring
+    UC25[Monitor Finances]
+    UC26[Generate Reports]
+    
+    %% Relationships
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    User --> UC4
+    User --> UC5
+    User --> UC6
+    User --> UC7
+    User --> UC8
+    User --> UC9
+    User --> UC10
+    User --> UC11
+    User --> UC12
+    User --> UC13
+    User --> UC14
+    User --> UC15
+    User --> UC17
+    User --> UC18
+    User --> UC19
+    User --> UC20
+    User --> UC21
+    User --> UC22
+    User --> UC23
+    User --> UC24
+    User --> UC25
+    User --> UC26
+    
+    Admin --> UC6
+    Admin --> UC26
+    
+    UC14 --> UC16
+    UC16 -.->|uses| StockAPI
+    
+    %% Use Case Dependencies
+    UC5 -.->|includes| UC6
+    UC9 -.->|extends| UC7
+    UC9 -.->|extends| UC8
+    UC15 -.->|includes| UC16
+    UC19 -.->|includes| UC18
+    UC19 -.->|includes| UC20
+    
+    %% Styling
+    classDef actor fill:#e1f5ff,stroke:#01579b,stroke-width:3px
+    classDef usecase fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    
+    class User,Admin,StockAPI actor
+    class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12,UC13,UC14,UC15,UC16,UC17,UC18,UC19,UC20,UC21,UC22,UC23,UC24,UC25,UC26 usecase

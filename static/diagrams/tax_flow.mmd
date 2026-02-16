@@ -1,0 +1,10 @@
+sequenceDiagram
+  participant User as Browser
+  participant Tax as tax/routes.py
+
+  User->>Tax: POST /tax/calculate { income, deductions }
+  Tax->>Tax: calculate_new_regime_tax()
+  Tax->>Tax: calculate_old_regime_tax()
+  Tax->>Tax: calculate_tds() and calculate_advance_tax()
+  Tax-->>User: JSON with taxes, effective rates, TDS, advance tax
+
