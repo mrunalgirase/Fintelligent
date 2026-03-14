@@ -1,8 +1,12 @@
 from flask import Blueprint, render_template, jsonify
+from flask_login import login_required
+from fintelligent.utils.decorators import tier_required
 
 cards = Blueprint('cards', __name__)
 
 @cards.route('/cards')
+@login_required
+@tier_required(['STUDENT', 'PRO'])
 def compare_cards():
     """Render the credit card comparison page"""
     return render_template('cards.html')

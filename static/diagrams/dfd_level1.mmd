@@ -1,83 +1,57 @@
 flowchart TD
+    %% =========================================
+    %% DFD LEVEL 1 – CONTEXT DIAGRAM
+    %% =========================================
+
     %% External Entities
-    User[User]
-    StockAPI[Stock Market API<br/>Alpha Vantage]
-    
+    User["User<br/>(Student / Young Professional)"]
+    BankAPI["Bank / Statement Sources<br/>(Exports, PDFs, CSVs)"]
+    StockMarket["Stock Market Data<br/>(yfinance / Market APIs)"]
+    LLMService["Ollama LLM Server<br/>(llama3)"]
+
+    %% Main System
+    subgraph Fintelligent["Fintelligent System"]
+        UI["Web UI<br/>(Browser + React + Templates)"]
+        Core["Flask Backend<br/>(app.py + Blueprints)"]
+        AISvc["AI Service<br/>(FastAPI)"]
+    end
+
     %% Data Stores
-    UserDB[(D1: User Database)]
-    TaxHist[(D2: Tax History<br/>user_tax_history.csv)]
-    TaxData[(D3: Tax Data New<br/>user_tax_data_new.csv)]
-    ExpData[(D4: Expenditure Data<br/>expenditure.csv)]
-    TempStore[(D5: Temporary Storage)]
-    
-    %% Level 1 Processes
-    P1[1.0<br/>User Authentication<br/>& Management]
-    P2[2.0<br/>Tax Calculation<br/>& Planning]
-    P3[3.0<br/>Stock Analysis<br/>& Clustering]
-    P4[4.0<br/>Financial Recommendations<br/>& Strategies]
-    P5[5.0<br/>Education &<br/>Financial Tools]
-    P6[6.0<br/>Financial Monitoring]
-    P7[7.0<br/>Dashboard &<br/>Statistics]
-    
-    %% User interactions with processes
-    User -->|Login Credentials| P1
-    User -->|Registration Data| P1
-    P1 -->|Authentication Status| User
-    P1 -->|Session Info| User
-    
-    User -->|Income & Deductions| P2
-    User -->|HRA Details| P2
-    User -->|TDS Info| P2
-    P2 -->|Tax Calculations| User
-    P2 -->|Tax Comparison| User
-    P2 -->|Recommendations| User
-    
-    User -->|Stock Symbol| P3
-    P3 -->|Stock Data Request| StockAPI
-    StockAPI -->|Historical Data| P3
-    P3 -->|Clustering Results| User
-    P3 -->|Analysis Reports| User
-    
-    User -->|Expenditure CSV| P4
-    P4 -->|Personalized Recommendations| User
-    P4 -->|Spending Insights| User
-    P4 -->|Budget Advice| User
-    
-    User -->|SIP Goals| P5
-    User -->|Budget Queries| P5
-    P5 -->|SIP Calculations| User
-    P5 -->|Budget Plans| User
-    P5 -->|Educational Content| User
-    
-    User -->|Monitoring Requests| P6
-    P6 -->|Financial Reports| User
-    
-    User -->|Dashboard Access| P7
-    P7 -->|Dashboard Stats| User
-    
-    %% Data flows to/from data stores
-    P1 -->|Store User Data| UserDB
-    P1 -->|Read User Data| UserDB
-    
-    P2 -->|Read Tax History| TaxHist
-    P2 -->|Store Tax Data| TaxData
-    P4 -->|Read Tax Data| TaxData
-    P4 -->|Read Tax History| TaxHist
-    
-    P4 -->|Store Expenditure| ExpData
-    P4 -->|Read Expenditure| ExpData
-    P4 -->|Store Temp File| TempStore
-    P4 -->|Read Temp File| TempStore
-    
-    P7 -->|Read User Data| UserDB
-    P7 -->|Read Tax Data| TaxData
-    P7 -->|Read Expenditure| ExpData
-    
-    %% Styling
-    classDef external fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef datastore fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    
-    class User,StockAPI external
-    class P1,P2,P3,P4,P5,P6,P7 process
-    class UserDB,TaxHist,TaxData,ExpData,TempStore datastore
+    DB["D1: Application Database<br/>(SQLite fintelligent.db)"]
+    TaxHistory["D2: Tax History CSV<br/>(user_tax_history.csv)"]
+    SpendCSV["D3: User Expenditure CSVs<br/>(uploads / expenditure.csv)"]
+
+    %% Flows: User <-> System
+    User -->|"Login / Register data"| Core
+    Core -->|"Account status, dashboard views"| User
+
+    User -->|"Tax inputs<br/>(income, deductions)"| Core
+    Core -->|"Tax result, regime comparison"| User
+
+    User -->|"Upload transactions CSV"| Core
+    Core -->|"Analytics dashboard,<br/>spending insights, alerts"| User
+
+    User -->|"Stock symbol"| Core
+    Core -->|"Clustered stock analysis,<br/>charts"| User
+
+    User -->|"Request AI tips"| UI
+    UI -->|"API call /ai/financial-literacy"| AISvc
+    AISvc -->|"Financial literacy tips JSON"| UI
+    UI -->|"Coach explanations & habits"| User
+
+    %% Flows: External Services
+    Core -->|"Fetch historical prices"| StockMarket
+    StockMarket -->|"OHLCV data"| Core
+
+    Core -->|"Persist users, budgets,<br/>gamification progress"| DB
+    DB -->|"User profile, XP, settings"| Core
+
+    Core -->|"Append tax records"| TaxHistory
+    TaxHistory -->|"Training data for regression"| Core
+
+    Core -->|"Read/write user CSVs"| SpendCSV
+    SpendCSV -->|"Spending rows for analysis"| Core
+
+    AISvc -->|"Prompt + parameters"| LLMService
+    LLMService -->|"Generated JSON response"| AISvc
+

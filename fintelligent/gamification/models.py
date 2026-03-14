@@ -6,6 +6,9 @@ class GamificationProfile(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, unique=True)
     level = db.Column(db.Integer, default=1)
     xp = db.Column(db.Integer, default=0)
+    streak_count = db.Column(db.Integer, default=0)
+    last_activity_date = db.Column(db.DateTime, nullable=True)
+    long_streak_record = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     # Relationships

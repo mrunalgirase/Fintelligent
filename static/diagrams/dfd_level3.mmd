@@ -1,184 +1,82 @@
 flowchart TD
-    %% External Entities
-    User[User]
-    StockAPI[Stock Market API]
+    %% =========================================
+    %% DFD LEVEL 3 – SPENDING ANALYTICS & RECOMMENDATION DETAIL
+    %% Focus on /analytics + regression & clustering
+    %% =========================================
+
+    %% External Entity
+    User["E1: User"]
+
+    %% Top-Level Process
+    P3["P3: Spending Analytics & Recommendations<br/>(/analytics, recommendation routes)"]
+
+    %% Decomposed Subprocesses
+    P3_1["P3.1: Upload & Parse CSV"]
+    P3_2["P3.2: Clean & Enrich Transactions"]
+    P3_3["P3.3: Aggregate Metrics<br/>(totals, monthly trend)"]
+    P3_4["P3.4: Build Category Feature Matrix"]
+    P3_5["P3.5: Cluster Categories<br/>(StandardScaler + KMeans + PCA)"]
+    P3_6["P3.6: Compute Health Score & Velocity Label"]
+    P3_7["P3.7: Budget Forecast & Overspending Detection"]
+    P3_8["P3.8: Generate Cluster Insights<br/>(top categories, merchants, payment mix)"]
+    P3_9["P3.9: Build Dashboard JSON<br/>(charts, insights, alerts)"]
+    P3_10["P3.10: Train Regression from Tax History<br/>(get_regression_recommendation)"]
+    P3_11["P3.11: Predict Recommended Allocations<br/>(80C, 80D, housing)"]
     
     %% Data Stores
-    UserDB[(D1: User Database)]
-    TaxHist[(D2: Tax History)]
-    TaxData[(D3: Tax Data New)]
-    ExpData[(D4: Expenditure Data)]
-    TempStore[(D5: Temporary Storage)]
-    
-    %% Level 3 - Detailed breakdown of Process 2.1 (Tax Calculation)
-    subgraph P2_1["2.1 Calculate Tax (New/Old Regime)"]
-        P2_1_1[2.1.1<br/>Validate Input<br/>Income & Deductions]
-        P2_1_2[2.1.2<br/>Apply Standard<br/>Deduction]
-        P2_1_3[2.1.3<br/>Calculate Tax<br/>New Regime Slabs]
-        P2_1_4[2.1.4<br/>Apply Tax Rebates<br/>Section 87A]
-        P2_1_5[2.1.5<br/>Calculate Tax<br/>Old Regime Slabs]
-        P2_1_6[2.1.6<br/>Apply Old Regime<br/>Deductions]
-        P2_1_7[2.1.7<br/>Compare Results]
-        P2_1_8[2.1.8<br/>Format Output]
-    end
-    
-    %% Level 3 - Detailed breakdown of Process 4.2 (Process Expenditure Data)
-    subgraph P4_2["4.2 Process Expenditure Data"]
-        P4_2_1[4.2.1<br/>Validate CSV<br/>Format]
-        P4_2_2[4.2.2<br/>Parse CSV<br/>Columns]
-        P4_2_3[4.2.3<br/>Aggregate by<br/>Category]
-        P4_2_4[4.2.4<br/>Aggregate by<br/>Date]
-        P4_2_5[4.2.5<br/>Aggregate by<br/>Payment Method]
-        P4_2_6[4.2.6<br/>Calculate Totals<br/>& Percentages]
-        P4_2_7[4.2.7<br/>Create Pivot Table]
-        P4_2_8[4.2.8<br/>Prepare Data<br/>for Clustering]
-    end
-    
-    %% Level 3 - Detailed breakdown of Process 4.3 (Clustering)
-    subgraph P4_3["4.3 Perform Clustering on Spending"]
-        P4_3_1[4.3.1<br/>Normalize Data<br/>StandardScaler]
-        P4_3_2[4.3.2<br/>Determine Optimal<br/>Clusters K]
-        P4_3_3[4.3.3<br/>Apply K-Means<br/>Algorithm]
-        P4_3_4[4.3.4<br/>Perform PCA<br/>for Visualization]
-        P4_3_5[4.3.5<br/>Calculate Cluster<br/>Profiles]
-        P4_3_6[4.3.6<br/>Generate Elbow<br/>Curve Data]
-    end
-    
-    %% Level 3 - Detailed breakdown of Process 4.4 (Generate Recommendations)
-    subgraph P4_4["4.4 Generate Recommendations"]
-        P4_4_1[4.4.1<br/>Analyze Spending<br/>Patterns]
-        P4_4_2[4.4.2<br/>Check Category<br/>Thresholds]
-        P4_4_3[4.4.3<br/>Compare with<br/>Cluster Average]
-        P4_4_4[4.4.4<br/>Generate Budget<br/>Suggestions]
-        P4_4_5[4.4.5<br/>Create Personalized<br/>Messages]
-        P4_4_6[4.4.6<br/>Format Recommendations]
-    end
-    
-    %% Level 3 - Detailed breakdown of Process 3.3 (Stock Clustering)
-    subgraph P3_3["3.3 Perform Clustering (K-Means)"]
-        P3_3_1[3.3.1<br/>Calculate Returns<br/>Percentage Change]
-        P3_3_2[3.3.2<br/>Calculate Volatility<br/>Rolling Std Dev]
-        P3_3_3[3.3.3<br/>Normalize Features<br/>StandardScaler]
-        P3_3_4[3.3.4<br/>Apply K-Means<br/>n_clusters=3]
-        P3_3_5[3.3.5<br/>Assign Cluster<br/>Labels]
-        P3_3_6[3.3.6<br/>Prepare Clustering<br/>Results]
-    end
-    
-    %% Level 3 - Detailed breakdown of Process 5.1 (SIP Calculator)
-    subgraph P5_1["5.1 SIP Goal Calculator"]
-        P5_1_1[5.1.1<br/>Validate Input<br/>Target & Years]
-        P5_1_2[5.1.2<br/>Calculate Monthly<br/>Interest Rate]
-        P5_1_3[5.1.3<br/>Apply SIP Formula<br/>Future Value]
-        P5_1_4[5.1.4<br/>Calculate Monthly<br/>SIP Amount]
-        P5_1_5[5.1.5<br/>Format Result]
-    end
-    
-    %% Level 3 - Detailed breakdown of Process 5.2 (Budget Advice)
-    subgraph P5_2["5.2 Budget Advice Generator"]
-        P5_2_1[5.2.1<br/>Validate Income<br/>Input]
-        P5_2_2[5.2.2<br/>Calculate Needs<br/>50% Rule]
-        P5_2_3[5.2.3<br/>Calculate Wants<br/>30% Rule]
-        P5_2_4[5.2.4<br/>Calculate Savings<br/>20% Rule]
-        P5_2_5[5.2.5<br/>Format Budget<br/>Allocation]
-    end
-    
-    %% User flows to Process 2.1
-    User -->|Income & Deductions| P2_1_1
-    P2_1_8 -->|Tax Results| User
-    
-    %% User flows to Process 4.2
-    User -->|CSV File| P4_2_1
-    P4_2_8 -->|Processed Data| P4_3
-    
-    %% User flows to Process 4.4
-    P4_4_6 -->|Recommendations| User
-    
-    %% User flows to Process 5.1 & 5.2
-    User -->|SIP Parameters| P5_1_1
-    P5_1_5 -->|SIP Amount| User
-    User -->|Income| P5_2_1
-    P5_2_5 -->|Budget Plan| User
-    
-    %% Data flows - Process 2.1
-    P2_1_1 -->|Read Tax History| TaxHist
-    P2_1_7 -->|Store Results| TaxData
-    
-    %% Data flows - Process 4.2
-    P4_2_1 -->|Read Temp File| TempStore
-    P4_2_7 -->|Store Processed Data| ExpData
-    P4_2_3 -->|Store Aggregations| ExpData
-    
-    %% Data flows - Process 4.3
-    P4_3_1 -->|Read Expenditure| ExpData
-    P4_3_5 -->|Store Cluster Data| ExpData
-    
-    %% Data flows - Process 4.4
-    P4_4_2 -->|Read Expenditure| ExpData
-    P4_4_3 -->|Read Cluster Data| ExpData
-    P4_4_1 -->|Read Tax Data| TaxData
-    
-    %% Internal process flows - 2.1
-    P2_1_1 --> P2_1_2
-    P2_1_2 --> P2_1_3
-    P2_1_3 --> P2_1_4
-    P2_1_2 --> P2_1_5
-    P2_1_5 --> P2_1_6
-    P2_1_4 --> P2_1_7
-    P2_1_6 --> P2_1_7
-    P2_1_7 --> P2_1_8
-    
-    %% Internal process flows - 4.2
-    P4_2_1 --> P4_2_2
-    P4_2_2 --> P4_2_3
-    P4_2_2 --> P4_2_4
-    P4_2_2 --> P4_2_5
-    P4_2_3 --> P4_2_6
-    P4_2_4 --> P4_2_6
-    P4_2_5 --> P4_2_6
-    P4_2_6 --> P4_2_7
-    P4_2_7 --> P4_2_8
-    
-    %% Internal process flows - 4.3
-    P4_3_1 --> P4_3_2
-    P4_3_2 --> P4_3_3
-    P4_3_3 --> P4_3_4
-    P4_3_3 --> P4_3_5
-    P4_3_2 --> P4_3_6
-    
-    %% Internal process flows - 4.4
-    P4_4_1 --> P4_4_2
-    P4_4_2 --> P4_4_3
-    P4_4_3 --> P4_4_4
-    P4_4_4 --> P4_4_5
-    P4_4_5 --> P4_4_6
-    
-    %% Internal process flows - 3.3
-    P3_3_1 --> P3_3_2
-    P3_3_2 --> P3_3_3
-    P3_3_3 --> P3_3_4
-    P3_3_4 --> P3_3_5
-    P3_3_5 --> P3_3_6
-    
-    %% Internal process flows - 5.1
-    P5_1_1 --> P5_1_2
-    P5_1_2 --> P5_1_3
-    P5_1_3 --> P5_1_4
-    P5_1_4 --> P5_1_5
-    
-    %% Internal process flows - 5.2
-    P5_2_1 --> P5_2_2
-    P5_2_1 --> P5_2_3
-    P5_2_1 --> P5_2_4
-    P5_2_2 --> P5_2_5
-    P5_2_3 --> P5_2_5
-    P5_2_4 --> P5_2_5
-    
-    %% Styling
-    classDef external fill:#e1f5ff,stroke:#01579b,stroke-width:2px
-    classDef process fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    classDef datastore fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    classDef subprocess fill:#e8f5e9,stroke:#2e7d32,stroke-width:1px
-    
-    class User,StockAPI external
-    class UserDB,TaxHist,TaxData,ExpData,TempStore datastore
-    class P2_1_1,P2_1_2,P2_1_3,P2_1_4,P2_1_5,P2_1_6,P2_1_7,P2_1_8,P4_2_1,P4_2_2,P4_2_3,P4_2_4,P4_2_5,P4_2_6,P4_2_7,P4_2_8,P4_3_1,P4_3_2,P4_3_3,P4_3_4,P4_3_5,P4_3_6,P4_4_1,P4_4_2,P4_4_3,P4_4_4,P4_4_5,P4_4_6,P3_3_1,P3_3_2,P3_3_3,P3_3_4,P3_3_5,P3_3_6,P5_1_1,P5_1_2,P5_1_3,P5_1_4,P5_1_5,P5_2_1,P5_2_2,P5_2_3,P5_2_4,P5_2_5 subprocess
+    D1["D1: User & Gamification DB<br/>(user id, monthly budget)"]
+    D2["D2: Tax History CSV<br/>(user_tax_history.csv)"]
+    D3["D3: Uploaded CSV (raw)"]
+    D4["D4: Processed Analytics Snapshot<br/>(cached dashboard state)"]
+
+    %% External Systems (optional inputs)
+    AISvc["E2: AI Service / LLM Tips<br/>(optional future integration)"]
+
+    %% USER ↔ ENTRY
+    User -->|"Upload CSV file"| P3_1
+    P3_1 -->|"Raw CSV stored (user, filename)"| D3
+    D3 -->|"Raw rows"| P3_2
+
+    %% CLEAN & ENRICH
+    P3_2 -->|"Typed transactions<br/>(date, category, amount, merchant, payment_method)"| P3_3
+
+    %% AGGREGATIONS
+    P3_3 -->|"total_spent, category_totals,<br/>monthly series"| P3_4
+
+    %% FEATURE MATRIX FOR CLUSTERING
+    P3_4 -->|"Per-category features<br/>(mean, sum, count)"| P3_5
+
+    %% CLUSTERING
+    P3_5 -->|"Cluster labels per category<br/>+ PCA points"| P3_8
+
+    %% HEALTH SCORE & VELOCITY
+    P3_3 -->|"Totals & averages"| P3_6
+    P3_6 -->|"Score + velocity label"| P3_9
+
+    %% BUDGET & OVESPENDING
+    User -->|"Monthly budget (profile)"| D1
+    D1 -->|"Budget limit for user"| P3_7
+
+    P3_2 -->|"This month transactions"| P3_7
+    P3_7 -->|"Forecast vs limit,<br/>overspending flags"| P3_9
+
+    %% CLUSTER INSIGHTS
+    P3_5 -->|"Cluster assignments<br/>(cluster_id per row)"| P3_8
+    P3_2 -->|"Enriched transactions<br/>with categories & methods"| P3_8
+
+    P3_8 -->|"Per-cluster stats:<br/>count, avg, total, frequency_score,<br/>spend_ratio, top categories, merchants,<br/>payment_method mix"| P3_9
+
+    %% REGRESSION RECOMMENDATION
+    User -->|"Current income & housing profile"| P3_11
+    D2 -->|"Historical tax rows"| P3_10
+    P3_10 -->|"Fitted LinearRegression models<br/>per target (80C, 80D, housing)"| P3_11
+    P3_11 -->|"Recommended numeric allocations"| P3_9
+
+    %% DASHBOARD BUILD
+    P3_9 -->|"Dashboard JSON:<br/>financial_category, category_color, icon,<br/>total_spent, category_distribution,<br/>monthly_trend, budget, health_score,<br/>pca_points, cluster_details,<br/>insights, overspending_areas"| D4
+    D4 -->|"Dashboard JSON"| User
+
+    %% OPTIONAL: AI SERVICE HOOK
+    P3_9 -->|"Key metrics (top overspend,<br/>score, clusters)"| AISvc
+    AISvc -->|"Context-aware coaching tips"| User
+

@@ -1,0 +1,134 @@
+flowchart TD
+    %% =========================
+    %% MODELING & ALGORITHM PIPELINE
+    %% =========================
+
+    subgraph DataSources["Data Sources"]
+        TaxCSV["Historical Tax Data<br/>user_tax_history.csv"]
+        SpendCSV["User Expenditure CSV<br/>Uploaded in /analytics"]
+        StockAPI["Stock OHLCV Data<br/>yfinance API"]
+        AppDB["App Events & Profiles<br/>SQLite fintelligent.db"]
+        GameConfig["Gamification Design<br/>gamification_config.json"]
+    end
+
+    subgraph Preprocess["Preprocessing & Feature Engineering"]
+        TaxPrep["Tax Feature Builder<br/>Select income & deduction features"]
+        SpendPrep["Spending Cleaner<br/>Parse dates, amounts,<br/>derive month & category totals"]
+        StockPrep["Stock Returns & Volatility<br/>Return = pct_change(Close)<br/>Volatility = rolling std(20d)"]
+        ScaleStd["StandardScaler<br/>Normalize numeric features"]
+    end
+
+    subgraph Modeling["Modeling & Algorithms"]
+        subgraph TaxModels["Tax & Regime Logic<br/>fintelligent/tax/routes.py"]
+            NewRegime["Piecewise Tax Function<br/>calculate_new_regime_tax()"]
+            OldRegime["Piecewise Tax Function<br/>calculate_old_regime_tax()"]
+            TDSModel["TDS & Advance Tax Schedule<br/>calculate_tds(), calculate_advance_tax()"]
+        end
+
+        subgraph RecModels["Recommendation Models<br/>fintelligent/recommendation/routes.py"]
+            RegModel["Linear Regression<br/>get_regression_recommendation()<br/>Predict invested_80C,<br/>80D, home EMI from income profile"]
+            SpendClusters["Spending Behavior Clusters<br/>KMeans on category stats<br/>(mean, sum, count)"]
+            SpendPCA["Dimensionality Reduction<br/>PCA to 2D for visualization"]
+            HealthScore["Heuristic Health Score<br/>Rule-based 0–100 scoring"]
+            BudgetForecast["Budget Forecast<br/>Extrapolate month spend<br/>from current run rate"]
+        end
+
+        subgraph StockModels["Stock Analysis Models<br/>fintelligent/stocks/routes.py"]
+            StockKMeans["Volatility/Return Clusters<br/>KMeans on (Return, Volatility)"]
+        end
+
+        subgraph AICoach["AI Coach (LLM)<br/>ai_service/main.py"]
+            PromptDesign["System Prompt Design<br/>Financial Literacy Coach<br/>India-focused"]
+            LLMCall["Ollama Generate API<br/>Model: llama3<br/>format=json"]
+            JSONParser["JSON Parsing & Validation<br/>FinancialLiteracyResponse"]
+        end
+    end
+
+    subgraph Refinement["Model Evaluation & Refinement"]
+        TaxCompare["Tax Regime Comparison<br/>New vs Old<br/>Compute savings & rates"]
+        ClusterInsights["Cluster Diagnostics<br/>Cluster sizes, top categories,<br/>payment mix, spend ratio"]
+        VelocityLabel["Spending Velocity Label<br/>(High Velocity / Balanced / Frugal)"]
+        ThresholdTune["Rule & Threshold Tuning<br/>Overspending cutoffs,<br/>budget alerts, challenge XP"]
+        Gamify["Gamification Mapping<br/>Map behaviors → XP,<br/>badges, challenges"]
+    end
+
+    subgraph Delivery["Personalized Output & UX"]
+        TaxUI["Tax Calculator JSON + UI<br/>/tax/calculate, /tax/tds, /tax/hra"]
+        AnalyticsUI["Financial Analytics Dashboard<br/>/analytics<br/>clusters, PCA chart,<br/>overspending areas"]
+        StockUI["Stock Cluster Visualization<br/>/get_clusters"]
+        CoachTips["AI Coach Tips JSON<br/>/ai/financial-literacy"]
+        GameUX["Gamified Feedback<br/>Levels, badges, streaks"]
+    end
+
+    %% ========= FLOWS =========
+    %% Data → Preprocess
+    TaxCSV --> TaxPrep
+    SpendCSV --> SpendPrep
+    StockAPI --> StockPrep
+    AppDB --> Gamify
+    GameConfig --> Gamify
+
+    %% Preprocess → Modeling
+    TaxPrep --> NewRegime
+    TaxPrep --> OldRegime
+    TaxPrep --> TDSModel
+
+    SpendPrep --> ScaleStd
+    ScaleStd --> SpendClusters
+    SpendPrep --> SpendPCA
+    SpendPrep --> HealthScore
+    SpendPrep --> BudgetForecast
+
+    StockPrep --> ScaleStd
+    ScaleStd --> StockKMeans
+
+    %% Recommendation pipeline
+    TaxCSV --> RegModel
+    RegModel --> Refinement
+
+    %% LLM pipeline
+    SpendPrep --> PromptDesign
+    PromptDesign --> LLMCall
+    LLMCall --> JSONParser
+
+    %% Modeling → Refinement
+    NewRegime --> TaxCompare
+    OldRegime --> TaxCompare
+    TDSModel --> TaxCompare
+
+    SpendClusters --> ClusterInsights
+    SpendPCA --> ClusterInsights
+    HealthScore --> VelocityLabel
+    BudgetForecast --> VelocityLabel
+    StockKMeans --> ClusterInsights
+
+    ClusterInsights --> ThresholdTune
+    VelocityLabel --> ThresholdTune
+    ThresholdTune --> Gamify
+    JSONParser --> Gamify
+
+    %% Refinement → Delivery
+    TaxCompare --> TaxUI
+    TDSModel --> TaxUI
+    HealthScore --> AnalyticsUI
+    SpendClusters --> AnalyticsUI
+    SpendPCA --> AnalyticsUI
+    BudgetForecast --> AnalyticsUI
+    ClusterInsights --> AnalyticsUI
+    StockKMeans --> StockUI
+    JSONParser --> CoachTips
+    Gamify --> GameUX
+
+    %% ========= STYLES =========
+    classDef source fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef prep fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef model fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef refine fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef deliver fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+
+    class TaxCSV,SpendCSV,StockAPI,AppDB,GameConfig source
+    class TaxPrep,SpendPrep,StockPrep,ScaleStd prep
+    class NewRegime,OldRegime,TDSModel,RegModel,SpendClusters,SpendPCA,HealthScore,BudgetForecast,StockKMeans,PromptDesign,LLMCall,JSONParser model
+    class TaxCompare,ClusterInsights,VelocityLabel,ThresholdTune,Gamify refine
+    class TaxUI,AnalyticsUI,StockUI,CoachTips,GameUX deliver
+

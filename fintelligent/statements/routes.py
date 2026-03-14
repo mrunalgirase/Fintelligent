@@ -1,4 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, current_app
+from flask_login import login_required
+from fintelligent.utils.decorators import tier_required
 from . import statements
 import os
 import pdfplumber
@@ -154,6 +156,8 @@ def parse_bank_statement(filepath):
     return transactions
 
 @statements.route('/statements', methods=['GET', 'POST'])
+@login_required
+@tier_required('PRO')
 def index():
     analysis = None
     

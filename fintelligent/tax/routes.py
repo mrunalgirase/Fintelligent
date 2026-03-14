@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
+from flask_login import login_required
+from fintelligent.utils.decorators import tier_required
 import math
 
 tax = Blueprint('tax', __name__)
@@ -129,18 +131,26 @@ def calculate_lta_exemption(income, lta_claimed=0):
     return min(lta_claimed, 40000)
 
 @tax.route('/tax')
+@login_required
+@tier_required('PRO')
 def tax_home():
     return render_template('tax_calculator.html')
 
 @tax.route('/tax/tds-calculator')
+@login_required
+@tier_required('PRO')
 def tds_calculator():
     return render_template('tds_calculator.html')
 
 @tax.route('/tax/hra-calculator')
+@login_required
+@tier_required('PRO')
 def hra_calculator():
     return render_template('hra_calculator.html')
 
 @tax.route('/tax/advance-tax-calculator')
+@login_required
+@tier_required('PRO')
 def advance_tax_calculator():
     return render_template('advance_tax_calculator.html')
 

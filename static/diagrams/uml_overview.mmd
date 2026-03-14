@@ -1,0 +1,193 @@
+classDiagram
+    %% =========================================
+    %% UML OVERVIEW – KEY COMPONENTS & SERVICES
+    %% =========================================
+
+    %% Core Application
+    class FlaskApp {
+        -Flask app
+        -config
+        +register_blueprint(bp)
+        +run(host, port)
+    }
+
+    class FastAPIApp {
+        -FastAPI app
+        +post_ai_financial_literacy()
+        +run(host, port)
+    }
+
+    class Extensions {
+        +db
+        +login_manager
+        +csrf
+        +limiter
+        +talisman
+    }
+
+    %% Domain Models
+    class User {
+        +id: int
+        +username: str
+        +password_hash: str
+        +monthly_budget: float
+        +set_password(pw)
+        +check_password(pw)
+    }
+
+    class GamificationProfile {
+        +id: int
+        +user_id: int
+        +xp: int
+        +level: int
+        +badges: list
+        +streak: int
+    }
+
+    %% Blueprints / Route Modules
+    class MainRoutes {
+        +home()
+        +dashboard()
+        +get_dashboard_data(user_id)
+    }
+
+    class AuthRoutes {
+        +register()
+        +login()
+        +logout()
+    }
+
+    class TaxRoutes {
+        +tax_home()
+        +calculate_tax()
+        +tds_calculator()
+        +hra_calculator()
+        +advance_tax_calculator()
+    }
+
+    class RecommendationRoutes {
+        +dashboard()
+        +financial_analytics()
+        +get_regression_recommendation(user_input)
+    }
+
+    class StocksRoutes {
+        +analyze_stock_page()
+        +get_clusters()
+    }
+
+    class AiCoachRoutes {
+        +ai_coach_page()
+        +proxy_ai_tips()
+    }
+
+    class GamificationRoutes {
+        +dashboard()
+        +update_progress()
+        +list_challenges()
+    }
+
+    %% Services / Logic
+    class TaxService {
+        +calculate_new_regime_tax(income, deductions)
+        +calculate_old_regime_tax(income, deductions)
+        +calculate_tds(income, frequency)
+        +calculate_advance_tax(income, quarter)
+        +calculate_hra_exemption(basic, hra, rent, city)
+    }
+
+    class SpendAnalyticsService {
+        +parse_csv(file)
+        +build_category_features(df)
+        +run_kmeans_pca(features)
+        +compute_health_score(df)
+        +compute_budget_forecast(df, budget_limit)
+        +build_cluster_details(df, clusters)
+    }
+
+    class RegressionService {
+        +save_user_tax_data(user_id, income, 80C, 80D, principal, interest)
+        +get_regression_recommendation(user_input)
+    }
+
+    class StockAnalysisService {
+        +fetch_history(symbol)
+        +compute_returns(df)
+        +compute_volatility(df)
+        +cluster_vol_return(df)
+    }
+
+    class AICoachClient {
+        +get_financial_literacy_tips()
+        -build_payload()
+        -parse_response(raw)
+    }
+
+    class GamificationEngine {
+        +load_config()
+        +update_xp(user, action)
+        +check_badges(user)
+        +build_feedback_messages()
+    }
+
+    %% Data Access
+    class CSVRepository {
+        +read_tax_history()
+        +append_tax_row(row)
+        +read_expenditure_csv(file)
+    }
+
+    class Database {
+        +session
+        +commit()
+        +add(obj)
+    }
+
+    %% LLM / External
+    class OllamaAPI {
+        +generate(model, prompt, system, format)
+    }
+
+    %% ================== RELATIONSHIPS ==================
+
+    FlaskApp --> Extensions : uses
+    FlaskApp --> MainRoutes
+    FlaskApp --> AuthRoutes
+    FlaskApp --> TaxRoutes
+    FlaskApp --> RecommendationRoutes
+    FlaskApp --> StocksRoutes
+    FlaskApp --> AiCoachRoutes
+    FlaskApp --> GamificationRoutes
+
+    FastAPIApp --> AICoachClient : wraps Ollama calls
+
+    Extensions --> Database
+    Database --> User
+    Database --> GamificationProfile
+
+    AuthRoutes --> User
+    AuthRoutes --> Database
+
+    TaxRoutes --> TaxService
+    TaxService --> CSVRepository
+
+    RecommendationRoutes --> SpendAnalyticsService
+    RecommendationRoutes --> RegressionService
+    RecommendationRoutes --> CSVRepository
+    RecommendationRoutes --> Database
+
+    StocksRoutes --> StockAnalysisService
+
+    AiCoachRoutes --> AICoachClient
+    AICoachClient --> OllamaAPI
+
+    GamificationRoutes --> GamificationEngine
+    GamificationEngine --> GamificationProfile
+    GamificationEngine --> Database
+
+    SpendAnalyticsService --> Database
+    SpendAnalyticsService --> CSVRepository
+
+    RegressionService --> CSVRepository
+    RegressionService --> Database
+

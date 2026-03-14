@@ -1,0 +1,170 @@
+flowchart TD
+    %% =========================================
+    %% HIGH-LEVEL PROJECT ALGORITHM FLOW
+    %% =========================================
+
+    %% USER ENTRY & AUTH
+    Start([User opens app])
+    RouteCheck{"Logged in?"}
+    Login["Auth Flow<br/>/login, /register<br/>Flask-Login"]
+    Home["Main Dashboard<br/>/dashboard"]
+
+    %% DATA CAPTURE
+    TaxForm["Tax Input Form<br/>Income + Deductions<br/>/tax"]
+    SpendUpload["Upload Transactions CSV<br/>/analytics POST"]
+    StockInput["Enter Stock Symbol<br/>/analyze-stock"]
+    CoachRequest["Trigger AI Coach Tips<br/>Frontend → /ai/financial-literacy"]
+
+    %% TAX ALGORITHM
+    TaxValidate["Validate Income & Deductions"]
+    NewReg["New Regime Tax<br/>calculate_new_regime_tax()"]
+    OldReg["Old Regime Tax<br/>calculate_old_regime_tax()"]
+    TdsCalc["TDS & Advance Tax<br/>calculate_tds(), calculate_advance_tax()"]
+    RegCompare["Compare Regimes<br/>Pick lower tax,<br/>compute savings & rates"]
+    TaxOutput["Tax Result JSON<br/>+ UI Visualization"]
+
+    %% SPENDING ANALYTICS ALGORITHM
+    SpendParse["Parse CSV<br/>date, category, amount"]
+    SpendClean["Type Conversion & Enrichment<br/>to_datetime, to_numeric,<br/>derive month"]
+    SpendAgg["Aggregate Metrics<br/>total_spent, category_totals,<br/>monthly_trend"]
+    ClusterPrep["Category Feature Matrix<br/>mean, sum, count per category"]
+    ClusterCheck{"Enough data<br/>for clustering?"}
+    ScaleSpend["StandardScaler.fit_transform()"]
+    KmeansSpend["KMeans.fit_predict()<br/>Spending clusters"]
+    PcaSpend["PCA to 2D<br/>pca.fit_transform()"]
+    Velocity["Label Velocity<br/>High Velocity / Balanced / Frugal"]
+    HealthScore["Compute Health Score<br/>Heuristic 0–100"]
+    BudgetStatus["Budget Forecast<br/>Run-rate vs monthly limit"]
+    AnalyticsOutput["Analytics Dashboard Data<br/>charts, clusters, overspending"]
+
+    %% REGRESSION RECOMMENDATION ALGORITHM
+    TaxHistory["Read user_tax_history.csv"]
+    EnoughHistory{"Enough rows<br/>for regression?"}
+    FitReg["Train LinearRegression<br/>X = [income, premium_80d,<br/>home_principal, home_interest]"]
+    PredictTargets["Predict optimal<br/>invested_80C, premium_80D,<br/>home_principal, home_interest"]
+    RegOutput["Numeric Recommendation<br/>per target field"]
+
+    %% STOCK CLUSTERING ALGORITHM
+    FetchStock["Fetch 1y OHLCV<br/>yfinance.Ticker().history()"]
+    EnoughStock{"Enough rows<br/>for analysis?"}
+    StockReturn["Compute Return<br/>pct_change(Close)"]
+    StockVol["Compute Volatility<br/>rolling std(20)"]
+    StockFeatures["Drop NA rows<br/>features=[Return, Volatility]"]
+    ScaleStock["StandardScaler.fit_transform()"]
+    KmeansStock["KMeans.fit_predict()<br/>n_clusters=3"]
+    StockJoin["Join cluster labels<br/>back to price series"]
+    StockOutput["Last 60 Days JSON<br/>date, close, return,<br/>volatility, cluster"]
+
+    %% AI COACH ALGORITHM
+    BuildPrompt["Build System Prompt<br/>India-focused coach"]
+    CallLLM["POST to Ollama<br/>model=llama3,<br/>format=json"]
+    ParseLLM{"Valid JSON<br/>response?"}
+    LLMJson["json.loads(response)"]
+    LLMError["Return 500<br/>\"Failed to parse JSON\""]
+    CoachOutput["Structured Tips JSON<br/>sip, emergency_fund,<br/>upi_overspending, credit_card, emi"]
+
+    %% GAMIFICATION & FEEDBACK
+    UpdateXP["Update XP & Levels<br/>Based on actions & config"]
+    CheckBadges["Check Badge Criteria<br/>from gamification_config.json"]
+    AwardBadges["Award New Badges<br/>if conditions met"]
+    Feedback["Show Friendly Feedback<br/>streaks, warnings, celebrations"]
+
+    End([User sees insights<br/>and next best actions])
+
+    %% ========= CONTROL FLOW =========
+
+    %% Entry & Auth
+    Start --> RouteCheck
+    RouteCheck -->|No| Login
+    Login --> Home
+    RouteCheck -->|Yes| Home
+
+    %% From Home to different flows
+    Home --> TaxForm
+    Home --> SpendUpload
+    Home --> StockInput
+    Home --> CoachRequest
+
+    %% TAX FLOW
+    TaxForm --> TaxValidate
+    TaxValidate --> NewReg
+    TaxValidate --> OldReg
+    NewReg --> TdsCalc
+    OldReg --> TdsCalc
+    TdsCalc --> RegCompare
+    RegCompare --> TaxOutput
+    TaxOutput --> UpdateXP
+
+    %% SPENDING ANALYTICS FLOW
+    SpendUpload --> SpendParse
+    SpendParse --> SpendClean
+    SpendClean --> SpendAgg
+    SpendAgg --> ClusterPrep
+    ClusterPrep --> ClusterCheck
+
+    ClusterCheck -->|No| HealthScore
+    ClusterCheck -->|Yes| ScaleSpend
+    ScaleSpend --> KmeansSpend
+    KmeansSpend --> PcaSpend
+    PcaSpend --> Velocity
+    SpendAgg --> Velocity
+
+    SpendAgg --> BudgetStatus
+    Velocity --> HealthScore
+    HealthScore --> AnalyticsOutput
+    BudgetStatus --> AnalyticsOutput
+    KmeansSpend --> AnalyticsOutput
+    PcaSpend --> AnalyticsOutput
+    AnalyticsOutput --> UpdateXP
+
+    %% REGRESSION RECOMMENDATION FLOW
+    TaxForm --> TaxHistory
+    TaxHistory --> EnoughHistory
+    EnoughHistory -->|No| RegOutput
+    EnoughHistory -->|Yes| FitReg
+    FitReg --> PredictTargets
+    PredictTargets --> RegOutput
+    RegOutput --> AnalyticsOutput
+
+    %% STOCK FLOW
+    StockInput --> FetchStock
+    FetchStock --> EnoughStock
+    EnoughStock -->|No| StockOutput
+    EnoughStock -->|Yes| StockReturn
+    StockReturn --> StockVol
+    StockVol --> StockFeatures
+    StockFeatures --> ScaleStock
+    ScaleStock --> KmeansStock
+    KmeansStock --> StockJoin
+    StockJoin --> StockOutput
+    StockOutput --> UpdateXP
+
+    %% AI COACH FLOW
+    CoachRequest --> BuildPrompt
+    BuildPrompt --> CallLLM
+    CallLLM --> ParseLLM
+    ParseLLM -->|No| LLMError
+    ParseLLM -->|Yes| LLMJson
+    LLMJson --> CoachOutput
+    LLMError --> Feedback
+    CoachOutput --> Feedback
+
+    %% GAMIFICATION FLOW
+    UpdateXP --> CheckBadges
+    CheckBadges --> AwardBadges
+    AwardBadges --> Feedback
+    Feedback --> End
+
+    %% ========= STYLES =========
+    classDef io fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef decision fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef compute fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef ml fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef gamify fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+
+    class Start,End,Home,TaxForm,SpendUpload,StockInput,CoachRequest,TaxOutput,AnalyticsOutput,StockOutput,CoachOutput io
+    class RouteCheck,ClusterCheck,EnoughHistory,EnoughStock,ParseLLM decision
+    class TaxValidate,SpendParse,SpendClean,SpendAgg,ClusterPrep,SpendAgg,BudgetStatus,FetchStock,StockReturn,StockVol,StockFeatures,StockJoin,LLMError,Feedback compute
+    class NewReg,OldReg,TdsCalc,RegCompare,ScaleSpend,KmeansSpend,PcaSpend,HealthScore,Velocity,TaxHistory,FitReg,PredictTargets,ScaleStock,KmeansStock,BuildPrompt,CallLLM,LLMJson ml
+    class UpdateXP,CheckBadges,AwardBadges,gamify gamify
+

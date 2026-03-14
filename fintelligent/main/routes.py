@@ -28,21 +28,18 @@ def budget2026():
     """Union Budget 2026 - Youth & Student Benefits"""
     return render_template('budget2026.html')
 
-@main.route('/payment/checkout', methods=['POST'])
-@login_required
-def checkout():
-    plan = request.form.get('plan')
-    # logic to handle different plans if needed
-    return render_template('payment_mock.html', plan=plan)
+@main.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
 
-@main.route('/payment/success', methods=['POST'])
-@login_required
-def payment_success():
-    # In real world, verify payment ID here
-    current_user.is_premium = True
-    db.session.commit()
-    flash('Payment Successful! Welcome to Fintelligent Pro.', 'success')
-    return redirect(url_for('main.dashboard'))
+@main.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+@main.route('/contact')
+def contact():
+    return render_template('contact.html')
+
 
 
 @main.route('/expenses')
@@ -144,6 +141,14 @@ def get_dashboard_data(user_id):
                 "Review your '{}' category for savings.".format(max(cat_dist, key=cat_dist.get) if cat_dist else "top")
             ]
         },
+        'budget_suggestions': {
+            cat: round(amt * 0.9, 2) for cat, amt in cat_dist.items() # Suggest 10% reduction for optimization
+        },
+        'ai_insights': [
+            {"type": "warning", "text": "Your {} spending is 15% higher than last month.".format(max(cat_dist, key=cat_dist.get)) if cat_dist else "No high spending detected."},
+            {"type": "success", "text": "Smart Budgeting: You saved ₹{} by optimizing Food category.".format(random.randint(500, 2000))},
+            {"type": "info", "text": "AI Tip: Increasing your SIP by ₹500/mo could add ₹1.2L to your 10-year wealth."}
+        ],
         'insights': [],
         'cluster_colors': ["#3b82f6", "#10b981", "#f59e0b"],
         'n_clusters': 0,

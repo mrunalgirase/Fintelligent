@@ -17,6 +17,17 @@ def education_glossary():
     return render_template('glossary.html')
 
 
+@education.route('/education/ncfe/calculator')
+def ncfe_calculator():
+    return render_template('ncfe_calculator.html')
+
+
+@education.route('/education/ncfe/nflat')
+def ncfe_nflat():
+    return render_template('ncfe_nflat.html')
+
+
+
 @education.route('/api/sip-goal', methods=['POST'])
 def api_sip_goal():
     data = request.get_json(force=True)

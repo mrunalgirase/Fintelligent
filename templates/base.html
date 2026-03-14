@@ -4,6 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Fintelligent - The ultimate financial intelligence platform for the next generation. AI-driven wealth architecture, tax optimization, and smart analytics.">
+    <meta name="keywords" content="financial intelligence, wealth management, tax optimization, AI budgets, stock analysis, student finance">
+    <meta property="og:title" content="Fintelligent - Premium Financial Analytics">
+    <meta property="og:description" content="Empowering the next generation with AI-driven wealth architecture and precision tax tools.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <title>{% block title %}Fintelligent - Premium Financial Analytics{% endblock %}</title>
 
     <!-- Fonts -->
@@ -120,34 +126,198 @@
         header {
             position: sticky;
             top: 0;
-            z-index: 100;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: var(--border);
-            padding: 0.75rem 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(15, 23, 42, 0.95);
+            padding: 0.4rem 0;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
 
         .navbar {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 1.5rem;
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 70px;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
             font-family: 'Outfit', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 1.6rem;
+            font-weight: 800;
             color: var(--text-main);
-            letter-spacing: -0.5px;
+            letter-spacing: -0.03em;
+            transition: transform 0.3s ease;
         }
 
-        .brand i {
+        .brand:hover {
+            transform: scale(1.02);
+        }
+
+        .brand img {
+            height: 40px;
+            width: auto;
+            filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.3));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 12px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .nav-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .nav-item i {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Nav Dropdown */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-trigger {
+            cursor: pointer;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            min-width: 260px;
+            background: rgba(30, 41, 59, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 20px rgba(59, 130, 246, 0.1);
+            z-index: 1000;
+            padding: 1rem;
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        /* Bridge the gap between nav item and dropdown so hover doesn't drop */
+        .dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: transparent;
+        }
+
+        .nav-dropdown:hover .dropdown-content {
+            display: block;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .dropdown-item {
+            padding: 0.8rem 1rem;
+            width: 100%;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .dropdown-item i {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover i {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .dropdown-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-info span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            opacity: 0.6;
+            font-weight: 400;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .btn-login {
+            padding: 0.6rem 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .btn-login:hover {
             color: var(--primary);
         }
 
@@ -155,114 +325,74 @@
         .menu-toggle {
             display: none;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
             cursor: pointer;
             z-index: 1001;
-            padding: 5px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .menu-toggle span {
             display: block;
-            width: 25px;
+            width: 24px;
             height: 2px;
             background: var(--text-main);
             border-radius: 2px;
-            transition: 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
+        .menu-toggle.active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
         }
 
-        .nav-item {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(10px);
         }
 
-        .nav-item:hover,
-        .nav-item.active {
-            color: var(--primary);
-            transform: translateY(-1px);
+        .menu-toggle.active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
         }
 
-        .nav-item i {
-            font-size: 1.1em;
-        }
+        @media (max-width: 1100px) {
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: 300px;
+                background: rgba(15, 23, 42, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 100px 2rem;
+                gap: 1rem;
+                z-index: 1000;
+                border-left: 1px solid rgba(255, 255, 255, 0.1);
+            }
 
-        /* Nav Dropdown */
-        .nav-dropdown {
-            position: relative;
-            display: inline-block;
-        }
+            .nav-links.active {
+                display: flex;
+                animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
 
-        .dropdown-trigger {
-            cursor: pointer;
-            padding-bottom: 5px;
-        }
+            @keyframes slideInRight {
+                from { transform: translateX(100%); }
+                to { transform: translateX(0); }
+            }
 
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            min-width: 220px;
-            background: rgba(30, 41, 59, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.15);
-            z-index: 1000;
-            padding: 0.75rem;
-            backdrop-filter: blur(20px);
-            margin-top: 0;
-            /* Removed gap margin */
-        }
+            .menu-toggle {
+                display: flex;
+            }
 
-        /* Bridge the gap for hover */
-        .dropdown-content::before {
-            content: '';
-            position: absolute;
-            top: -15px;
-            left: 0;
-            width: 100%;
-            height: 15px;
-            background: transparent;
-        }
-
-        .nav-dropdown:hover .dropdown-content {
-            display: block;
-            animation: fadeIn 0.2s ease-out;
-        }
-
-        .dropdown-content .nav-item {
-            padding: 0.85rem 1.25rem;
-            width: 100%;
-            border-radius: 10px;
-            transition: all 0.2s ease;
-            margin-bottom: 2px;
-            color: rgba(255, 255, 255, 0.8);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-        }
-
-        .dropdown-content .nav-item:hover {
-            background: rgba(59, 130, 246, 0.15);
-            color: var(--primary);
-            transform: translateX(4px);
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
+            .auth-buttons {
+                display: none;
+            }
         }
 
         /* Main Container */
@@ -644,6 +774,92 @@
         #mobile-menu-btn.active span:nth-child(3) {
             transform: translateY(-7px) rotate(-45deg);
         }
+
+        /* Mobile Bottom Nav */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem 1.5rem 1rem;
+            /* Extra padding for safe area */
+            z-index: 1000;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .bottom-nav-item i {
+            font-size: 1.25rem;
+            margin-bottom: 2px;
+            transition: all 0.2s;
+        }
+
+        .bottom-nav-item.active,
+        .bottom-nav-item:hover {
+            color: var(--primary);
+        }
+
+        .bottom-nav-item.active i {
+            transform: translateY(-2px);
+        }
+
+        .bottom-nav-fab {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.5);
+            transform: translateY(-20px);
+            border: 4px solid var(--bg-body);
+        }
+
+        @media (max-width: 768px) {
+            /* Restore hamburger menu visibility */
+            /* .menu-toggle is already flex by default in previous rules */
+
+            .navbar {
+                justify-content: space-between;
+                /* Space between logo and hamburger */
+                height: 60px;
+            }
+
+            .bottom-nav {
+                display: flex;
+            }
+
+            .fab-container {
+                display: none;
+                /* Hide desktop FAB */
+            }
+
+            main.main-content {
+                padding-bottom: 90px;
+                /* Space for bottom nav */
+            }
+        }
     </style>
     {% block head %}{% endblock %}
 </head>
@@ -654,9 +870,8 @@
         <header>
             <nav class="navbar">
                 <a href="/" class="brand">
-                    <img src="/static/img/logo.png" alt="Fintelligent Logo"
-                        style="height: 40px; width: auto; object-fit: contain;">
-                    Fintelligent
+                    <img src="/static/img/logo.png" alt="Fintelligent Logo">
+                    <span>Fintelligent</span>
                 </a>
 
                 <div class="menu-toggle" id="mobile-menu-btn">
@@ -666,66 +881,108 @@
                 </div>
 
                 <div class="nav-links" id="nav-links">
-                    <a href="/dashboard" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
-                    <a href="{{ url_for('recommendation.financial_analytics') }}" class="nav-item"><i
-                            class="fa-solid fa-chart-line"></i> Analytics</a>
-                    <a href="{{ url_for('receipts.receipts_history') }}" class="nav-item"><i
-                            class="fa-solid fa-receipt"></i> Receipts</a>
-                    <a href="{{ url_for('statements.index') }}" class="nav-item"><i
-                            class="fa-solid fa-file-invoice-dollar"></i> Statements</a>
+                    <a href="/dashboard" class="nav-item {{ 'active' if request.path == '/dashboard' }}">
+                        <i class="fa-solid fa-gauge-high"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('recommendation.financial_analytics') }}" class="nav-item {{ 'active' if request.path == '/analytics' }}">
+                        <i class="fa-solid fa-chart-line"></i> Analytics
+                    </a>
+                    <a href="{{ url_for('receipts.receipts_history') }}" class="nav-item {{ 'active' if request.path == '/receipts' }}">
+                        <i class="fa-solid fa-receipt"></i> Receipts
+                    </a>
 
                     <!-- Wealth Dropdown -->
                     <div class="nav-dropdown">
                         <div class="nav-item dropdown-trigger">
-                            <i class="fa-solid fa-wallet"></i> Wealth <i class="fa-solid fa-chevron-down"
-                                style="font-size: 0.7rem;"></i>
+                            <i class="fa-solid fa-wallet"></i> Wealth <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 2px;"></i>
                         </div>
                         <div class="dropdown-content">
-                            <a href="/strategies" class="nav-item"><i class="fa-solid fa-lightbulb"></i> Strategies</a>
-                            <a href="/tax" class="nav-item"><i class="fa-solid fa-file-invoice-dollar"></i> Tax
-                                Management</a>
-                            <a href="/analyze-stock" class="nav-item"><i class="fa-solid fa-magnifying-glass-chart"></i>
-                                Stocks Analysis</a>
-                            <a href="/cards" class="nav-item"><i class="fa-solid fa-credit-card"></i> Cards & Perks</a>
+                            <a href="/strategies" class="dropdown-item">
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <div class="dropdown-info">
+                                    Strategies
+                                    <span>Grow your net worth</span>
+                                </div>
+                            </a>
+                            <a href="/tax" class="dropdown-item">
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+                                <div class="dropdown-info">
+                                    Tax Engine
+                                    <span>Optimize deductions</span>
+                                </div>
+                            </a>
+                            <a href="/analyze-stock" class="dropdown-item">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                <div class="dropdown-info">
+                                    Stock Pulse
+                                    <span>Market insights</span>
+                                </div>
+                            </a>
+                            <a href="/cards" class="dropdown-item">
+                                <i class="fa-solid fa-credit-card"></i>
+                                <div class="dropdown-info">
+                                    Cards & Perks
+                                    <span>Maximize rewards</span>
+                                </div>
+                            </a>
                         </div>
                     </div>
 
                     <!-- Growth Dropdown -->
                     <div class="nav-dropdown">
                         <div class="nav-item dropdown-trigger">
-                            <i class="fa-solid fa-seedling"></i> Growth <i class="fa-solid fa-chevron-down"
-                                style="font-size: 0.7rem;"></i>
+                            <i class="fa-solid fa-seedling"></i> Growth <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; margin-left: 2px;"></i>
                         </div>
                         <div class="dropdown-content">
-                            <a href="/education" class="nav-item"><i class="fa-solid fa-graduation-cap"></i> Academy</a>
-                            <a href="{{ url_for('ai_coach.coach_page') }}" class="nav-item"><i
-                                    class="fa-solid fa-robot"></i> AI Coach</a>
-                            <a href="/gamification" class="nav-item"><i class="fa-solid fa-trophy"></i> Rewards</a>
+                            <a href="/education" class="dropdown-item">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                <div class="dropdown-info">
+                                    Academy
+                                    <span>Master your money</span>
+                                </div>
+                            </a>
+                            <a href="{{ url_for('ai_coach.coach_page') }}" class="dropdown-item">
+                                <i class="fa-solid fa-robot"></i>
+                                <div class="dropdown-info">
+                                    AI Alpha Coach
+                                    <span>Smart suggestions</span>
+                                </div>
+                            </a>
+                            <a href="/gamification" class="dropdown-item">
+                                <i class="fa-solid fa-trophy"></i>
+                                <div class="dropdown-info">
+                                    Rewards Hub
+                                    <span>Earn while you save</span>
+                                </div>
+                            </a>
                         </div>
                     </div>
 
-                    {% if current_user.is_authenticated and not current_user.is_premium %}
-                    <a href="{{ url_for('main.pricing') }}" class="nav-item"
-                        style="color: var(--accent); font-weight: 600;">
-                        <i class="fa-solid fa-crown"></i> Go Pro
-                    </a>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.plan == 'FREE' %}
+                            <a href="{{ url_for('main.pricing') }}" class="nav-item" style="color: var(--warning); font-weight: 700;">
+                                <i class="fa-solid fa-crown"></i> Go Pro
+                            </a>
+                        {% elif current_user.plan == 'STUDENT' %}
+                            <span class="nav-item" style="color: var(--primary); font-weight: 700; cursor: default;">
+                                <i class="fa-solid fa-graduation-cap"></i> Student
+                            </span>
+                        {% elif current_user.plan == 'PRO' %}
+                            <span class="nav-item" style="color: var(--secondary); font-weight: 700; cursor: default;">
+                                <i class="fa-solid fa-star"></i> Pro Alpha
+                            </span>
+                        {% endif %}
                     {% endif %}
 
-                    {% if current_user.is_authenticated and current_user.is_premium %}
-                    <span class="nav-item" style="color: var(--secondary); font-weight: 600; cursor: default;">
-                        <i class="fa-solid fa-star"></i> Pro
-                    </span>
-                    {% endif %}
 
-                    <a href="http://localhost:5173" target="_blank" class="nav-item"
+                    <a href="{{ url_for('ai_coach.coach_page') }}" class="nav-item"
                         style="color: var(--primary); font-weight: 600;"><i class="fa-solid fa-robot"></i> AI Coach</a>
 
                     <div class="auth-buttons-mobile" style="display: none;">
                         {% if current_user.is_authenticated %}
-                        <span style="color: var(--text-muted); font-weight: 500; font-size: 0.95rem;">
-                            <i class="fa-solid fa-user-circle" style="color: var(--primary);"></i> {{
-                            current_user.username }}
-                        </span>
+                        <a href="/profile" style="color: var(--text-main); font-weight: 500; font-size: 0.95rem; text-decoration: none; display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; padding: 0.5rem 0.75rem;">
+                            <i class="fa-solid fa-user-circle" style="color: var(--primary); font-size: 1.2rem;"></i> {{ current_user.username }}'s Profile
+                        </a>
                         <a href="/logout" class="nav-item" style="color: #ef4444;"><i
                                 class="fa-solid fa-right-from-bracket"></i> Logout</a>
                         {% else %}
@@ -738,24 +995,49 @@
 
                 <div class="auth-buttons">
                     {% if current_user.is_authenticated %}
-                    <div style="display: flex; gap: 15px; align-items: center;">
-                        <span style="color: var(--text-muted); font-weight: 500;">
-                            <i class="fa-solid fa-user-circle" style="color: var(--primary);"></i> {{
-                            current_user.username }}
-                        </span>
-                        <a href="/logout" class="nav-item" style="color: #ef4444;"><i
-                                class="fa-solid fa-right-from-bracket"></i></a>
+                    <div style="display: flex; gap: 1rem; align-items: center; background: rgba(255,255,255,0.03); padding: 0.4rem 1rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.05);">
+                        <a href="/profile" style="color: var(--text-main); font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-main)'">
+                            <i class="fa-solid fa-circle-user" style="color: var(--primary); font-size: 1.2rem;"></i> {{ current_user.username }}
+                        </a>
+                        <div style="width: 1px; height: 16px; background: rgba(255,255,255,0.1);"></div>
+                        <a href="/logout" title="Logout" style="color: var(--text-muted); transition: color 0.2s ease;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'">
+                            <i class="fa-solid fa-power-off"></i>
+                        </a>
                     </div>
                     {% else %}
-                    <a href="/login" class="nav-item">Login</a>
-                    <a href="/register" class="btn-primary-ui" style="padding: 0.5rem 1.25rem; font-size: 0.9rem;">
-                        Get Started
+                    <a href="/login" class="btn-login">Login</a>
+                    <a href="/register" class="btn-primary-ui" style="padding: 0.6rem 1.5rem; border-radius: 12px; font-weight: 700;">
+                        Join Now
                     </a>
                     {% endif %}
                 </div>
             </nav>
-            <div class="menu-overlay" id="menu-overlay"></div>
         </header>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="/" class="bottom-nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
+            <a href="/dashboard" class="bottom-nav-item">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>Dash</span>
+            </a>
+            <a href="{{ url_for('ai_coach.coach_page') }}" class="bottom-nav-item">
+                <div class="bottom-nav-fab">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+            </a>
+            <a href="/gamification" class="bottom-nav-item">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Win</span>
+            </a>
+            <a href="/education" class="bottom-nav-item">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Learn</span>
+            </a>
+        </nav>
 
         <main class="main-content">
             {% block content %}{% endblock %}
@@ -774,7 +1056,7 @@
                 <div class="footer-col" style="flex: 1.5;">
                     <div class="brand" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
                         <img src="/static/img/logo.png" alt="Logo" style="height: 32px; filter: brightness(1.2);">
-                        <span style="font-size: 1.5rem; font-weight: 800; tracking: -0.02em;">Fintelligent</span>
+                        <span style="font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em;">Fintelligent</span>
                     </div>
                     <p
                         style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 2rem; max-width: 320px;">
@@ -812,8 +1094,8 @@
                     <h4>Support</h4>
                     <a href="/education">Academy</a>
                     <a href="/glossary">Glossary</a>
-                    <a href="/ai-coach">AI Coach</a>
-                    <a href="mailto:support@fintelligent.com">Help Desk</a>
+                    <a href="{{ url_for('ai_coach.coach_page') }}">AI Coach</a>
+                    <a href="/contact">Help Desk</a>
                 </div>
             </div>
             <div
@@ -821,8 +1103,8 @@
                 <p style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">&copy; 2026 Fintelligent AI
                     Lab. Standardizing Financial Excellence.</p>
                 <div style="display: flex; gap: 2.5rem; font-size: 0.9rem; font-weight: 500;">
-                    <a href="#" style="color: var(--text-muted); text-decoration: none;">Privacy Protocol</a>
-                    <a href="#" style="color: var(--text-muted); text-decoration: none;">Operational Terms</a>
+                    <a href="/privacy" style="color: var(--text-muted); text-decoration: none;">Privacy Protocol</a>
+                    <a href="/terms" style="color: var(--text-muted); text-decoration: none;">Operational Terms</a>
                 </div>
             </div>
         </footer>
@@ -954,6 +1236,15 @@
                         c.style.display = 'none';
                     });
                 }
+            }
+        });
+        // Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
             }
         });
     </script>

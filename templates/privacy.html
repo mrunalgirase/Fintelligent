@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Privacy Protocol - Fintelligent{% endblock %}
+
+{% block content %}
+<div class="animate-rise" style="max-width: 800px; margin: 4rem auto;">
+    <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 2rem; background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Privacy Protocol</h1>
+    
+    <div class="card-ui glass-layer" style="padding: 3rem; line-height: 1.8; color: var(--text-muted);">
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">Last Updated: March 2026</p>
+        
+        <h3 style="color: var(--text-main); margin-top: 2rem;">1. Data Sovereignty</h3>
+        <p>At Fintelligent, we believe your financial data belongs to you. We employ end-to-end encryption for all sensitive transaction data. We do not sell, rent, or lease your personal information to third parties.</p>
+        
+        <h3 style="color: var(--text-main); margin-top: 2rem;">2. Information We Collect</h3>
+        <p>To provide our services, we collect:</p>
+        <ul>
+            <li>Account Information (Name, Email)</li>
+            <li>Transaction Data (Uploaded receipts, linked accounts)</li>
+            <li>Usage Analytics (To improve our AI models)</li>
+        </ul>
+        
+        <h3 style="color: var(--text-main); margin-top: 2rem;">3. AI & Automated Processing</h3>
+        <p>Our AI engines process your data locally where possible, and via secure, anonymized cloud compute for complex analytics. No human at Fintelligent has access to your raw transaction data without your explicit support request.</p>
+        
+        <h3 style="color: var(--text-main); margin-top: 2rem;">4. Your Rights</h3>
+        <p>You have the right to export your data at any time or request permanent account deletion via our dashboard settings.</p>
+    </div>
+</div>
+{% endblock %}

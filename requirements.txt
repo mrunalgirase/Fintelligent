@@ -12,3 +12,5 @@ flask-talisman
 pytesseract
 Pillow
 pdfplumber
+python-dotenv
+razorpay

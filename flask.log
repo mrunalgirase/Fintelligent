@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/mrunalgirase/Desktop/fin copy/app.py", line 32, in <module>
+    from fintelligent.strategies.routes import strategies
+  File "/Users/mrunalgirase/Desktop/fin copy/fintelligent/strategies/routes.py", line 2, in <module>
+    import pandas as pd
+  File "/Users/mrunalgirase/Desktop/fin copy/.venv/lib/python3.10/site-packages/pandas/__init__.py", line 19, in <module>
+    raise ImportError(
+ImportError: Unable to import required dependencies:
+numpy: Error importing numpy: you should not try to import numpy from
+        its source directory; please exit the numpy source tree, and relaunch
+        your python interpreter from there.

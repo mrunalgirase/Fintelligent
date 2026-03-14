@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}NCFE Emergency Fund Calculator - Fintelligent{% endblock %}
+{% block content %}
+
+<div class="container" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+        <span style="background: rgba(16, 185, 129, 0.1); color: var(--brand-emerald); padding: 0.4rem 0.8rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.2); margin-bottom: 1rem; display: inline-block;">
+            NCFE MODULE 02 TOOL
+        </span>
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--text-main);">Emergency Fund Calculator</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin: 0;">
+            Follow the National Centre for Financial Education's recommended guidelines to build your financial safety net.
+        </p>
+    </div>
+
+    <div class="card-ui" style="background: var(--glass-bg); padding: 2.5rem; border: 1px solid var(--glass-border);">
+        <form id="emergency-calc-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div class="form-group hover-lift">
+                    <label for="basic-needs" class="form-label" style="display: flex; justify-content: space-between;">
+                        Monthly Basic Needs (₹)
+                        <i class="fa-solid fa-circle-question" style="color: var(--text-muted); cursor: help;" title="Rent, Groceries, Utilities, Transport"></i>
+                    </label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">₹</span>
+                        <input type="number" id="basic-needs" class="form-input" style="padding-left: 2.5rem;" placeholder="e.g. 15000" required min="0">
+                    </div>
+                </div>
+
+                <div class="form-group hover-lift">
+                    <label for="emi-obligations" class="form-label" style="display: flex; justify-content: space-between;">
+                        Monthly Loan EMIs (₹)
+                        <i class="fa-solid fa-circle-question" style="color: var(--text-muted); cursor: help;" title="Education, Car, or Home Loan EMIs"></i>
+                    </label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">₹</span>
+                        <input type="number" id="emi-obligations" class="form-input" style="padding-left: 2.5rem;" placeholder="e.g. 5000" required min="0">
+                    </div>
+                </div>
+
+                <div class="form-group hover-lift">
+                    <label for="insurance-premiums" class="form-label" style="display: flex; justify-content: space-between;">
+                        Monthly Insurance Premiums (₹)
+                        <i class="fa-solid fa-circle-question" style="color: var(--text-muted); cursor: help;" title="Health/Life insurance if paid monthly"></i>
+                    </label>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);">₹</span>
+                        <input type="number" id="insurance-premiums" class="form-input" style="padding-left: 2.5rem;" placeholder="e.g. 1500" required min="0">
+                    </div>
+                </div>
+
+                <div class="form-group hover-lift">
+                    <label for="dependents" class="form-label">Number of Financial Dependents</label>
+                    <select id="dependents" class="form-input">
+                        <option value="0">0 (Single, no dependents)</option>
+                        <option value="1">1 to 2</option>
+                        <option value="2">3 or more</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="button" onclick="calculateEmergencyFund()" class="btn-primary-ui" style="flex: 1; justify-content: center; font-size: 1.1rem; padding: 1rem;">
+                    Calculate NCFE Target <i class="fa-solid fa-calculator"></i>
+                </button>
+            </div>
+        </form>
+
+        <!-- Results Section (Hidden initially) -->
+        <div id="results-section" style="display: none; margin-top: 3rem; padding-top: 2rem; border-top: 1px dashed var(--glass-border);">
+            <h3 style="text-align: center; color: var(--text-main); margin-bottom: 2rem;">Your Recommended Safety Net</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                
+                <!-- Minimum Reserve -->
+                <div style="background: rgba(37, 99, 235, 0.05); border: 1px solid rgba(37, 99, 235, 0.2); padding: 1.5rem; border-radius: 16px; text-align: center;">
+                    <h4 style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase;">Minimum Reserve</h4>
+                    <div style="color: var(--text-main); font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;" id="res-min">₹0</div>
+                    <p style="color: var(--brand-blue); font-size: 0.85rem; margin: 0; font-weight: 600;" id="res-min-months">3 Months of expenses</p>
+                </div>
+
+                <!-- NCFE Recommended Reserve -->
+                <div style="background: rgba(16, 185, 129, 0.1); border: 2px solid var(--brand-emerald); padding: 1.5rem; border-radius: 16px; text-align: center; position: relative; transform: scale(1.05); z-index: 2; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);">
+                    <span style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--brand-emerald); color: white; padding: 0.2rem 0.8rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700;">NCFE OPTIMAL</span>
+                    <h4 style="color: var(--text-main); font-size: 0.9rem; margin-bottom: 0.5rem; text-transform: uppercase; margin-top: 0.5rem;">Recommended Target</h4>
+                    <div style="color: white; font-size: 2.25rem; font-weight: 800; margin-bottom: 0.5rem; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);" id="res-opt">₹0</div>
+                    <p style="color: var(--brand-emerald); font-size: 0.85rem; margin: 0; font-weight: 700;" id="res-opt-months">6 Months of expenses</p>
+                </div>
+
+            </div>
+
+            <div style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--brand-indigo);">
+                <h4 style="color: var(--text-main); margin-bottom: 0.5rem;">NCFE Best Practices for Emergency Funds:</h4>
+                <ul style="color: var(--text-muted); font-size: 0.95rem; margin: 0; padding-left: 1.5rem; line-height: 1.6;">
+                    <li>Keep this money highly liquid (Savings Account, Fixed Deposit, or Liquid Mutual Fund).</li>
+                    <li>Do not invest this money in risky assets like Equities or Cryptocurrencies.</li>
+                    <li>Only touch this fund for job loss, medical emergencies, or unforeseen critical expenses.</li>
+                </ul>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculateEmergencyFund() {
+        const basicNeeds = parseFloat(document.getElementById('basic-needs').value) || 0;
+        const emis = parseFloat(document.getElementById('emi-obligations').value) || 0;
+        const insurance = parseFloat(document.getElementById('insurance-premiums').value) || 0;
+        const dependentsMode = parseInt(document.getElementById('dependents').value);
+        
+        const coreMonthlyExpense = basicNeeds + emis + insurance;
+        
+        if(coreMonthlyExpense <= 0) {
+            showToast('Invalid Input', 'Please enter your monthly expenses.', 'error');
+            return;
+        }
+
+        // NCFE baseline is naturally 3-6 months. We scale based on dependents.
+        let minMonths = 3;
+        let optMonths = 6;
+
+        if(dependentsMode === 1) { // 1 to 2 dependents
+            minMonths = 4;
+            optMonths = 9;
+        } else if (dependentsMode === 2) { // 3+ dependents
+            minMonths = 6;
+            optMonths = 12;
+        }
+
+        const minTarget = coreMonthlyExpense * minMonths;
+        const optTarget = coreMonthlyExpense * optMonths;
+
+        // Animate numbers and reveal
+        document.getElementById('results-section').style.display = 'block';
+        document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'end' });
+        
+        document.getElementById('res-min-months').innerText = `${minMonths} Months of fixed expenses`;
+        document.getElementById('res-opt-months').innerText = `${optMonths} Months of fixed expenses (Recommended)`;
+
+        animateValue('res-min', 0, minTarget, 1000);
+        animateValue('res-opt', 0, optTarget, 1500);
+    }
+
+    function animateValue(id, start, end, duration) {
+        if (start === end) return;
+        let range = end - start;
+        let current = start;
+        let increment = end > start ? Math.ceil(range / (duration / 16)) : -1;
+        let stepTime = Math.abs(Math.floor(duration / (range / increment)));
+        
+        let obj = document.getElementById(id);
+        let timer = setInterval(function() {
+            current += increment;
+            if (current >= end) {
+                current = end;
+                clearInterval(timer);
+            }
+            obj.innerHTML = '₹' + current.toLocaleString('en-IN');
+        }, stepTime);
+    }
+</script>
+
+{% endblock %}

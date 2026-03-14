@@ -27,6 +27,8 @@ class User(UserMixin, db.Model):
     # Monetization & Growth
     is_premium = db.Column(db.Boolean, default=False)
     is_student = db.Column(db.Boolean, default=True) # Default to student for target audience
+    plan = db.Column(db.String(20), default='FREE') # FREE, STUDENT, PRO
+    subscription_expiry = db.Column(db.DateTime, nullable=True)
     referral_code = db.Column(db.String(10), unique=True, nullable=True)
     referred_by = db.Column(db.String(10), nullable=True)
     upi_id = db.Column(db.String(100), nullable=True)
@@ -60,3 +62,17 @@ class Expense(db.Model):
 
     user = db.relationship('User', backref=db.backref('expenses', lazy=True))
     matched_with = db.relationship('Expense', remote_side=[id], post_update=True)
+
+class Transaction(db.Model):
+    __tablename__ = 'payment_transaction'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    razorpay_order_id = db.Column(db.String(100), unique=True, nullable=False)
+    razorpay_payment_id = db.Column(db.String(100), unique=True, nullable=True)
+    razorpay_signature = db.Column(db.String(200), nullable=True)
+    amount = db.Column(db.Float, nullable=False)
+    plan = db.Column(db.String(20), nullable=False)
+    status = db.Column(db.String(20), default='PENDING') # PENDING, SUCCESS, FAILED
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    user = db.relationship('User', backref=db.backref('transactions', lazy=True))

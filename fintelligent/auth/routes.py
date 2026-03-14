@@ -74,6 +74,35 @@ def upgrade_premium():
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)}), 500
 
+@auth.route('/profile')
+@login_required
+def profile():
+    from fintelligent.gamification.models import GamificationProfile, UserBadge
+    from fintelligent.gamification.routes import load_gamification_config
+    
+    profile = GamificationProfile.query.filter_by(user_id=current_user.id).first()
+    if not profile:
+        profile = GamificationProfile(user_id=current_user.id)
+        db.session.add(profile)
+        db.session.commit()
+    
+    config = load_gamification_config()
+    
+    # Map badges to their config data for display
+    user_badges = []
+    for ub in profile.badges:
+        badge_data = next((b for b in config['badges'] if b['id'] == ub.badge_id), None)
+        if badge_data:
+            user_badges.append({
+                'name': badge_data['name'],
+                'description': badge_data['description'],
+                'icon': badge_data['icon'],
+                'earned_at': ub.earned_at,
+                'tier': badge_data.get('tier', 'Bronze')
+            })
+
+    return render_template('profile.html', user=current_user, profile=profile, badges=user_badges)
+
 @auth.route('/logout')
 @login_required
 def logout():

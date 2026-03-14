@@ -1,497 +1,711 @@
 {% extends 'base.html' %}
-{% block title %}Home - Fintelligent{% endblock %}
+{% block title %}FinTelligent - AI-Powered Financial Intelligence for the Next Gen{% endblock %}
 
 {% block content %}
-
-<!-- Union Budget 2026 Banner -->
-<div
-    style="background: linear-gradient(135deg, #ff9933 0%, #ffffff 50%, #138808 100%); padding: 0.25rem; border-radius: 16px; margin-bottom: 2rem; animation: fadeIn 0.6s ease-out;">
-    <div
-        style="background: rgba(15, 23, 42, 0.95); border-radius: 14px; padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 1.5rem; flex: 1; min-width: 300px;">
-            <div
-                style="width: 60px; height: 60px; background: linear-gradient(135deg, #ff9933 0%, #138808 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0;">
-                🇮🇳
-            </div>
-            <div>
-                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
-                    <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0;">Union Budget
-                        2026</h3>
-                    <span
-                        style="background: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Latest</span>
-                </div>
-                <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
-                    <strong style="color: #10b981;">₹1.39L Cr</strong> for education • <strong
-                        style="color: #f59e0b;">15,500 AVGC Labs</strong> • <strong style="color: #3b82f6;">TCS
-                        Relief</strong> for students
-                </p>
-            </div>
-        </div>
-        <a href="/budget2026" class="btn-primary-ui"
-            style="background: linear-gradient(135deg, #ff9933 0%, #138808 100%); color: white; font-weight: 700; padding: 0.875rem 2rem; white-space: nowrap; box-shadow: 0 4px 15px rgba(255, 153, 51, 0.3);">
-            <i class="fa-solid fa-arrow-right"></i> View All Benefits
-        </a>
-    </div>
-</div>
-
-<!-- Hero Section -->
-
-<div style="text-align: center; margin: 4rem 0 6rem 0; position: relative;">
-    <div
-        style="position: absolute; width: 400px; height: 400px; background: rgba(59, 130, 246, 0.2); filter: blur(120px); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; animation: pulse-slow 8s infinite alternate;">
-    </div>
-
-    <div class="animate-rise">
-        <div
-            style="display: inline-block; padding: 6px 18px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 30px; color: var(--primary); font-size: 0.85rem; font-weight: 700; margin-bottom: 2rem; letter-spacing: 1px; text-transform: uppercase;">
-            ✨ New: AI-Powered Wealth Guard Active
-        </div>
-        <h1 class="hero-title"
-            style="font-weight: 800; margin-bottom: 1.5rem; line-height: 1.1; font-size: 4.5rem; letter-spacing: -0.04em;">
-            Financial Intelligence <br>
-            <span
-                style="background: linear-gradient(135deg, #60a5fa 0%, #a855f7 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Redefined</span>
-        </h1>
-        <p class="hero-subtitle"
-            style="font-size: 1.25rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2.5rem auto;">
-            Your intelligent companion for smarter money management, tax optimization, and wealth growth.
-        </p>
-
-        <div class="hero-actions" style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="/dashboard" class="btn-primary-ui hero-btn">
-                <i class="fa-solid fa-cloud-arrow-up"></i> Analyze My Data
-            </a>
-            <a href="/education/students" class="btn-primary-ui hero-btn"
-                style="background: linear-gradient(135deg, #facc15 0%, #f59e0b 100%); color: #000; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
-                <i class="fa-solid fa-graduation-cap"></i> Student Hub
-            </a>
-            <a href="/education/glossary" class="btn-primary-ui hero-btn"
-                style="background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);">
-                <i class="fa-solid fa-book-sparkles"></i> Gen-Z Glossary
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Stats Grid -->
-<div
-    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 8rem;">
-    <div class="card-ui animate-rise glass-layer"
-        style="text-align: center; transition-delay: 0.1s; border-color: rgba(16, 185, 129, 0.2);">
-        <div class="stat-number" id="totalSavings"
-            style="font-size: 2.75rem; font-weight: 800; color: #10b981; margin-bottom: 0.5rem; letter-spacing: -1px;">
-            ₹0</div>
-        <div
-            style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-            Savings Identified</div>
-    </div>
-    <div class="card-ui animate-rise glass-layer"
-        style="text-align: center; transition-delay: 0.2s; border-color: rgba(59, 130, 246, 0.2);">
-        <div class="stat-number" id="taxSaved"
-            style="font-size: 2.75rem; font-weight: 800; color: #3b82f6; margin-bottom: 0.5rem; letter-spacing: -1px;">
-            ₹0</div>
-        <div
-            style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-            Tax Optimized</div>
-    </div>
-    <div class="card-ui animate-rise glass-layer"
-        style="text-align: center; transition-delay: 0.3s; border-color: rgba(245, 158, 11, 0.2);">
-        <div class="stat-number" id="investments"
-            style="font-size: 2.75rem; font-weight: 800; color: #f59e0b; margin-bottom: 0.5rem; letter-spacing: -1px;">
-            ₹0</div>
-        <div
-            style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-            Assets Managed</div>
-    </div>
-    <div class="card-ui animate-rise glass-layer"
-        style="text-align: center; transition-delay: 0.4s; border-color: rgba(255, 255, 255, 0.1);">
-        <div class="stat-number" id="score"
-            style="font-size: 2.75rem; font-weight: 800; color: white; margin-bottom: 0.5rem; letter-spacing: -1px;">
-            {{ data.financial_score if data else 85 }}/100</div>
-        <div
-            style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-            Health Score</div>
-    </div>
-</div>
-
-<!-- Section: How It Works -->
-<div style="margin-bottom: 8rem;">
-    <div style="text-align: center; margin-bottom: 4rem;">
-        <h2 style="font-size: 2.75rem; margin-bottom: 1rem; font-weight: 800; letter-spacing: -0.02em;">Three Steps to
-            Excellence</h2>
-        <p style="color: var(--text-muted); font-size: 1.25rem; max-width: 600px; margin: 0 auto;">Our intelligent
-            architecture automates your financial growth.</p>
-    </div>
-
-    <div
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; position: relative;">
-        <!-- Step 1 -->
-        <div style="text-align: center;">
-            <div
-                style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem auto; font-size: 2rem; color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2);">
-                <i class="fa-solid fa-bolt-lightning"></i>
-            </div>
-            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 700;">Connect & Sync</h3>
-            <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">Easily upload receipts or link your
-                accounts to feed the AI engine with your financial data.</p>
-        </div>
-        <!-- Step 2 -->
-        <div style="text-align: center;">
-            <div
-                style="width: 80px; height: 80px; background: rgba(168, 85, 247, 0.1); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem auto; font-size: 2rem; color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.2);">
-                <i class="fa-solid fa-brain"></i>
-            </div>
-            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 700;">AI Analysis</h3>
-            <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">Our proprietary algorithms scan for
-                tax leakage, spending anomalies, and growth opportunities.</p>
-        </div>
-        <!-- Step 3 -->
-        <div style="text-align: center;">
-            <div
-                style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); border-radius: 24px; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem auto; font-size: 2rem; color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2);">
-                <i class="fa-solid fa-crown"></i>
-            </div>
-            <h3 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 700;">Wealth Growth</h3>
-            <p style="color: var(--text-muted); line-height: 1.7; font-size: 1rem;">Execute professional-grade tax
-                strategies and investment plans to maximize your net worth.</p>
-        </div>
-    </div>
-</div>
-
-<!-- Section: Pro Features Showcase -->
-<div style="margin-bottom: 8rem;">
-    <div style="text-align: center; margin-bottom: 4rem;">
-        <h2 style="font-size: 2.75rem; margin-bottom: 1rem; font-weight: 800; letter-spacing: -0.02em;">Professional
-            Architecture</h2>
-        <p style="color: var(--text-muted); font-size: 1.25rem; max-width: 600px; margin: 0 auto;">Standardized
-            components for the modern wealth builder.</p>
-    </div>
-
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
-        <!-- Pro Feature 1 -->
-        <div class="card-ui glass-layer"
-            style="padding: 2.5rem; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-color: rgba(96, 165, 250, 0.2);">
-            <div
-                style="width: 50px; height: 50px; background: rgba(59, 130, 246, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; color: #3b82f6; font-size: 1.5rem;">
-                <i class="fa-solid fa-microchip"></i>
-            </div>
-            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 700;">Predictive Engine</h3>
-            <p style="color: var(--text-muted); line-height: 1.7;">Advanced ML models predict your cash flow and alert
-                you to potential "broke" scenarios before they happen.</p>
-            <ul style="padding-left: 1.2rem; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.9rem;">
-                <li style="margin-bottom: 0.5rem;">Cash Flow Forecasting</li>
-                <li style="margin-bottom: 0.5rem;">Anomaly Detection</li>
-                <li>Budget Drift Alerts</li>
-            </ul>
-        </div>
-        <!-- Pro Feature 2 -->
-        <div class="card-ui glass-layer"
-            style="padding: 2.5rem; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-color: rgba(168, 85, 247, 0.2);">
-            <div
-                style="width: 50px; height: 50px; background: rgba(168, 85, 247, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; color: #a855f7; font-size: 1.5rem;">
-                <i class="fa-solid fa-file-invoice-dollar"></i>
-            </div>
-            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 700;">Tax Optimizer</h3>
-            <p style="color: var(--text-muted); line-height: 1.7;">Professional tax planning for the 80C, 80D, and HRA
-                regimes. Maximize your take-home pay legally.</p>
-            <ul style="padding-left: 1.2rem; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.9rem;">
-                <li style="margin-bottom: 0.5rem;">Deduction Tracker</li>
-                <li style="margin-bottom: 0.5rem;">Investment Mapping</li>
-                <li>TDS Forecasting</li>
-            </ul>
-        </div>
-        <!-- Pro Feature 3 -->
-        <div class="card-ui glass-layer"
-            style="padding: 2.5rem; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border-color: rgba(16, 185, 129, 0.2);">
-            <div
-                style="width: 50px; height: 50px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; color: #10b981; font-size: 1.5rem;">
-                <i class="fa-solid fa-magnifying-glass-chart"></i>
-            </div>
-            <h3 style="margin-bottom: 1rem; font-size: 1.5rem; font-weight: 700;">Alpha Analyzer</h3>
-            <p style="color: var(--text-muted); line-height: 1.7;">Deep-dive stock analysis using Nifty/BSE data.
-                Identify undervalued assets with professional benchmarks.</p>
-            <ul style="padding-left: 1.2rem; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.9rem;">
-                <li style="margin-bottom: 0.5rem;">Sentiment Analysis</li>
-                <li style="margin-bottom: 0.5rem;">Fundamental Scoring</li>
-                <li>Portfolio Simulation</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<!-- Section: Interactive Preview -->
-<div style="margin-bottom: 8rem;">
-    <div style="text-align: center; margin-bottom: 4rem;">
-        <h2 style="font-size: 2.75rem; margin-bottom: 1rem; font-weight: 800; letter-spacing: -0.02em;">Glimpse the
-            Future</h2>
-        <p style="color: var(--text-muted); font-size: 1.25rem;">Experience the Command Center interface.</p>
-    </div>
-
-    <div class="card-ui glass-layer"
-        style="padding: 1rem; border-radius: 30px; overflow: hidden; max-width: 1000px; margin: 0 auto;">
-        <div
-            style="display: flex; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 0.5rem; margin-bottom: 1.5rem; gap: 0.5rem;">
-            <button class="preview-tab active" data-tab="dashboard">Dashboard</button>
-            <button class="preview-tab" data-tab="ai">AI Coach</button>
-            <button class="preview-tab" data-tab="analytics">Analytics</button>
-        </div>
-
-        <div id="preview-dashboard" class="preview-pane active">
-            <div
-                style="aspect-ratio: 16/10; background: #0f172a; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                <img src="https://images.unsplash.com/photo-1551288049-bbbda536639a?auto=format&fit=crop&q=80&w=1200"
-                    alt="Dashboard Preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5;">
-                <div style="position: absolute; text-align: center;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-solar-panel"></i></div>
-                    <h4 style="font-size: 1.5rem; font-weight: 700;">Intuitive Summaries</h4>
-                </div>
-            </div>
-        </div>
-
-        <div id="preview-ai" class="preview-pane">
-            <div
-                style="aspect-ratio: 16/10; background: #0f172a; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200"
-                    alt="AI Preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5;">
-                <div style="position: absolute; text-align: center;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-robot"></i></div>
-                    <h4 style="font-size: 1.5rem; font-weight: 700;">Intelligent Dialogue</h4>
-                </div>
-            </div>
-        </div>
-
-        <div id="preview-analytics" class="preview-pane">
-            <div
-                style="aspect-ratio: 16/10; background: #0f172a; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                <img src="https://images.unsplash.com/photo-1543286386-2e659306cd6c?auto=format&fit=crop&q=80&w=1200"
-                    alt="Analytics Preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5;">
-                <div style="position: absolute; text-align: center;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-chart-line"></i></div>
-                    <h4 style="font-size: 1.5rem; font-weight: 700;">Precision Insights</h4>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
+<!-- Custom Styles for Landing Page -->
 <style>
-    .preview-tab {
-        flex: 1;
-        padding: 12px 20px;
-        border: none;
-        background: transparent;
-        color: var(--text-muted);
+    html {
+        scroll-behavior: smooth;
+    }
+
+    :root {
+        --brand-blue: #2563eb;
+        --brand-indigo: #4f46e5;
+        --brand-emerald: #10b981;
+        --brand-slate: #0f172a;
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --glass-bg: rgba(30, 41, 59, 0.5);
+    }
+
+    .landing-wrapper {
+        margin: -2.5rem -1.5rem; /* Offset the default main-content padding */
+        overflow-x: hidden;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        padding: 10rem 2rem 8rem;
+        background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent 40%),
+                    radial-gradient(circle at bottom left, rgba(79, 70, 229, 0.1), transparent 40%),
+                    #020617;
+        text-align: center;
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(37, 99, 235, 0.1);
+        border: 1px solid rgba(37, 99, 235, 0.2);
+        border-radius: 99px;
+        color: #60a5fa;
+        font-size: 0.875rem;
         font-weight: 600;
-        cursor: pointer;
-        border-radius: 15px;
-        transition: 0.3s;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(8px);
     }
 
-    .preview-tab.active {
-        background: var(--primary-gradient);
+    .hero-title {
+        font-size: clamp(3rem, 8vw, 5.5rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.04em;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: #94a3b8;
+        max-width: 700px;
+        margin: 0 auto 3rem;
+        line-height: 1.6;
+    }
+
+    .dashboard-mockup {
+        max-width: 1000px;
+        margin: 4rem auto 0;
+        background: #0f172a;
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8), 
+                    0 0 50px rgba(37, 99, 235, 0.15);
+        overflow: hidden;
+        position: relative;
+        transform: perspective(1000px) rotateX(2deg);
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 10;
+        aspect-ratio: 16 / 9;
+        display: flex;
+    }
+
+    .dashboard-mockup:hover {
+        transform: perspective(1000px) rotateX(0deg) translateY(-10px);
+    }
+
+    .mockup-sidebar {
+        width: 180px;
+        border-right: 1px solid var(--glass-border);
+        padding: 1.5rem;
+        background: rgba(2, 6, 23, 0.5);
+    }
+
+    .mockup-nav-item {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+
+    .mockup-main {
+        flex: 1;
+        padding: 2.5rem;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9));
+    }
+
+    .mockup-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2.5rem;
+    }
+
+    .mockup-title {
+        height: 12px;
+        width: 150px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+    }
+
+    .mockup-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .mockup-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        height: 100px;
+    }
+
+    .mockup-chart-container {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        height: 220px;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .mockup-chart-line {
+        position: absolute;
+        bottom: 40px;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(transparent, rgba(37, 99, 235, 0.1));
+        clip-path: polygon(0 60%, 15% 40%, 30% 70%, 45% 20%, 60% 50%, 75% 10%, 90% 40%, 100% 30%, 100% 100%, 0 100%);
+    }
+
+    .mockup-chart-stroke {
+        position: absolute;
+        bottom: 40px;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: none;
+        border-top: 2px solid var(--brand-blue);
+        clip-path: polygon(0 60%, 15% 40%, 30% 70%, 45% 20%, 60% 50%, 75% 10%, 90% 40%, 100% 30%, 100% 100%, 0 100%);
+        filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.5));
+    }
+
+    /* Trust Section */
+    .trust-section {
+        padding: 4rem 2rem;
+        background: #020617;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .trust-grid {
+        display: flex;
+        justify-content: center;
+        gap: 4rem;
+        flex-wrap: wrap;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .trust-item {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        color: #94a3b8;
+        background: rgba(255, 255, 255, 0.02);
+        padding: 1.5rem 2rem;
+        border-radius: 16px;
+        border: 1px solid var(--glass-border);
+        transition: all 0.3s ease;
+    }
+    .trust-item:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+    .trust-item i {
+        font-size: 2.25rem;
+        color: var(--brand-emerald);
+        filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3));
+    }
+    .trust-item h4 {
         color: white;
-        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        margin-bottom: 0.25rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+    .trust-item p {
+        margin: 0;
+        font-size: 0.85rem;
     }
 
-    .preview-pane {
-        display: none;
+    /* Problem Section */
+    .problem-section {
+        padding: 8rem 2rem;
+        background: #020617;
     }
 
-    .preview-pane.active {
+    .section-tag {
+        color: var(--brand-blue);
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        font-size: 0.75rem;
+        margin-bottom: 1rem;
         display: block;
-        animation: fadeIn 0.5s ease-out;
+    }
+
+    .section-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 4rem;
+        letter-spacing: -0.02em;
+    }
+
+    .problem-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .problem-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        padding: 3rem;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .problem-card:hover {
+        border-color: rgba(239, 68, 68, 0.3);
+        transform: translateY(-5px);
+    }
+
+    .problem-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Solution Section */
+    .solution-section {
+        padding: 8rem 2rem;
+        background: linear-gradient(to bottom, #020617, #0f172a);
+        text-align: center;
+    }
+
+    .solution-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .ai-brain {
+        font-size: 4rem;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: pulse 3s infinite;
+    }
+
+    /* Features Section */
+    .features-section {
+        padding: 8rem 2rem;
+        background: #0f172a;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--glass-border);
+        padding: 2.5rem;
+        border-radius: 24px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: var(--brand-blue);
+        transform: translateY(-5px);
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .feature-card:hover::before {
+        opacity: 1;
+    }
+
+    .feature-icon-new {
+        font-size: 2rem;
+        color: var(--brand-blue);
+        margin-bottom: 1.5rem;
+    }
+
+    /* Target Audience */
+    .audience-section {
+        padding: 8rem 2rem;
+        background: #020617;
+    }
+
+    .audience-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .audience-item {
+        text-align: center;
+        padding: 2.5rem;
+        border-radius: 20px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+    }
+
+    .audience-avatar {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 1.5rem;
+        background: #1e293b;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        border: 2px solid var(--brand-blue);
+    }
+
+    /* Animations */
+    @keyframes pulse {
+        0%, 100% { opacity: 0.8; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    .btn-gradient {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 99px;
+        font-weight: 700;
+        font-size: 1.125rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.5);
+        color: white;
+    }
+
+    .btn-white {
+        background: white;
+        color: var(--brand-slate);
+        padding: 1rem 2.5rem;
+        border-radius: 99px;
+        font-weight: 700;
+        font-size: 1.125rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-white:hover {
+        background: #f1f5f9;
+        transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+        .hero-section { padding-top: 6rem; }
+        .hero-title { font-size: 3rem; }
+        .section-title { font-size: 2.25rem; }
+    }
+
+    /* FAQ Section */
+    .faq-section {
+        padding: 8rem 2rem;
+        background: #0f172a;
+    }
+
+    .faq-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .faq-item {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--glass-border);
+        padding: 2rem;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .faq-item:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: var(--brand-blue);
+        transform: translateY(-2px);
+    }
+
+    .faq-item h4 {
+        color: white;
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .faq-item h4 i {
+        color: var(--brand-blue);
+        font-size: 1.2rem;
+    }
+
+    .faq-item p {
+        color: #94a3b8;
+        line-height: 1.6;
+        margin: 0;
     }
 </style>
 
-<!-- Flash Cards Section (Interactive) -->
-<div style="margin-bottom: 6rem;">
-    <div
-        style="display: flex; justify-content: space-between; align-items: end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
-        <div>
-            <h2 style="font-size: 2.25rem; margin-bottom: 0.5rem;">Learn Fast</h2>
-            <p style="color: var(--text-muted); font-size: 1.1rem; margin: 0;">Tap to flip cards and test your knowledge
+<div class="landing-wrapper">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-badge">
+            <i class="fa-solid fa-sparkles"></i> AI Wealth Protocol v3.0 Now Live
+        </div>
+        <h1 class="hero-title">Your Wealth, <br> Secured & Thriving.</h1>
+        <p class="hero-subtitle">
+            FinTelligent is India's most trusted AI financial platform for the next generation. We combine bank-level security with intelligent insights to empower your financial future.
+        </p>
+        <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+            <a href="/register" class="btn-gradient">
+                Get Started Free <i class="fa-solid fa-arrow-right"></i>
+            </a>
+            <a href="#how-it-works" class="btn-white">
+                See How It Works
+            </a>
+            <a href="#faq" class="btn-white" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white;">
+                FAQ
+            </a>
+        </div>
+
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="trust-grid">
+            <div class="trust-item animate-rise">
+                <i class="fa-solid fa-shield-halved"></i>
+                <div>
+                    <h4>Bank-Level Security</h4>
+                    <p>256-bit encryption for your data</p>
+                </div>
+            </div>
+            <div class="trust-item animate-rise">
+                <i class="fa-solid fa-user-lock"></i>
+                <div>
+                    <h4>100% Data Privacy</h4>
+                    <p>We never sell your information</p>
+                </div>
+            </div>
+            <div class="trust-item animate-rise">
+                <i class="fa-solid fa-users"></i>
+                <div>
+                    <h4>50,000+ Users</h4>
+                    <p>Trusted by Indian youth across the country</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section" id="how-it-works">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <span class="section-tag">The Reality Check</span>
+            <h2 class="section-title">Why 90% of young Indians <br> miss out on wealth.</h2>
+            
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="problem-icon"><i class="fa-solid fa-brain"></i></div>
+                    <h3>Financial Blindspots</h3>
+                    <p style="color: #64748b;">Schools teach trigonometry, but not taxes. Most students graduate without knowing how to manage their first salary.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon"><i class="fa-solid fa-receipt"></i></div>
+                    <h3>Manual Mess</h3>
+                    <p style="color: #64748b;">Tracking expenses in spreadsheets is tedious. Without automation, you lose track of where your money actually goes.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="problem-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+                    <h3>Missed Savings</h3>
+                    <p style="color: #64748b;">From internship TDS to 80C deductions, young professionals leave thousands on the table simply due to complex tax laws.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution-section">
+        <div class="solution-content">
+            <div class="ai-brain"><i class="fa-solid fa-microchip-ai"></i></div>
+            <span class="section-tag">The Solution</span>
+            <h2 class="section-title" style="color: white;">Your Money, Augmented.</h2>
+            <p style="font-size: 1.25rem; color: #94a3b8; margin-bottom: 3rem;">
+                FinTelligent isn't just a tracker. It's an intelligent layer that sits on top of your finances, analyzing patterns, predicting shortfalls, and optimizing for growth in real-time.
             </p>
         </div>
-        <a href="/education" class="btn-primary-ui"
-            style="background: transparent; border: 1px solid var(--primary); color: var(--primary); box-shadow: none;">
-            View All Topics <i class="fa-solid fa-arrow-right"></i>
-        </a>
-    </div>
+    </section>
 
-    <!-- Scrollable Horizontal Container -->
-    <div class="flash-cards-wrapper"
-        style="display: flex; overflow-x: auto; gap: 1.5rem; padding-bottom: 1rem; scroll-snap-type: x mandatory;">
-        <!-- Card 1 -->
-        <div class="flash-card" onclick="this.classList.toggle('flipped')">
-            <div class="flash-card-inner">
-                <div class="flash-card-front">
-                    <div style="font-size: 2rem; margin-bottom: 1rem;">🌱</div>
-                    <div class="question">What is Compound Interest?</div>
+    <!-- Features Section -->
+    <section class="features-section">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center; margin-bottom: 5rem;">
+            <span class="section-tag">Core Capabilities</span>
+            <h2 class="section-title">Built for the modern earner.</h2>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon-new"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <h3>AI Budget Planner</h3>
+                <p style="color: #64748b;">Automatic categorization and smart alerts that keep you within your limits without the manual entry.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-new"><i class="fa-solid fa-calculator"></i></div>
+                <h3>Smart Tax Shield</h3>
+                <p style="color: #64748b;">Maximize your take-home pay with automated suggestions for 80C, 10(14), and internship TDS refunds.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-new"><i class="fa-solid fa-gauge-high"></i></div>
+                <h3>Financial Health Score</h3>
+                <p style="color: #64748b;">A real-time metric of your financial stability, updated daily based on your spending and saving habits.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-new"><i class="fa-solid fa-robot"></i></div>
+                <h3>AI Financial Coach</h3>
+                <p style="color: #64748b;">A 24/7 AI companion to answer questions like "Can I afford this iPhone?" or "How do I start a SIP?"</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-new"><i class="fa-solid fa-bullseye"></i></div>
+                <h3>Goal-Sync Savings</h3>
+                <p style="color: #64748b;">Set goals for travel, tech, or education. We'll find small ways to save daily to get you there faster.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon-new"><i class="fa-solid fa-graduation-cap"></i></div>
+                <h3>Investment Lab</h3>
+                <p style="color: #64748b;">Learn by doing. Gamified paths to understand Mutual Funds, Stocks, and ETFs with zero risk.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Target Audience -->
+    <section class="audience-section">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center; margin-bottom: 5rem;">
+            <span class="section-tag">Who it's for</span>
+            <h2 class="section-title">Designed for your life stage.</h2>
+            
+            <div class="audience-grid">
+                <div class="audience-item">
+                    <div class="audience-avatar">🎓</div>
+                    <h4 style="color: white; margin-bottom: 1rem;">Students</h4>
+                    <p style="color: #64748b; font-size: 0.875rem;">Mastering pocket money and saving for first big dreams.</p>
                 </div>
-                <div class="flash-card-back">
-                    <div class="answer">"Interest on interest." It allows your investments to grow exponentially over
-                        time, accelerating wealth creation.</div>
+                <div class="audience-item">
+                    <div class="audience-avatar">💼</div>
+                    <h4 style="color: white; margin-bottom: 1rem;">Early Careers</h4>
+                    <p style="color: #64748b; font-size: 0.875rem;">Optimizing first salaries and crushing tax season.</p>
+                </div>
+                <div class="audience-item">
+                    <div class="audience-avatar">🚀</div>
+                    <h4 style="color: white; margin-bottom: 1rem;">Freelancers</h4>
+                    <p style="color: #64748b; font-size: 0.875rem;">Managing variable income and business expenses.</p>
+                </div>
+                <div class="audience-item">
+                    <div class="audience-avatar">👑</div>
+                    <h4 style="color: white; margin-bottom: 1rem;">Entrepreneurs</h4>
+                    <p style="color: #64748b; font-size: 0.875rem;">Tracking burn rate and small business cashflow.</p>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Card 2 -->
-        <div class="flash-card" onclick="this.classList.toggle('flipped')">
-            <div class="flash-card-inner">
-                <div class="flash-card-front">
-                    <div style="font-size: 2rem; margin-bottom: 1rem;">📊</div>
-                    <div class="question">50-30-20 Rule</div>
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <span class="section-tag">Got Questions?</span>
+                <h2 class="section-title">FAQ</h2>
+            </div>
+            
+            <div class="faq-grid">
+                <div class="faq-item animate-rise">
+                    <h4><i class="fa-solid fa-shield-halved"></i> Is my financial data secure?</h4>
+                    <p>Absolutely. We use bank-level 256-bit encryption. Your financial information is accessible only by you, and we never sell your data to any third party. Your security is our #1 priority.</p>
                 </div>
-                <div class="flash-card-back">
-                    <div class="answer">Budget 50% for needs, 30% for wants, and 20% for savings and debt repayment. A
-                        simple formula for balance.</div>
+
+                <div class="faq-item animate-rise">
+                    <h4><i class="fa-solid fa-indian-rupee-sign"></i> Is FinTelligent really free for students?</h4>
+                    <p>Yes! We have a "Free Forever" plan with all the core features designed specifically for students. It helps you manage pocket money, budget for goals, and track expenses without spending a dime.</p>
+                </div>
+
+                <div class="faq-item animate-rise">
+                    <h4><i class="fa-solid fa-building-columns"></i> Do I have to link my bank accounts?</h4>
+                    <p>No, linking accounts is entirely optional. You can manually log your expenses easily. Linked accounts simply make automatic tracking fully seamless if you choose to enable it.</p>
+                </div>
+
+                <div class="faq-item animate-rise">
+                    <h4><i class="fa-solid fa-user-lock"></i> Can my parents or college see my spending?</h4>
+                    <p>Not at all. Your account is completely private and personal. No one else has access to your budget or spending habits unless you explicitly choose to share them.</p>
                 </div>
             </div>
         </div>
+    </section>
 
-        <!-- Card 3 -->
-        <div class="flash-card" onclick="this.classList.toggle('flipped')">
-            <div class="flash-card-inner">
-                <div class="flash-card-front">
-                    <div style="font-size: 2rem; margin-bottom: 1rem;">🛡️</div>
-                    <div class="question">Emergency Fund</div>
-                </div>
-                <div class="flash-card-back">
-                    <div class="answer">Liquid cash set aside for unexpected costs (3-6 months of expenses). It prevents
-                        you from tapping into investments.</div>
-                </div>
-            </div>
+    <!-- CTA Section -->
+    <section style="padding: 10rem 2rem; background: #020617; text-align: center; border-top: 1px solid var(--glass-border);">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h2 style="font-size: 4rem; font-weight: 800; margin-bottom: 2rem; letter-spacing: -0.04em;">Ready to take <br> control?</h2>
+            <p style="font-size: 1.25rem; color: #94a3b8; margin-bottom: 3rem;">
+                Join 50,000+ young Indians who are building wealth with FinTelligent.
+            </p>
+            <a href="/register" class="btn-gradient" style="font-size: 1.25rem; padding: 1.25rem 3.5rem;">
+                Start Your Journey Now
+            </a>
+            <p style="margin-top: 2rem; color: #64748b; font-size: 0.875rem;">No credit card required. Free forever version available.</p>
         </div>
-
-        <!-- Card 4 -->
-        <div class="flash-card" onclick="this.classList.toggle('flipped')">
-            <div class="flash-card-inner">
-                <div class="flash-card-front">
-                    <div style="font-size: 2rem; margin-bottom: 1rem;">🥧</div>
-                    <div class="question">Asset Allocation</div>
-                </div>
-                <div class="flash-card-back">
-                    <div class="answer">Dividing your portfolio among different asset classes (stocks, bonds, cash) to
-                        balance risk and reward based on your goals.</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 </div>
-
-<!-- Section: Testimonials/Trust -->
-<div style="margin-bottom: 8rem; text-align: center;">
-    <div
-        style="display: flex; justify-content: center; gap: 4rem; opacity: 0.5; filter: grayscale(1); margin-bottom: 4rem; flex-wrap: wrap;">
-        <div style="font-size: 1.5rem; font-weight: 700; color: white;"><i class="fa-solid fa-shield-halved"></i>
-            SECUREBANK</div>
-        <div style="font-size: 1.5rem; font-weight: 700; color: white;"><i class="fa-solid fa-building-columns"></i>
-            NEXUS ASSETS</div>
-        <div style="font-size: 1.5rem; font-weight: 700; color: white;"><i class="fa-solid fa-vault"></i> TITAN TRUST
-        </div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
-        <div class="card-ui glass-layer" style="padding: 2rem; border-color: rgba(255,255,255,0.05);">
-            <p style="font-style: italic; color: var(--text-muted); margin-bottom: 1.5rem;">"The TDS forecasting alone
-                saved me ₹2L last year. It's like having a CA in your pocket."</p>
-            <div style="font-weight: 700; color: var(--text-main);">Ananya S.</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">SDE at Fortune 500</div>
-        </div>
-        <div class="card-ui glass-layer" style="padding: 2rem; border-color: rgba(255,255,255,0.05);">
-            <p style="font-style: italic; color: var(--text-muted); margin-bottom: 1.5rem;">"Finally, a tool that
-                understands the Indian market. The credit card optimizer is genius."</p>
-            <div style="font-weight: 700; color: var(--text-main);">Rahul M.</div>
-            <div style="font-size: 0.8rem; color: var(--text-muted);">Small Business Owner</div>
-        </div>
-    </div>
-</div>
-
-<!-- CTA Footer -->
-<div class="card-ui"
-    style="text-align: center; padding: 6rem 2rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 40px; position: relative; overflow: hidden;">
-    <div
-        style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; filter: blur(50px);">
-    </div>
-    <h2 style="font-size: 3rem; margin-bottom: 1.5rem; font-weight: 800; letter-spacing: -0.02em;">Ready to Scale Your
-        Wealth?</h2>
-    <p
-        style="color: var(--text-muted); margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto; font-size: 1.1rem; line-height: 1.7;">
-        Join 10,000+ elite users architecting their financial future with Fintelligent. Start your 14-day Pro trial
-        today.
-    </p>
-    <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
-        <a href="/register" class="btn-primary-ui" style="font-size: 1.1rem; padding: 1.25rem 3rem;">
-            Create Free Account
-        </a>
-        <a href="/pricing" class="btn-primary-ui"
-            style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 1.1rem; padding: 1.25rem 3rem; box-shadow: none;">
-            Explore Pro Plans
-        </a>
-    </div>
-</div>
-
-<style>
-    @keyframes pulse-slow {
-        0% {
-            transform: translate(-50%, -50%) scale(1);
-            opacity: 0.5;
-        }
-
-        100% {
-            transform: translate(-50%, -50%) scale(1.1);
-            opacity: 0.8;
-        }
-    }
-</style>
 
 <script>
-    // Pass data from backend to JavaScript
-    window.dashboardData = {{ data | tojson | safe if data else 'null' }};
+    // Simple intersection observer for animations
+    const observerOptions = {
+        threshold: 0.1
+    };
 
-    // Tab Logic
-    document.querySelectorAll('.preview-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            const target = tab.dataset.tab;
-
-            // Update tabs
-            document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-
-            // Update panes
-            document.querySelectorAll('.preview-pane').forEach(p => p.classList.remove('active'));
-            document.getElementById(`preview-${target}`).classList.add('active');
-        });
-    });
-
-    // Animate counters
-    function animateCounter(element, start, end, duration) {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-            const current = Math.floor(easeOutQuart * (end - start) + start);
-            element.textContent = '₹' + current.toLocaleString();
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-rise');
+                observer.unobserve(entry.target);
             }
-        };
-        window.requestAnimationFrame(step);
-    }
+        });
+    }, observerOptions);
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const backendData = window.dashboardData;
-        setTimeout(() => {
-            const defaults = { savings: 250000, tax: 45000, invest: 180000 };
-            const targetSavings = backendData ? backendData.total_savings : defaults.savings;
-            const targetTax = backendData ? backendData.tax_saved : defaults.tax;
-            const targetInvest = backendData ? backendData.investments : defaults.invest;
-
-            if (document.getElementById('totalSavings')) animateCounter(document.getElementById('totalSavings'), 0, targetSavings, 2000);
-            if (document.getElementById('taxSaved')) animateCounter(document.getElementById('taxSaved'), 0, targetTax, 2500);
-            if (document.getElementById('investments')) animateCounter(document.getElementById('investments'), 0, targetInvest, 2200);
-        }, 500);
+    document.querySelectorAll('.problem-card, .feature-card, .audience-item, .faq-item').forEach(el => {
+        el.style.opacity = '0';
+        observer.observe(el);
     });
 </script>
+
 {% endblock %}

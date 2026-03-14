@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}System Error (500) - Fintelligent{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 6rem 1.5rem; min-height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <div style="position: relative; margin-bottom: 3rem;">
+        <div style="font-size: 10rem; font-weight: 900; opacity: 0.1; color: #ef4444;">500</div>
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 4rem;">🔥</div>
+    </div>
+    
+    <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">System Breakdown</h1>
+    <p style="color: var(--text-muted); font-size: 1.25rem; max-width: 500px; margin: 0 auto 3rem auto;">
+        Our AI engines are currently overheating. Our support team has been notified.
+    </p>
+    
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+        <a href="/" class="btn-primary-ui">
+            <i class="fa-solid fa-house"></i> Return to Base
+        </a>
+        <a href="/contact" class="btn-primary-ui" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); color: #f87171;">
+            <i class="fa-solid fa-headset"></i> Contact Support
+        </a>
+    </div>
+</div>
+{% endblock %}

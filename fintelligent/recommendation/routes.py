@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, render_template, session, redirect, url_for
 from flask_login import current_user, login_required
+from fintelligent.utils.decorators import tier_required
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
@@ -54,6 +55,7 @@ def financial_dashboard():
 
 @recommendation.route('/analytics', methods=['GET', 'POST'])
 @login_required
+@tier_required(['STUDENT', 'PRO'])
 def financial_analytics():
     """Deep dive analytics using uploaded CSV data"""
     error = None

@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, jsonify
+from flask_login import login_required
+from fintelligent.utils.decorators import tier_required
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
@@ -8,11 +10,15 @@ stocks = Blueprint('stocks', __name__)
 
 
 @stocks.route('/analyze-stock')
+@login_required
+@tier_required('PRO')
 def analyze_stock_page():
     return render_template('analyze_stock.html')
 
 
 @stocks.route('/get_clusters', methods=['GET'])
+@login_required
+@tier_required('PRO')
 def get_clusters():
     """
     Fetch stock data using yfinance (free, robust for Indian markets)

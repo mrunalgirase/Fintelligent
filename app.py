@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()
 import sys
 import os
 
@@ -43,8 +45,17 @@ from fintelligent.recommendation.routes import recommendation
 from fintelligent.cards.routes import cards
 from fintelligent.gamification.routes import gamification
 from fintelligent.statements.routes import statements
+from flask import render_template
 
 app = Flask(__name__)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-key-for-local-only-replace-in-prod')
 basedir = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(basedir, 'instance', 'fintelligent.db')
@@ -101,6 +112,9 @@ app.register_blueprint(receipts)
 
 from fintelligent.ai_coach.routes import ai_coach
 app.register_blueprint(ai_coach)
+
+from fintelligent.payments.routes import payments
+app.register_blueprint(payments)
 
 # Initialize Flask-Login
 login_manager.init_app(app)

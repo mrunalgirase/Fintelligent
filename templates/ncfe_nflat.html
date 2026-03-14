@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% block title %}NFLAT Mock Assessment - Fintelligent{% endblock %}
+{% block content %}
+
+<div class="container" style="max-width: 800px; margin: 0 auto; padding: 2rem 1rem;">
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 2.5rem;">
+        <span style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6; padding: 0.4rem 0.8rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(139, 92, 246, 0.2); margin-bottom: 1rem; display: inline-block;">
+            NFLAT MOCK ASSESSMENT
+        </span>
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; color: var(--text-main);">Financial Literacy Test</h1>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin: 0;">
+            Test your knowledge with a mini-quiz modeled after the NCFE's National Financial Literacy Assessment Test.
+        </p>
+    </div>
+
+    <div class="card-ui" style="background: var(--glass-bg); padding: 2.5rem; border: 1px solid var(--glass-border); position: relative;">
+        <!-- Progress Bar -->
+        <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-bottom: 2rem;">
+            <div id="quiz-progress" style="width: 20%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #3b82f6); border-radius: 3px; transition: width 0.3s ease;"></div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div id="quiz-container">
+            <!-- Questions rendered via JS -->
+        </div>
+
+        <!-- Final Results (Hidden initially) -->
+        <div id="results-container" style="display: none; text-align: center;">
+            <div style="font-size: 4rem; margin-bottom: 1rem;" id="result-emoji">🏆</div>
+            <h2 id="result-title" style="color: var(--text-main); margin-bottom: 0.5rem; font-size: 2rem;">Quiz Completed!</h2>
+            <p id="result-score" style="color: var(--text-muted); font-size: 1.25rem; margin-bottom: 2rem;">You scored X out of Y.</p>
+            
+            <div style="background: rgba(255, 255, 255, 0.02); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; border-left: 4px solid var(--brand-blue); text-align: left;">
+                <h4 style="color: var(--text-main); margin-bottom: 0.5rem;">Feedback:</h4>
+                <p id="result-feedback" style="color: var(--text-muted); font-size: 0.95rem; margin: 0; line-height: 1.6;"></p>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button onclick="location.reload()" class="btn-primary-ui" style="background: rgba(255,255,255,0.1); border: 1px dashed rgba(255,255,255,0.2);">Retake Quiz</button>
+                <a href="/education" class="btn-primary-ui" style="background: var(--brand-indigo);">Back to Curriculum</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .quiz-option {
+        display: block;
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 1rem;
+        color: var(--text-muted);
+    }
+    .quiz-option:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(139, 92, 246, 0.4);
+        transform: translateY(-2px);
+    }
+    .quiz-option.selected {
+        background: rgba(139, 92, 246, 0.1);
+        border-color: #8b5cf6;
+        color: white;
+        font-weight: 500;
+    }
+</style>
+
+<script>
+    const quizData = [
+        {
+            question: "What is the primary effect of inflation on your money over time?",
+            options: [
+                "It increases the purchasing power of your money.",
+                "It decreases the purchasing power of your money.",
+                "It has no effect on your money.",
+                "It automatically increases your salary."
+            ],
+            correctIndex: 1,
+            explanation: "Inflation erodes purchasing power, meaning your money buys less tomorrow than it does today."
+        },
+        {
+            question: "According to NCFE guidelines, an Emergency Fund should ideally cover:",
+            options: [
+                "1 month of living expenses",
+                "3 to 6 months of living expenses",
+                "1 year of your gross salary",
+                "Just enough to repair a car"
+            ],
+            correctIndex: 1,
+            explanation: "NCFE recommends 3-6 months of basic living expenses to cover unexpected job loss or medical emergencies."
+        },
+        {
+            question: "Which term describes 'spreading your investments around' to lower your risk?",
+            options: [
+                "Compounding",
+                "Inflation",
+                "Diversification",
+                "Amortization"
+            ],
+            correctIndex: 2,
+            explanation: "Diversification lowers risk by investing in a variety of assets so a decline in one is offset by others."
+        },
+        {
+            question: "Rule of 72 is primarily used to estimate:",
+            options: [
+                "The amount of tax you owe",
+                "How many years it will take for your investment to double",
+                "The penalty for early withdrawal from FD",
+                "Your credit score based on spending"
+            ],
+            correctIndex: 1,
+            explanation: "72 divided by the annual interest rate gives the approximate number of years it takes to double your money."
+        },
+        {
+            question: "If interest rates rise, what generally happens to existing bond prices?",
+            options: [
+                "They rise",
+                "They fall",
+                "They stay the same",
+                "They convert to stocks"
+            ],
+            correctIndex: 1,
+            explanation: "Bond prices and interest rates have an inverse relationship. When new rates rise, older lower-paying bonds become less valuable."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedOptionIndex = null;
+
+    const quizContainer = document.getElementById('quiz-container');
+    const progressFill = document.getElementById('quiz-progress');
+
+    function loadQuestion() {
+        selectedOptionIndex = null;
+        const q = quizData[currentQuestionIndex];
+        
+        // Update Progress
+        const percent = ((currentQuestionIndex) / quizData.length) * 100;
+        progressFill.style.width = `${percent}%`;
+
+        let html = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <span style="color: var(--brand-indigo); font-weight: 700; font-size: 0.9rem; letter-spacing: 0.05em;">QUESTION ${currentQuestionIndex + 1} OF ${quizData.length}</span>
+            </div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--text-main); line-height: 1.4;">
+                ${q.question}
+            </h2>
+            <div id="options-container">
+        `;
+
+        q.options.forEach((opt, idx) => {
+            html += `
+                <div class="quiz-option" onclick="selectOption(${idx})" id="opt-${idx}">
+                    <span style="display: inline-block; width: 24px; font-weight: 700; opacity: 0.5;">${String.fromCharCode(65 + idx)}</span> 
+                    ${opt}
+                </div>
+            `;
+        });
+
+        html += `
+            </div>
+            <div style="margin-top: 2rem; text-align: right;">
+                <button onclick="submitAnswer()" class="btn-primary-ui" id="next-btn" style="background: var(--brand-indigo); opacity: 0.5; cursor: not-allowed;" disabled>
+                    Submit Answer <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        `;
+
+        quizContainer.innerHTML = html;
+        quizContainer.style.opacity = '0';
+        setTimeout(() => { quizContainer.style.opacity = '1'; quizContainer.style.transition = 'opacity 0.3s ease'; }, 50);
+    }
+
+    function selectOption(idx) {
+        selectedOptionIndex = idx;
+        // Reset classes
+        document.querySelectorAll('.quiz-option').forEach(el => el.classList.remove('selected'));
+        // Add selected
+        document.getElementById(`opt-${idx}`).classList.add('selected');
+        
+        // Enable button
+        const btn = document.getElementById('next-btn');
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+    }
+
+    function submitAnswer() {
+        if(selectedOptionIndex === null) return;
+        
+        if (selectedOptionIndex === quizData[currentQuestionIndex].correctIndex) {
+            score++;
+            showToast("Correct!", "Great job, that's the right answer.", "success", 2000);
+        } else {
+            showToast("Incorrect", "The correct answer was: " + quizData[currentQuestionIndex].options[quizData[currentQuestionIndex].correctIndex], "error", 4000);
+        }
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < quizData.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizContainer.style.display = 'none';
+        
+        const resContainer = document.getElementById('results-container');
+        resContainer.style.display = 'block';
+        
+        // Final Progress
+        progressFill.style.width = '100%';
+        progressFill.style.background = 'var(--brand-emerald)';
+
+        document.getElementById('result-score').innerText = `You answered ${score} out of ${quizData.length} questions correctly.`;
+
+        const ratio = score / quizData.length;
+        if (ratio === 1) {
+            document.getElementById('result-emoji').innerText = '🏆';
+            document.getElementById('result-title').innerText = 'Financial Literacy Expert!';
+            document.getElementById('result-feedback').innerText = 'Outstanding! You possess excellent foundational financial knowledge matching the NCFE standards. You are ready to make sound, complex financial decisions.';
+        } else if (ratio >= 0.6) {
+            document.getElementById('result-emoji').innerText = '🥈';
+            document.getElementById('result-title').innerText = 'Financially Aware';
+            document.getElementById('result-feedback').innerText = 'Good job. You have a solid grasp of basic financial concepts like inflation and diversification. Review our modules to perfect your knowledge and reach the expert level.';
+        } else {
+            document.getElementById('result-emoji').innerText = '📚';
+            document.getElementById('result-title').innerText = 'Beginner Achiever';
+            document.getElementById('result-feedback').innerText = 'You are just starting out on your financial journey. Finance has a learning curve, and the best time to learn is now. Please dive deep into the NCFE Curriculum modules available on our Education portal.';
+        }
+    }
+
+    // Init Quiz
+    document.addEventListener('DOMContentLoaded', () => {
+        loadQuestion();
+    });
+</script>
+
+{% endblock %}

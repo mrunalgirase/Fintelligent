@@ -1,4 +1,6 @@
 from flask import Blueprint, render_template, request, session
+from flask_login import login_required
+from fintelligent.utils.decorators import tier_required
 import pandas as pd
 
 strategies = Blueprint('strategies', __name__)
@@ -111,6 +113,8 @@ def calculate_old_regime_tax(income):
     return tax
 
 @strategies.route('/strategies', methods=['GET', 'POST'])
+@login_required
+@tier_required('PRO')
 def strategies_page():
     plan = None
     ai_recommendation = None

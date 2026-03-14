@@ -38,12 +38,22 @@
 
     {% if dashboard_data and dashboard_data.health_score %}
     <!-- Gamified Persona Badge -->
-    <div class="animate-rise"
-        style="display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(255, 255, 255, 0.05); padding: 0.5rem 1.25rem; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">
-        <i class="fa-solid fa-crown" style="color: var(--health-color);"></i>
-        <span style="color: var(--text-main); font-weight: 600; font-size: 0.95rem;">
-            Status: <span style="color: var(--health-color);">{{ dashboard_data.health_score.level }}</span>
-        </span>
+    <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <div class="animate-rise"
+            style="display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(255, 255, 255, 0.05); padding: 0.5rem 1.25rem; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);">
+            <i class="fa-solid fa-crown" style="color: var(--health-color);"></i>
+            <span style="color: var(--text-main); font-weight: 600; font-size: 0.95rem;">
+                Status: <span style="color: var(--health-color);">{{ dashboard_data.health_score.level }}</span>
+            </span>
+        </div>
+        
+        <!-- Daily Streak (Identity Trigger) -->
+        <div class="animate-rise" id="dashboard-streak"
+            style="display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(249, 115, 22, 0.1); padding: 0.5rem 1.25rem; border-radius: 50px; border: 1px solid rgba(249, 115, 22, 0.2); backdrop-filter: blur(10px);">
+            <span style="font-size: 1.2rem; filter: drop-shadow(0 0 5px #f97316);">🔥</span>
+            <span style="color: #fdba74; font-weight: 800; font-size: 1.1rem;" id="streak-val">0</span>
+            <span style="color: #f97316; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Day Streak</span>
+        </div>
     </div>
     {% if not current_user.is_premium %}
     <div style="margin-top: 1rem;">
@@ -139,18 +149,25 @@
         </div>
     </div>
 
-    <!-- AI Insight Snack -->
+    <!-- AI Insight Snack (Dynamic) -->
     <div class="card-ui glass-layer" style="padding: 1.5rem; border-color: rgba(168, 85, 247, 0.2);">
         <h3 style="margin: 0 0 1rem 0; font-size: 1rem; font-weight: 700; color: var(--text-main);">
-            <i class="fa-solid fa-wand-magic-sparkles" style="color: #a855f7; margin-right: 0.5rem;"></i> AI Command
-            Insight
+            <i class="fa-solid fa-wand-magic-sparkles" style="color: #a855f7; margin-right: 0.5rem;"></i> AI Command Intelligence
         </h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem;">
-            "You've spent ₹12,400 more on <b>Dining Out</b> than last month. Consider shifting funds to your <b>ELSS
-                Investment</b> to hit your 80C target."
-        </p>
+        <div id="ai-insight-rotation" style="min-height: 80px;">
+            {% if dashboard_data.ai_insights %}
+                {% set insight = dashboard_data.ai_insights | random %}
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                    "{{ insight.text }}"
+                </p>
+            {% else %}
+                <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                    "Analyze more transactions to unlock personalized AI financial coaching."
+                </p>
+            {% endif %}
+        </div>
         <div style="display: flex; gap: 0.75rem;">
-            <a href="/ai-coach" class="btn-primary-ui"
+            <a href="{{ url_for('ai_coach.coach_page') }}" class="btn-primary-ui"
                 style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2); color: #a855f7; font-size: 0.8rem; padding: 0.5rem 1rem;">
                 Ask Coach
             </a>
@@ -159,6 +176,31 @@
                 Optimize Tax
             </a>
         </div>
+    </div>
+</div>
+
+<!-- Section: Smart Budget Suggestions -->
+<div class="animate-rise" style="margin-bottom: 3rem;">
+    <div style="margin-bottom: 1.5rem;">
+        <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fa-solid fa-brain" style="color: #10b981;"></i> Smart Budget Suggestions
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">AI-optimized targets based on your spending history.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        {% if dashboard_data.budget_suggestions %}
+            {% for cat, target in dashboard_data.budget_suggestions.items() %}
+            <div class="card-ui glass-layer" style="padding: 1rem; border-color: rgba(16, 185, 129, 0.1);">
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.25rem;">{{ cat }}</div>
+                <div style="font-size: 1.25rem; font-weight: 800; color: #10b981;">₹{{ "{:,.0f}".format(target) }}</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem;">(10% Optimised)</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">
+                Not enough data for refined budget suggestions yet.
+            </div>
+        {% endif %}
     </div>
 </div>
 

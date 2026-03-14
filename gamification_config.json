@@ -350,6 +350,46 @@
                 "streak_boost": 0
             },
             "audience": "Students"
+        },
+        {
+            "id": "chal_009",
+            "title": "Udhaar Warrior",
+            "description": "Recover money you lent to friends.",
+            "duration_days": 30,
+            "recurrence": "Monthly",
+            "input_type": "saving_input",
+            "input_label": "Amount Recovered (₹)",
+            "input_placeholder": "How much did you get back?",
+            "rules": [
+                "Only counts money you successfully got back",
+                "Reminding them counts as effort!"
+            ],
+            "success_condition": "cumulative_savings >= 200",
+            "reward": {
+                "xp": 100,
+                "badge_id": null,
+                "streak_boost": 0
+            },
+            "audience": "Students"
+        },
+        {
+            "id": "chal_010",
+            "title": "Mess Master",
+            "description": "Eat every meal in the hostel mess for 5 days.",
+            "duration_days": 7,
+            "recurrence": "Weekly",
+            "input_type": "boolean",
+            "rules": [
+                "No skipping mess for canteen/ordering",
+                "Breakfast, Lunch, and Dinner count"
+            ],
+            "success_condition": "checkins >= 15",
+            "reward": {
+                "xp": 250,
+                "badge_id": "badge_mess_loyalist",
+                "streak_boost": 2
+            },
+            "audience": "Hostelers"
         }
     ],
     "rewards_logic": {

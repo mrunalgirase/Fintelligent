@@ -1,117 +1,180 @@
 {% extends 'base.html' %}
-{% block title %}Pricing - Fintelligent{% endblock %}
+{% block title %}Pricing - Fintelligent Plans{% endblock %}
 
 {% block content %}
-<div style="text-align: center; margin-bottom: 50px;">
-    <h1
-        style="font-size: 2.5em; margin-bottom: 15px; background: linear-gradient(135deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-        Invest in Your Future</h1>
-    <p style="color: var(--text-muted); font-size: 1.1em; max-width: 600px; margin: 0 auto;">
-        Unlock the full potential of your financial journey with our premium tools designed for Indian students and
-        young professionals.
-    </p>
-</div>
+<div class="pricing-container" style="padding-top: 8rem; padding-bottom: 10rem; background: #020617; position: relative; overflow: hidden; margin: -2.5rem -1.5rem;">
+    <!-- Background Decor -->
+    <div class="mesh-gradient" style="opacity: 0.2;"></div>
+    <div style="position: absolute; inset: 0; background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none;"></div>
 
-<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; margin-bottom: 60px;">
-    <!-- Free Tier -->
-    <div class="card-ui" style="flex: 1; min-width: 300px; max-width: 380px; display: flex; flex-direction: column;">
-        <div style="margin-bottom: 20px;">
-            <h3 style="color: var(--text-muted); font-size: 1.2em;">Student Basic</h3>
-            <div style="font-size: 2.5em; font-weight: 700; margin: 10px 0;">
-                ₹0 <span style="font-size: 0.4em; color: var(--text-muted); font-weight: 400;">/month</span>
+    <div style="max-width: 1200px; margin: 0 auto; text-align: center; position: relative; z-index: 10; padding: 0 2rem;">
+        <div class="animate-rise">
+            <div class="hud-tag">
+                <span class="hud-dot"></span>
+                SUBSCRIPTION_PROTOCOLS_LOADED
             </div>
-            <p style="color: var(--text-muted); font-size: 0.9em;">Essential tools to get started.</p>
-        </div>
-
-        <ul style="list-style: none; padding: 0; margin: 0 0 30px 0; flex: 1;">
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-check" style="color: var(--secondary);"></i> Basic Dashboard
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-check" style="color: var(--secondary);"></i> Education Hub Access
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-check" style="color: var(--secondary);"></i> Basic Tax Calculator
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-xmark" style="color: #64748b;"></i> AI Financial Coach
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-xmark" style="color: #64748b;"></i> Advanced Stock Analysis
-            </li>
-        </ul>
-
-        <a href="{{ url_for('auth.register') }}" class="btn-primary-ui"
-            style="background: transparent; border: 1px solid var(--border); width: 100%; justify-content: center;">
-            Get Started Free
-        </a>
-    </div>
-
-    <!-- Pro Tier -->
-    <div class="card-ui"
-        style="flex: 1; min-width: 300px; max-width: 380px; display: flex; flex-direction: column; border: 1px solid var(--primary); transform: scale(1.02); position: relative;">
-        <div
-            style="position: absolute; top: -12px; right: 20px; background: var(--primary); color: white; padding: 4px 12px; border-radius: 99px; font-size: 0.8em; font-weight: 600;">
-            POPULAR
-        </div>
-        <div style="margin-bottom: 20px;">
-            <h3 style="color: var(--primary); font-size: 1.2em;">Pro Investor</h3>
-            <div style="font-size: 2.5em; font-weight: 700; margin: 10px 0;">
-                ₹99 <span style="font-size: 0.4em; color: var(--text-muted); font-weight: 400;">/month</span>
-            </div>
-            <p style="color: var(--text-muted); font-size: 0.9em; text-decoration: line-through;">Original Price ₹499
+            <h1 class="glitch-text" style="font-size: 4.5rem; font-weight: 950; margin-bottom: 1.5rem; letter-spacing: -0.05em;">
+                CHOOSE YOUR <br> <span class="gradient-text-new">WEALTH LEVEL</span>
+            </h1>
+            <p style="font-size: 1.25rem; color: #94a3b8; max-width: 700px; margin: 0 auto 5rem auto; line-height: 1.6; font-family: 'Space Grotesk', sans-serif;">
+                Unlock the full potential of AI-driven finance. From student pocket money to pro-level portfolios.
             </p>
         </div>
 
-        <ul style="list-style: none; padding: 0; margin: 0 0 30px 0; flex: 1;">
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-check" style="color: var(--primary);"></i> <strong>All Free Features</strong>
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-check" style="color: var(--primary);"></i> AI Financial Coach (Unlimited)
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-check" style="color: var(--primary);"></i> Smart Portfolio Clustering
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-check" style="color: var(--primary);"></i> Priority Future Access
-            </li>
-            <li style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid fa-check" style="color: var(--primary);"></i> <strong>No Ads</strong>
-            </li>
-        </ul>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem; align-items: stretch;">
+            <!-- Free Tier -->
+            <div class="card-newgen pricing-card animate-rise">
+                <div class="card-glow"></div>
+                <div class="card-content">
+                    <div style="font-family: monospace; color: #64748b; margin-bottom: 1rem;">[ LEVEL_01 ]</div>
+                    <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem;">STARTER</h2>
+                    <div style="font-size: 3rem; font-weight: 950; margin-bottom: 2rem;">₹0 <span style="font-size: 1rem; color: #64748b; font-weight: 400;">/FOREVER</span></div>
+                    
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> Basic Budget Tracker</li>
+                        <li><i class="fa-solid fa-check"></i> Manual Expense Logging</li>
+                        <li><i class="fa-solid fa-check"></i> Achievement Flex Cards</li>
+                        <li><i class="fa-solid fa-check"></i> Financial Kundali (Basic)</li>
+                        <li class="locked"><i class="fa-solid fa-lock"></i> Advanced AI Coach</li>
+                        <li class="locked"><i class="fa-solid fa-lock"></i> Portfolio Analysis</li>
+                    </ul>
 
-        <form action="{{ url_for('main.checkout') }}" method="POST">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <input type="hidden" name="plan" value="pro">
-            <button type="submit" class="btn-primary-ui"
-                style="width: 100%; justify-content: center; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);">
-                Upgrade Now <i class="fa-solid fa-bolt"></i>
-            </button>
-        </form>
+                    {% if current_user.is_authenticated and current_user.plan == 'FREE' %}
+                    <div class="current-plan-indicator">ACTIVE PLAN</div>
+                    {% else %}
+                    <a href="/register" class="btn-outline-newgen" style="display: block; width: 100%; border-color: rgba(255,255,255,0.1);">INITIALIZE</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Student Tier -->
+            <div class="card-newgen pricing-card best-value animate-rise" style="border-color: #3b82f6; background: rgba(59, 130, 246, 0.02); transform: scale(1.05);">
+                <div class="card-glow" style="opacity: 0.5;"></div>
+                <span class="badge-student">POPULAR FOR STUDENTS</span>
+                <div class="card-content">
+                    <div style="font-family: monospace; color: #3b82f6; margin-bottom: 1rem;">[ LEVEL_02 ]</div>
+                    <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem;">STUDENT</h2>
+                    <div style="font-size: 3rem; font-weight: 950; margin-bottom: 2rem;">₹29 <span style="font-size: 1rem; color: #64748b; font-weight: 400;">/MONTH</span></div>
+                    
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Everything in Starter</b></li>
+                        <li><i class="fa-solid fa-check"></i> Advanced AI Financial Coach</li>
+                        <li><i class="fa-solid fa-check"></i> Student Loan Optimizer</li>
+                        <li><i class="fa-solid fa-check"></i> Internship TCS Analytics</li>
+                        <li><i class="fa-solid fa-check"></i> Priority Achievement Sharing</li>
+                        <li class="locked"><i class="fa-solid fa-lock"></i> Stock/Tax Pro Tools</li>
+                    </ul>
+
+                    {% if current_user.is_authenticated and current_user.plan == 'STUDENT' %}
+                    <div class="current-plan-indicator" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6; border-color: #3b82f6;">ACTIVE PLAN</div>
+                    {% elif current_user.is_authenticated and current_user.plan == 'PRO' %}
+                    <button class="btn-outline-newgen" style="width: 100%; cursor: default; opacity: 0.5;">LOCKED (HIGHER TIER ACTIVE)</button>
+                    {% else %}
+                    <form action="/payment/checkout" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="plan" value="STUDENT">
+                        <button type="submit" class="btn-newgen" style="width: 100%;">UPGRADE TO STUDENT</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Pro Tier -->
+            <div class="card-newgen pricing-card animate-rise" style="border-color: #a855f7; animation-delay: 0.2s;">
+                <div class="card-glow" style="background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.2) 0%, transparent 70%);"></div>
+                <div class="card-content">
+                    <div style="font-family: monospace; color: #a855f7; margin-bottom: 1rem;">[ LEVEL_MAX ]</div>
+                    <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem;">PRO</h2>
+                    <div style="font-size: 3rem; font-weight: 950; margin-bottom: 2rem;">₹99 <span style="font-size: 1rem; color: #64748b; font-weight: 400;">/MONTH</span></div>
+                    
+                    <ul class="feature-list">
+                        <li><i class="fa-solid fa-check"></i> <b>Everything in Student</b></li>
+                        <li><i class="fa-solid fa-check"></i> Bank Statement AI Import</li>
+                        <li><i class="fa-solid fa-check"></i> Tax Saving Architect (80C/D)</li>
+                        <li><i class="fa-solid fa-check"></i> Stock Market Quant Intel</li>
+                        <li><i class="fa-solid fa-check"></i> Multi-device Sync</li>
+                        <li><i class="fa-solid fa-check"></i> 24/7 Priority Support</li>
+                    </ul>
+
+                    {% if current_user.is_authenticated and current_user.plan == 'PRO' %}
+                    <div class="current-plan-indicator" style="background: rgba(168, 85, 247, 0.2); color: #a855f7; border-color: #a855f7;">ACTIVE PLAN</div>
+                    {% else %}
+                    <form action="/payment/checkout" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="plan" value="PRO">
+                        <button type="submit" class="btn-newgen" style="width: 100%; background: #a855f7;">GO PRO ALPHA</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div
-    style="text-align: center; margin-top: 50px; padding: 30px; background: rgba(255,255,255,0.03); border-radius: 16px;">
-    <h3><i class="fa-solid fa-users" style="color: var(--accent);"></i> Refer & Earn</h3>
-    <p style="color: var(--text-muted); max-width: 500px; margin: 10px auto 20px auto;">
-        Invite your friends to Fintelligent and get <strong>1 Month of Pro for Free</strong> for every friend who joins!
-    </p>
-    {% if current_user.is_authenticated %}
-    <div
-        style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; display: inline-flex; align-items: center; gap: 15px; border: 1px solid var(--border);">
-        <span style="color: var(--text-muted);">Your Code:</span>
-        <strong style="color: var(--primary); font-size: 1.2em; letter-spacing: 1px;">{{ current_user.referral_code
-            }}</strong>
-        <button
-            onclick="navigator.clipboard.writeText('{{ current_user.referral_code }}'); showToast('Copied!', 'Referral code copied to clipboard', 'success')"
-            class="btn-primary-ui" style="padding: 5px 10px; font-size: 0.8em; background: rgba(255,255,255,0.1);">
-            <i class="fa-regular fa-copy"></i>
-        </button>
-    </div>
-    {% else %}
-    <a href="{{ url_for('auth.login') }}" style="color: var(--primary);">Login to get your referral code</a>
-    {% endif %}
-</div>
+<style>
+    .pricing-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: left;
+    }
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 3rem 0;
+        flex-grow: 1;
+    }
+    .feature-list li {
+        margin-bottom: 1.25rem;
+        color: #e2e8f0;
+        font-family: 'Space Grotesk', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 1.05rem;
+    }
+    .feature-list li i {
+        color: #10b981;
+        font-size: 0.9rem;
+    }
+    .feature-list li.locked {
+        color: #475569;
+        opacity: 0.6;
+    }
+    .feature-list li.locked i {
+        color: #475569;
+    }
+    .badge-student {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #3b82f6;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.75rem;
+        font-weight: 900;
+        letter-spacing: 1px;
+    }
+    
+    .pricing-card:hover {
+        transform: translateY(-10px) scale(1.02);
+    }
+    .best-value:hover {
+        transform: translateY(-10px) scale(1.07);
+    }
+    .current-plan-indicator {
+        width: 100%;
+        text-align: center;
+        padding: 1rem;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        font-family: monospace;
+        font-weight: 950;
+        letter-spacing: 2px;
+        color: #64748b;
+    }
+</style>
 {% endblock %}

@@ -11,7 +11,7 @@
         padding: 3rem;
         position: relative;
         overflow: hidden;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
         backdrop-filter: blur(10px);
     }
 
@@ -89,13 +89,8 @@
     }
 
     @keyframes shimmer {
-        0% {
-            transform: translateX(-100%);
-        }
-
-        100% {
-            transform: translateX(100%);
-        }
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
     }
 
     .stat-card {
@@ -111,15 +106,65 @@
         min-width: 100px;
     }
 
-    .stat-card:hover {
-        transform: translateY(-5px);
-        background: rgba(30, 41, 59, 0.6);
-        border-color: rgba(59, 130, 246, 0.3);
+    /* Tabs Styling */
+    .reward-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 2.5rem;
+        padding: 0.5rem;
+        background: rgba(15, 23, 42, 0.4);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .reward-tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+        color: white;
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+        color: white;
+        background: var(--primary-gradient);
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    }
+
+    .tab-btn i { font-size: 1.1rem; }
+
+    .tab-pane {
+        display: none;
+        animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .tab-pane.active { display: block; }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .challenge-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
         gap: 1.5rem;
     }
 
@@ -141,9 +186,7 @@
         border-color: rgba(59, 130, 246, 0.3);
     }
 
-    .challenge-card.active {
-        border-left: 4px solid var(--success);
-    }
+    .challenge-card.active { border-left: 4px solid var(--success); }
 
     .challenge-header {
         padding: 1.5rem;
@@ -162,12 +205,12 @@
     .badge-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 1rem;
+        gap: 1.5rem;
     }
 
     .badge-item {
         background: rgba(15, 23, 42, 0.6);
-        border-radius: 16px;
+        border-radius: 20px;
         padding: 1.5rem;
         display: flex;
         flex-direction: column;
@@ -186,47 +229,126 @@
     }
 
     .badge-item.locked {
-        opacity: 0.5;
-    }
-
-    .badge-item.locked i {
-        color: var(--text-muted);
+        opacity: 0.4;
+        filter: grayscale(1);
     }
 
     .badge-icon {
         font-size: 3rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .badge-item:hover .badge-icon {
-        transform: scale(1.2) rotate(10deg);
-    }
+    .badge-item:hover .badge-icon { transform: scale(1.2) rotate(10deg); }
 
     .section-title {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
         font-size: 1.5rem;
-        background: linear-gradient(90deg, #fff, #94a3b8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+        color: white;
     }
 
     .leaderboard-row {
         display: flex;
         align-items: center;
         gap: 1rem;
-        padding: 0.75rem 1rem;
+        padding: 1rem 1.5rem;
         background: rgba(255, 255, 255, 0.02);
-        border-radius: 12px;
-        margin-bottom: 0.5rem;
+        border-radius: 16px;
+        margin-bottom: 0.75rem;
         transition: all 0.2s;
+        border: 1px solid transparent;
     }
 
     .leaderboard-row:hover {
         background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Identity Feature Styles */
+    .identity-card {
+        background: rgba(17, 24, 39, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 2rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .streak-card {
+        background: linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(0, 0, 0, 0) 100%);
+        border: 1px solid rgba(249, 115, 22, 0.2);
+    }
+
+    .streak-flame {
+        font-size: 3rem;
+        filter: drop-shadow(0 0 10px rgba(249, 115, 22, 0.5));
+        animation: flamePulse 2s infinite;
+    }
+
+    @keyframes flamePulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.08); opacity: 0.9; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .benchmark-bar {
+        height: 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-top: 0.5rem;
+    }
+
+    .benchmark-fill {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .flex-card-preview {
+        aspect-ratio: 16/10;
+        border-radius: 24px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: black;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        position: relative;
+    }
+
+    .roast-bot-section {
+        background: linear-gradient(135deg, rgba(219, 39, 119, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
+        border: 1px solid rgba(219, 39, 119, 0.2);
+    }
+
+    .roast-bubble {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 1.5rem;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #f472b6;
+        min-height: 100px;
+        margin-bottom: 1.5rem;
+    }
+
+    .stats-main-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+
+    @media (max-width: 991px) {
+        .stats-main-grid { grid-template-columns: 1fr; }
     }
 </style>
 {% endblock %}
@@ -246,9 +368,7 @@
         <div style="flex-grow: 1; min-width: 300px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem;">
                 <div>
-                    <h5
-                        style="color: var(--primary); font-weight: 700; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 1px;">
-                        Current Rank</h5>
+                    <h5 style="color: var(--primary); font-weight: 700; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 1px;">Current Rank</h5>
                     <h1 style="font-size: 3rem; margin: 0; line-height: 1;">{{ user.title }}</h1>
                 </div>
                 <div style="text-align: right;">
@@ -269,129 +389,102 @@
 
         <!-- Quick Stats -->
         <div style="display: flex; gap: 1rem;">
-            <div class="stat-card">
-                <i class="fa-solid fa-fire"
-                    style="color: var(--warning); font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
-                <span style="font-size: 1.25rem; font-weight: 700;">{{ user.active_challenges|length }}</span>
-                <span style="font-size: 0.75rem; color: var(--text-muted);">Active<br>Missions</span>
-            </div>
-            <div class="stat-card">
-                <i class="fa-solid fa-medal" style="color: #a855f7; font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
-                <span style="font-size: 1.25rem; font-weight: 700;">{{ user.badges_earned|length }}</span>
-                <span style="font-size: 0.75rem; color: var(--text-muted);">Badges<br>Earned</span>
+            <div class="stat-card streak-card">
+                <div class="streak-flame">🔥</div>
+                <span style="font-size: 1.5rem; font-weight: 800; color: #f97316;">{{ user.streak_count }}</span>
+                <span style="font-size: 0.7rem; color: #fdba74; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Day Streak</span>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row" style="display: flex; flex-wrap: wrap; gap: 2rem;">
-    <!-- Left Column: Challenges (Main focus) -->
-    <div style="flex: 2; min-width: 300px;">
-        <h2 class="section-title">
-            <i class="fa-solid fa-scroll" style="color: var(--accent);"></i> Available Missions
-        </h2>
+<!-- Navigation Tabs -->
+<div class="reward-tabs animate-rise" style="animation-delay: 0.1s;">
+    <button class="tab-btn active" onclick="switchTab(event, 'missions')">
+        <i class="fa-solid fa-scroll"></i> Missions
+    </button>
+    <button class="tab-btn" onclick="switchTab(event, 'achievements')">
+        <i class="fa-solid fa-trophy"></i> Achievements
+    </button>
+    <button class="tab-btn" onclick="switchTab(event, 'community')">
+        <i class="fa-solid fa-ranking-star"></i> Community
+    </button>
+    <button class="tab-btn" onclick="switchTab(event, 'daily')">
+        <i class="fa-solid fa-bolt"></i> Daily Insights
+    </button>
+    <button class="tab-btn" onclick="switchTab(event, 'social')">
+        <i class="fa-solid fa-masks-theater"></i> Fun & Social
+    </button>
+</div>
 
+<!-- Tab Content -->
+<div id="tab-content-container">
+    
+    <!-- Missions Tab -->
+    <div id="missions-pane" class="tab-pane active">
+        <div class="section-title">
+            <i class="fa-solid fa-jet-fighter" style="color: var(--primary);"></i> Available Missions
+        </div>
         <div class="challenge-grid">
             {% for challenge in config.challenges %}
             {% set is_active = challenge.id in user.active_challenges %}
-
             <div class="challenge-card animate-rise {% if is_active %}active{% endif %}">
                 <div class="challenge-header">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <h3 style="font-size: 1.1rem; margin: 0; font-weight: 600;">{{ challenge.title }}</h3>
                         {% if is_active %}
-                        <span
-                            style="background: rgba(16, 185, 129, 0.2); color: var(--success); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700;">ACTIVE</span>
+                        <span style="background: rgba(16, 185, 129, 0.2); color: var(--success); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700;">ACTIVE</span>
                         {% else %}
-                        <span
-                            style="background: rgba(255,255,255,0.1); color: var(--text-muted); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 600;">{{
-                            challenge.audience }}</span>
+                        <span style="background: rgba(255,255,255,0.1); color: var(--text-muted); padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 600;">{{ challenge.audience }}</span>
                         {% endif %}
                     </div>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.4;">
-                        {{ challenge.description }}
-                    </p>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.4;">{{ challenge.description }}</p>
                 </div>
-
                 <div class="challenge-body">
-                    <!-- Rewards -->
                     <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
-                        <div
-                            style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: var(--primary); font-weight: 600;">
-                            <i class="fa-solid fa-bolt"></i> {{ challenge.reward.xp }} XP
-                        </div>
-                        {% if challenge.reward.badge_id %}
-                        <div
-                            style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: #a855f7; font-weight: 600;">
-                            <i class="fa-solid fa-medal"></i> Badge
-                        </div>
-                        {% endif %}
+                        <div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: var(--primary); font-weight: 600;"><i class="fa-solid fa-bolt"></i> {{ challenge.reward.xp }} XP</div>
+                        {% if challenge.reward.badge_id %}<div style="display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; color: #a855f7; font-weight: 600;"><i class="fa-solid fa-medal"></i> Badge</div>{% endif %}
                     </div>
-
-                    <!-- Interactive Area -->
                     <div style="margin-top: auto;">
                         {% if is_active %}
-                        <!-- Active Controls -->
-                        {% if challenge.input_type == 'saving_input' %}
-                        {% set chal_obj = user['challenge_objects'][challenge.id] %}
-                        <div
-                            style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                                <span style="font-size: 0.85rem; color: var(--text-muted);">Current Progress</span>
-                                <span style="font-weight: 700; color: var(--success);">₹{{
-                                    chal_obj.progress.get('savings', 0) }}</span>
+                            {% if challenge.input_type == 'saving_input' %}
+                            {% set chal_obj = user['challenge_objects'][challenge.id] %}
+                            <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <span style="font-size: 0.85rem; color: var(--text-muted);">Current Progress</span>
+                                    <span style="font-weight: 700; color: var(--success);">₹{{ chal_obj.progress.get('savings', 0) }}</span>
+                                </div>
+                                <form action="{{ url_for('gamification.update_challenge') }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                                    <input type="number" name="amount" class="input-ui" placeholder="Log Amount (₹)" required style="padding: 0.6rem; font-size: 0.9rem; margin-bottom: 0.75rem;">
+                                    <button type="submit" class="btn-primary-ui" style="width: 100%; justify-content: center; font-size: 0.9rem; padding: 0.6rem;">Update</button>
+                                </form>
                             </div>
-                            <form action="{{ url_for('gamification.update_challenge') }}" method="POST">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
-                                <input type="number" name="amount" class="input-ui" placeholder="Log Amount (₹)"
-                                    required style="padding: 0.6rem; font-size: 0.9rem; margin-bottom: 0.75rem;">
-                                <button type="submit" class="btn-primary-ui"
-                                    style="width: 100%; justify-content: center; font-size: 0.9rem; padding: 0.6rem;">
-                                    Update
-                                </button>
-                            </form>
-                        </div>
-                        {% elif challenge.input_type == 'boolean' %}
-                        {% set chal_obj = user['challenge_objects'][challenge.id] %}
-                        <div style="text-align: center;">
-                            <div
-                                style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">
-                                {{ chal_obj.progress.get('checkins', 0) }} <span
-                                    style="font-size: 0.9rem; color: var(--text-muted); font-weight: 400;">/ {{
-                                    challenge.success_condition.split('>=')[-1].strip() if '>=' in
-                                    challenge.success_condition else 'Goal' }}</span>
+                            {% elif challenge.input_type == 'boolean' %}
+                            {% set chal_obj = user['challenge_objects'][challenge.id] %}
+                            <div style="text-align: center;">
+                                <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">
+                                    {{ chal_obj.progress.get('checkins', 0) }} <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 400;">/ {{ challenge.success_condition.split('>=')[-1].strip() if '>=' in challenge.success_condition else 'Goal' }}</span>
+                                </div>
+                                <form action="{{ url_for('gamification.update_challenge') }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
+                                    <input type="hidden" name="amount" value="1">
+                                    <button type="submit" class="btn-primary-ui" style="width: 100%; justify-content: center;"><i class="fa-solid fa-check-circle"></i> Check In</button>
+                                </form>
                             </div>
-                            <form action="{{ url_for('gamification.update_challenge') }}" method="POST">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
-                                <input type="hidden" name="amount" value="1">
-                                <button type="submit" class="btn-primary-ui"
-                                    style="width: 100%; justify-content: center;">
-                                    <i class="fa-solid fa-check-circle"></i> Check In
-                                </button>
-                            </form>
-                        </div>
-                        {% else %}
-                        <!-- Auto tracked -->
-                        <div
-                            style="background: rgba(30, 41, 59, 0.4); padding: 0.75rem; border-radius: 12px; text-align: center;">
-                            <i class="fa-solid fa-robot"
-                                style="font-size: 1.25rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
-                            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Tracking automatically.
-                            </p>
-                        </div>
-                        {% endif %}
-
+                            {% else %}
+                            <div style="background: rgba(30, 41, 59, 0.4); padding: 0.75rem; border-radius: 12px; text-align: center;">
+                                <i class="fa-solid fa-robot" style="font-size: 1.25rem; color: var(--primary); margin-bottom: 0.5rem;"></i>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Tracking automatically.</p>
+                            </div>
+                            {% endif %}
                         {% else %}
                         <form action="{{ url_for('gamification.join_challenge') }}" method="POST">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="challenge_id" value="{{ challenge.id }}">
-                            <button type="submit" class="btn-primary-ui"
-                                style="width: 100%; justify-content: center; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primary); color: var(--primary); box-shadow: none;">
-                                Accept Mission
-                            </button>
+                            <button type="submit" class="btn-primary-ui" style="width: 100%; justify-content: center; background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primary); color: var(--primary); box-shadow: none;">Accept Mission</button>
                         </form>
                         {% endif %}
                     </div>
@@ -401,62 +494,339 @@
         </div>
     </div>
 
-    <!-- Right Column: Trophies & Stats -->
-    <div style="flex: 1; min-width: 250px;">
-        <h2 class="section-title">
-            <i class="fa-solid fa-trophy" style="color: var(--warning);"></i> Trophy Case
-        </h2>
-
+    <!-- Achievements Tab -->
+    <div id="achievements-pane" class="tab-pane">
+        <div class="section-title">
+            <i class="fa-solid fa-medal" style="color: var(--warning);"></i> Trophy Case
+        </div>
         <div class="badge-grid">
             {% for badge in config.badges %}
             {% set is_earned = badge.id in user.badges_earned %}
-            <div class="badge-item animate-rise {% if is_earned %}earned{% else %}locked{% endif %}"
-                title="{{ badge.description }}">
-                <div class="badge-icon">
-                    {{ badge.icon }}
-                </div>
-                <h4 style="font-size: 0.8rem; margin: 0; color: var(--text-main); font-weight: 600; line-height: 1.2;">
-                    {{ badge.name }}</h4>
+            <div class="badge-item {% if is_earned %}earned{% else %}locked{% endif %}" title="{{ badge.description }}">
+                <div class="badge-icon">{{ badge.icon }}</div>
+                <h4 style="font-size: 0.9rem; margin: 0; color: white; font-weight: 600;">{{ badge.name }}</h4>
+                {% if not is_earned %}
+                <span style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.25rem;">Locked</span>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
+    </div>
 
-        <!-- Leaderboard Card -->
-        <div style="margin-top: 3rem;">
-            <div class="card-ui" style="padding: 1.5rem;">
-                <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-ranking-star" style="color: #f59e0b;"></i> Top Students
-                </h3>
+    <!-- Community Tab -->
+    <div id="community-pane" class="tab-pane">
+        <div class="stats-main-grid">
+            <!-- Leaderboard -->
+            <div>
+                <div class="section-title">
+                    <i class="fa-solid fa-ranking-star" style="color: #f59e0b;"></i> Wall of Fame
+                </div>
+                <div class="card-ui" style="padding: 1.5rem; background: rgba(30, 41, 59, 0.4);">
+                    <div style="display: flex; flex-direction: column;">
+                        <div class="leaderboard-row" style="border: 1px solid rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.05);">
+                            <div style="font-weight: 800; color: #f59e0b; width: 30px;">#1</div>
+                            <div style="width: 32px; height: 32px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: black;">A</div>
+                            <div style="flex-grow: 1; font-weight: 600;">Aryan S.</div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.9rem; font-weight: 700; color: white;">Lvl 8</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">2,450 XP</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-row">
+                            <div style="font-weight: 800; color: #94a3b8; width: 30px;">#2</div>
+                            <div style="width: 32px; height: 32px; background: #94a3b8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: black;">P</div>
+                            <div style="flex-grow: 1; font-weight: 600;">Priya M.</div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.9rem; font-weight: 700; color: white;">Lvl 7</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">1,820 XP</div>
+                            </div>
+                        </div>
+                        <div class="leaderboard-row" style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primary); margin-top: 1rem;">
+                            <div style="font-weight: 800; color: var(--primary); width: 30px;">#{{ user.level + 12 }}</div>
+                            <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; color: white;">{{ current_user.username[0]|upper if current_user.username else 'U' }}</div>
+                            <div style="flex-grow: 1; font-weight: 700;">{{ current_user.username }} (You)</div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.9rem; font-weight: 700; color: white;">Lvl {{ user.level }}</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">{{ user.xp }} XP</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                <div style="display: flex; flex-direction: column;">
-                    <div class="leaderboard-row" style="border: 1px solid var(--warning);">
-                        <div style="font-weight: 700; color: var(--warning);">#1</div>
-                        <div
-                            style="width: 28px; height: 28px; background: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: black;">
-                            A</div>
-                        <div style="flex-grow: 1; font-size: 0.9rem;">Aryan S.</div>
-                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Lvl 8</div>
-                    </div>
-                    <div class="leaderboard-row">
-                        <div style="font-weight: 700; color: #cbd5e1;">#2</div>
-                        <div
-                            style="width: 28px; height: 28px; background: #94a3b8; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: black;">
-                            P</div>
-                        <div style="flex-grow: 1; font-size: 0.9rem;">Priya M.</div>
-                        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted);">Lvl 7</div>
-                    </div>
-                    <div class="leaderboard-row"
-                        style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--primary);">
-                        <div style="font-weight: 700; color: var(--primary);">#{{ user.level + 12 }}</div>
-                        <div
-                            style="width: 28px; height: 28px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: white;">
-                            You</div>
-                        <div style="flex-grow: 1; font-size: 0.9rem;">{{ current_user.username }}</div>
-                        <div style="font-size: 0.8rem; font-weight: 700; color: white;">Lvl {{ user.level }}</div>
+            <!-- Social Ranking / Benchmark -->
+            <div>
+                <div class="section-title">
+                    <i class="fa-solid fa-users-viewfinder" style="color: #3b82f6;"></i> Social Rank
+                </div>
+                <div class="identity-card" id="benchmark-card">
+                    <div id="benchmark-loading" style="text-align: center; padding: 2rem;"><i class="fa-solid fa-circle-notch fa-spin text-blue-500"></i></div>
+                    <div id="benchmark-content" style="display: none;">
+                        <div style="margin-bottom: 2rem;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.75rem;">
+                                <span>Average Peers</span>
+                                <span style="color: white; font-weight: 600;">₹3,200/mo</span>
+                            </div>
+                            <div class="benchmark-bar"><div class="benchmark-fill" style="width: 100%; background: rgba(59, 130, 246, 0.2);"></div></div>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #94a3b8; margin-bottom: 0.75rem;">
+                                <span>YOU (This month)</span>
+                                <span id="user-savings-label" style="color: #f97316; font-weight: 700;">₹0</span>
+                            </div>
+                            <div class="benchmark-bar"><div id="user-savings-bar" class="benchmark-fill" style="width: 0%; background: #f97316; box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);"></div></div>
+                        </div>
+                        <div id="benchmark-tip" style="font-size: 0.85rem; color: #60a5fa; background: rgba(37, 99, 235, 0.1); padding: 1.25rem; border-radius: 16px; margin-top: 1.5rem; border: 1px solid rgba(37, 99, 235, 0.2); line-height: 1.5;"></div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Daily Insights Tab -->
+    <div id="daily-pane" class="tab-pane">
+        <div class="stats-main-grid">
+            <!-- Financial Janampatri -->
+            <div class="identity-card" style="background: linear-gradient(135deg, rgba(76, 29, 149, 0.4), rgba(30, 41, 59, 0.6)); border-color: rgba(139, 92, 246, 0.3);">
+                <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
+                    <div style="font-size: 4rem;">{{ kundali.icon }}</div>
+                    <div style="flex-grow: 1;">
+                        <h3 style="margin: 0; font-size: 1.5rem; color: #e9d5ff; font-weight: 700;">Financial Janampatri 🔮</h3>
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                            <div style="background: rgba(139, 92, 246, 0.2); padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                                <span style="display: block; font-size: 0.7rem; color: #d8b4fe; font-weight: 700; text-transform: uppercase;">Rashi</span>
+                                <span style="font-size: 1.2rem; font-weight: 700; color: white;">{{ kundali.rashi }}</span>
+                            </div>
+                            {% if kundali.dosha != 'None' %}
+                            <div style="background: rgba(239, 68, 68, 0.2); padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                                <span style="display: block; font-size: 0.7rem; color: #fca5a5; font-weight: 700; text-transform: uppercase;">Dosha</span>
+                                <span style="font-size: 1rem; color: white; font-weight: 600;">{{ kundali.dosha }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <p style="margin-top: 1.5rem; font-size: 1.1rem; color: #e2e8f0; font-style: italic; line-height: 1.6; border-left: 3px solid #8b5cf6; padding-left: 1rem;">"{{ kundali.prediction }}"</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Trivia -->
+            <div class="identity-card" style="background: linear-gradient(135deg, rgba(20, 83, 45, 0.4), rgba(30, 41, 59, 0.6)); border-color: rgba(34, 197, 94, 0.3);">
+                <h3 style="margin: 0 0 1.5rem 0; font-size: 1.3rem; color: #bbf7d0; font-weight: 700; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fa-solid fa-lightbulb" style="color: #fbbf24;"></i> Daily Gyan
+                </h3>
+                <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1.5rem; line-height: 1.5; color: white;">{{ trivia.q }}</p>
+
+                <div id="trivia-options" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    {% for option in trivia['options'] %}
+                    <button class="trivia-btn" onclick="checkAnswer(this, {{ option|tojson|safe }}, {{ trivia['answer']|tojson|safe }})"
+                        style="text-align: left; padding: 1rem 1.25rem; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: var(--text-main); cursor: pointer; transition: all 0.2s; font-size: 1rem;">
+                        {{ option }}
+                    </button>
+                    {% endfor %}
+                </div>
+
+                <div id="trivia-result" style="display: none; margin-top: 1.5rem; padding: 1.25rem; background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                    <p id="result-msg" style="margin: 0; font-weight: 700; font-size: 1.1rem;"></p>
+                    <p style="margin: 0.75rem 0 0 0; font-size: 0.95rem; color: var(--text-muted); line-height: 1.5;">{{ trivia.explanation }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fun & Social Tab -->
+    <div id="social-pane" class="tab-pane">
+        <div class="stats-main-grid">
+            <!-- AI Roast Bot -->
+            <div class="identity-card roast-bot-section">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <div style="background: #db2777; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px rgba(219, 39, 119, 0.3);">
+                        <i class="fa-solid fa-skull" style="color: white; font-size: 1.2rem;"></i>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 1.4rem; font-weight: 800; text-transform: uppercase; font-style: italic; margin: 0; color: #f472b6;">Roast Me Bot</h2>
+                        <span style="font-size: 0.75rem; color: #f9a8d4; font-weight: 600; text-transform: uppercase;">Powered by Reality</span>
+                    </div>
+                </div>
+                
+                <div id="roast-display" class="roast-bubble">Click the button for a reality check on your spends. 💀</div>
+
+                <button onclick="triggerRoast()" id="roast-btn" class="btn-primary-ui" style="width: 100%; justify-content: center; background: #db2777; box-shadow: 0 10px 20px rgba(219, 39, 119, 0.4); border: none; padding: 1rem; font-size: 1.1rem;">
+                    Brutal Honest Truth
+                </button>
+            </div>
+
+            <!-- Money Flex -->
+            <div class="identity-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h3 style="margin: 0; font-size: 1.3rem; color: white; display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fa-solid fa-share-nodes" style="color: #10b981;"></i> Flex Your Cards
+                    </h3>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button onclick="prevFlexCard()" class="btn-primary-ui" style="padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.05); color: #94a3b8; box-shadow: none;"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button onclick="nextFlexCard()" class="btn-primary-ui" style="padding: 0.6rem 0.8rem; background: rgba(255,255,255,0.05); color: #94a3b8; box-shadow: none;"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                
+                <div id="flex-card-container"></div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    // Tab Switching Logic
+    function switchTab(event, tabId) {
+        // Update Buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        // Update Panes
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+        document.getElementById(tabId + '-pane').classList.add('active');
+
+        // Trigger animations/reloads if needed
+        if (tabId === 'community') { loadBenchmark(); }
+        if (tabId === 'social') { loadFlexCards(); }
+    }
+
+    async function loadBenchmark() {
+        if (!document.getElementById('benchmark-content')) return;
+        try {
+            const res = await fetch('/api/gamification/benchmark');
+            const data = await res.json();
+            document.getElementById('benchmark-loading').style.display = 'none';
+            document.getElementById('benchmark-content').style.display = 'block';
+            
+            document.getElementById('user-savings-label').innerText = `₹${Math.round(data.user_savings)}`;
+            document.getElementById('user-savings-bar').style.width = `${Math.min(100, (data.user_savings / 3200) * 100)}%`;
+            document.getElementById('benchmark-tip').innerHTML = `<i class="fa-solid fa-circle-info" style="margin-right: 8px;"></i> ${data.social_proof}`;
+        } catch (e) { console.error("Error loading benchmark", e); }
+    }
+
+    let flexCards = [];
+    let activeFlexIdx = 0;
+
+    async function loadFlexCards() {
+        if (flexCards.length > 0) return;
+        try {
+            const res = await fetch('/api/gamification/flex-cards');
+            flexCards = await res.json();
+            renderFlexCard();
+        } catch (e) { console.error("Error loading flex cards", e); }
+    }
+
+    function renderFlexCard() {
+        const container = document.getElementById('flex-card-container');
+        if (!flexCards.length) return;
+        const card = flexCards[activeFlexIdx];
+        
+        container.innerHTML = `
+            <div class="flex-card-preview animate-rise" style="background: linear-gradient(135deg, ${card.color}44 0%, #000 100%); border-color: ${card.color}88;">
+                <div style="font-size: 5rem; margin-bottom: 1rem;">${card.icon}</div>
+                <div>
+                    <h3 style="font-size: 2rem; font-weight: 950; color: white; margin: 0; font-style: italic; line-height: 1; text-transform: uppercase; letter-spacing: -1px;">${card.title}</h3>
+                    <p style="font-family: 'Outfit', sans-serif; font-size: 0.9rem; color: #cbd5e1; margin-top: 0.75rem; font-weight: 500;">${card.subtitle}</p>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 2rem;">
+                    <div>
+                        <div style="font-family: monospace; font-size: 0.7rem; color: #475569; letter-spacing: 1px;">ID: FIN-${Math.random().toString(36).substr(2, 6).toUpperCase()}</div>
+                    </div>
+                    <button onclick="shareFlexCard('${card.title}', '${card.subtitle}')" class="btn-primary-ui" style="border-radius: 14px; width: 44px; height: 44px; justify-content: center; background: white; color: black; box-shadow: 0 10px 20px rgba(0,0,0,0.5); border: none;">
+                        <i class="fa-solid fa-share-nodes" style="font-size: 1.25rem;"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function nextFlexCard() {
+        activeFlexIdx = (activeFlexIdx + 1) % flexCards.length;
+        renderFlexCard();
+    }
+    function prevFlexCard() {
+        activeFlexIdx = (activeFlexIdx - 1 + flexCards.length) % flexCards.length;
+        renderFlexCard();
+    }
+    function shareFlexCard(title, subtitle) {
+        const shareText = `🚀 ${title}\n${subtitle}\n\nTrack your wealth with FinTelligent! #FinancialFreedom #WealthArchitecture`;
+        
+        if (navigator.share) {
+            navigator.share({
+                title: 'My FinTelligent Achievement',
+                text: shareText,
+                url: window.location.origin
+            }).then(() => {
+                showToast('Success', 'Achievement shared successfully!', 'success');
+            }).catch((err) => {
+                console.log('Share failed:', err);
+            });
+        } else {
+            // Fallback to clipboard
+            navigator.clipboard.writeText(shareText).then(() => {
+                showToast('Copied!', 'Share text copied to clipboard.', 'success');
+            });
+        }
+    }
+
+
+    async function triggerRoast() {
+        const display = document.getElementById('roast-display');
+        const btn = document.getElementById('roast-btn');
+        display.innerText = "Analyzing your poor life choices... 💀";
+        btn.disabled = true;
+        try {
+            const response = await fetch('/api/ai/roast', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token() }}' }
+            });
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            display.innerText = "";
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        const dataStr = line.replace('data: ', '');
+                        if (dataStr === '[DONE]') break;
+                        try {
+                            const parsed = JSON.parse(dataStr);
+                            if (parsed.content) display.innerText += parsed.content;
+                        } catch (e) {}
+                    }
+                }
+            }
+        } catch (e) {
+            display.innerText = "Wait, are you so broke the AI can't even process it? Log some spends first! 😭";
+        } finally { btn.disabled = false; }
+    }
+
+    function checkAnswer(btn, selection, correct) {
+        const resultDiv = document.getElementById('trivia-result');
+        const msg = document.getElementById('result-msg');
+        document.querySelectorAll('.trivia-btn').forEach(b => {
+            b.disabled = true;
+            if (b.innerText.trim() === correct) b.style.borderColor = 'var(--success)';
+        });
+        resultDiv.style.display = 'block';
+        if (selection === correct) {
+            btn.style.background = 'rgba(16, 185, 129, 0.2)';
+            btn.style.borderColor = 'var(--success)';
+            msg.innerText = "✅ Correct! +10 XP";
+            msg.style.color = 'var(--success)';
+        } else {
+            btn.style.background = 'rgba(239, 68, 68, 0.2)';
+            btn.style.borderColor = 'var(--danger)';
+            msg.innerText = "❌ Not quite right!";
+            msg.style.color = 'var(--danger)';
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        loadBenchmark();
+        loadFlexCards();
+    });
+</script>
 {% endblock %}

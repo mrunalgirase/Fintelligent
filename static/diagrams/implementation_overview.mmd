@@ -1,0 +1,169 @@
+graph TB
+    %% =========================
+    %% CLIENT & FRONTEND LAYER
+    %% =========================
+    subgraph "Client Layer"
+        Browser[Web Browser<br/>User]
+        ReactUI[Financial Coach UI<br/>Vite + React<br/>financial_coach_ui/]
+    end
+
+    subgraph "Presentation Layer (Flask)"
+        JinjaTpl[HTML Templates<br/>Jinja2<br/>templates/]
+        StaticFiles[Static Assets<br/>CSS, JS, Images<br/>static/]
+    end
+
+    %% =========================
+    %% BACKEND - FLASK APP
+    %% =========================
+    subgraph "Backend - Flask Application (fintelligent)"
+        FlaskApp[Flask App<br/>app.py<br/>Port 5001]
+
+        subgraph "Infrastructure & Extensions"
+            DBExt[SQLAlchemy<br/>Database Session<br/>fintelligent/extensions.py]
+            LoginMgr[Flask-Login<br/>Session & Identity]
+            CSRFExt[Flask-WTF CSRF]
+            Limiter[Rate Limiting<br/>Flask-Limiter]
+            Talisman[Security Headers<br/>Flask-Talisman<br/>CSP config]
+        end
+
+        subgraph "Blueprints (Route Modules)"
+            MainBP[Main Blueprint<br/>fintelligent/main/routes.py]
+            AuthBP[Auth Blueprint<br/>fintelligent/auth/routes.py]
+            StrategiesBP[Strategies Blueprint<br/>fintelligent/strategies/routes.py]
+            StocksBP[Stocks Blueprint<br/>fintelligent/stocks/routes.py]
+            TaxBP[Tax Blueprint<br/>fintelligent/tax/*.py]
+            EduBP[Education Blueprint<br/>fintelligent/education/routes.py]
+            MonitorBP[Monitoring Blueprint<br/>fintelligent/monitoring/routes.py]
+            RecBP[Recommendation Blueprint<br/>fintelligent/recommendation/routes.py]
+            CardsBP[Cards Blueprint<br/>fintelligent/cards/routes.py]
+            GameBP[Gamification Blueprint<br/>fintelligent/gamification/routes.py]
+            StatementsBP[Statements Blueprint<br/>fintelligent/statements/routes.py]
+            ReceiptsBP[Receipts Blueprint<br/>fintelligent/receipts/routes.py]
+            AiCoachBP[AI Coach Blueprint<br/>fintelligent/ai_coach/routes.py]
+        end
+
+        subgraph "Domain Models"
+            UserModel[User Model<br/>fintelligent/auth/models.py]
+            GameModel[GamificationProfile<br/>fintelligent/gamification/models.py]
+        end
+
+        subgraph "Business Services & Logic"
+            TaxService[Tax Calculation & Planning<br/>New/Old Regime<br/>80C, 80D, HRA]
+            StockService[Stock Analysis & Clustering]
+            RecService[Spending Analysis<br/>Personalized Recommendations]
+            GameService[Points, Badges, Challenges]
+            StatementService[Bank Statements<br/>Parsing & Insights]
+            ReceiptService[Receipt Upload & OCR Pipeline]
+            AiCoachClient[AI Coach Client<br/>HTTP calls to FastAPI AI Service]
+        end
+
+        subgraph "Data Access & Storage"
+            ORM[SQLAlchemy ORM<br/>fintelligent/extensions.py]
+            SQLiteDB[(SQLite Database<br/>instance/fintelligent.db)]
+            CSVFiles[(CSV Data<br/>expenditure.csv<br/>sample_expenditure.csv<br/>tax CSVs)]
+            UploadsDir[(Uploads & Temp Files<br/>static/uploads/)]
+        end
+    end
+
+    %% =========================
+    %% AI SERVICE - FASTAPI
+    %% =========================
+    subgraph "AI Service - FastAPI (ai_service)"
+        FastAPIApp[FastAPI App<br/>ai_service/main.py<br/>Port 8000]
+        LiteracyEndpoint[/ai/financial-literacy<br/>JSON API/]
+    end
+
+    subgraph "LLM Runtime"
+        Ollama[Ollama LLM Server<br/>localhost:11434/api/generate<br/>Model: llama3]
+    end
+
+    %% =========================
+    %% FLOWS & DEPENDENCIES
+    %% =========================
+    %% Client -> Frontend / Flask
+    Browser --> ReactUI
+    Browser --> FlaskApp
+    ReactUI -->|REST/JSON calls| FlaskApp
+
+    %% Flask App -> Presentation
+    FlaskApp --> JinjaTpl
+    FlaskApp --> StaticFiles
+
+    %% Flask App -> Extensions
+    FlaskApp --> DBExt
+    FlaskApp --> LoginMgr
+    FlaskApp --> CSRFExt
+    FlaskApp --> Limiter
+    FlaskApp --> Talisman
+
+    %% Flask App -> Blueprints
+    FlaskApp --> MainBP
+    FlaskApp --> AuthBP
+    FlaskApp --> StrategiesBP
+    FlaskApp --> StocksBP
+    FlaskApp --> TaxBP
+    FlaskApp --> EduBP
+    FlaskApp --> MonitorBP
+    FlaskApp --> RecBP
+    FlaskApp --> CardsBP
+    FlaskApp --> GameBP
+    FlaskApp --> StatementsBP
+    FlaskApp --> ReceiptsBP
+    FlaskApp --> AiCoachBP
+
+    %% Blueprints -> Business Services
+    AuthBP --> UserModel
+    MainBP --> RecService
+    TaxBP --> TaxService
+    StrategiesBP --> TaxService
+    StocksBP --> StockService
+    RecBP --> RecService
+    GameBP --> GameService
+    StatementsBP --> StatementService
+    ReceiptsBP --> ReceiptService
+    AiCoachBP --> AiCoachClient
+
+    %% Services -> Data Layer
+    TaxService --> ORM
+    StockService --> ORM
+    RecService --> ORM
+    GameService --> ORM
+    StatementService --> ORM
+    ReceiptService --> ORM
+    ORM --> SQLiteDB
+
+    RecService --> CSVFiles
+    StockService --> CSVFiles
+    TaxService --> CSVFiles
+    ReceiptService --> UploadsDir
+
+    %% AI Coach Integration
+    AiCoachClient --> FastAPIApp
+    FastAPIApp --> LiteracyEndpoint
+    LiteracyEndpoint --> Ollama
+
+    %% =========================
+    %% STYLING
+    %% =========================
+    classDef client fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef presentation fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef backend fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef infra fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef blueprint fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef domain fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef service fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef data fill:#ede7f6,stroke:#5e35b1,stroke-width:2px
+    classDef ai fill:#f1f8e9,stroke:#558b2f,stroke-width:2px
+    classDef llm fill:#ffe0b2,stroke:#fb8c00,stroke-width:2px
+
+    class Browser,ReactUI client
+    class JinjaTpl,StaticFiles presentation
+    class FlaskApp backend
+    class DBExt,LoginMgr,CSRFExt,Limiter,Talisman infra
+    class MainBP,AuthBP,StrategiesBP,StocksBP,TaxBP,EduBP,MonitorBP,RecBP,CardsBP,GameBP,StatementsBP,ReceiptsBP,AiCoachBP blueprint
+    class UserModel,GameModel domain
+    class TaxService,StockService,RecService,GameService,StatementService,ReceiptService,AiCoachClient service
+    class ORM,SQLiteDB,CSVFiles,UploadsDir data
+    class FastAPIApp,LiteracyEndpoint ai
+    class Ollama llm
+

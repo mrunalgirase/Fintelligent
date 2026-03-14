@@ -2,6 +2,7 @@ import os
 import sys
 from flask import Blueprint, render_template, request, jsonify, current_app
 from flask_login import login_required, current_user
+from fintelligent.utils.decorators import tier_required
 from werkzeug.utils import secure_filename
 
 # Dynamic venv path discovery
@@ -20,8 +21,8 @@ _site_path = find_site_packages()
 if _site_path and _site_path not in sys.path:
     sys.path.insert(0, _site_path)
 
-import pytesseract
-from PIL import Image
+import base64
+import json
 import re
 from datetime import datetime
 from fintelligent.auth.models import Expense
@@ -56,43 +57,6 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def extract_amount(text):
-    lines = text.split('\n')
-    amounts = []
-    for line in lines:
-        if any(keyword in line.lower() for keyword in ['total', 'amount', 'pay', 'due']):
-             matches = re.findall(r'(\d+[,\d]*\.\d{2})', line)
-             if matches:
-                 amounts.extend([float(m.replace(',', '')) for m in matches])
-    if not amounts:
-        matches = re.findall(r'(\d+[,\d]*\.\d{2})', text)
-        amounts = [float(m.replace(',', '')) for m in matches]
-    if amounts:
-        return max(amounts)
-    return 0.0
-
-def extract_date(text):
-    date_patterns = [
-        r'\d{2}/\d{2}/\d{4}',
-        r'\d{2}-\d{2}-\d{4}',
-        r'\d{4}-\d{2}-\d{2}',
-        r'\d{2}\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{4}'
-    ]
-    for pattern in date_patterns:
-        match = re.search(pattern, text, re.IGNORECASE)
-        if match:
-            return match.group(0)
-    return datetime.now().strftime('%Y-%m-%d')
-
-def extract_merchant(text):
-    lines = [line.strip() for line in text.split('\n') if line.strip()]
-    if lines:
-        if lines[0].lower() in ['receipt', 'tax invoice', 'invoice', 'welcome']:
-            return lines[1] if len(lines) > 1 else "Unknown Merchant"
-        return lines[0]
-    return "Unknown Merchant"
-
-
 @receipts.route('/receipts')
 @login_required
 def receipts_history():
@@ -101,49 +65,70 @@ def receipts_history():
     scanned_expenses = Expense.query.filter_by(user_id=current_user.id).order_by(Expense.date.desc()).all()
     return render_template('receipts_view.html', expenses=scanned_expenses)
 
-def configure_tesseract():
-    common_paths = [
-        '/opt/homebrew/bin/tesseract',
-        '/usr/local/bin/tesseract',
-        '/usr/bin/tesseract'
-    ]
-    import subprocess
+@receipts.route('/api/delete-receipt/<int:id>', methods=['DELETE'])
+@login_required
+def delete_receipt(id):
+    from fintelligent.auth.models import Expense
+    expense = Expense.query.get_or_404(id)
+    if expense.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+    
     try:
-        subprocess.run(['tesseract', '--version'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return True 
-    except FileNotFoundError:
-        for path in common_paths:
-            if os.path.exists(path):
-                pytesseract.pytesseract.tesseract_cmd = path
-                return True
-    return False
+        db.session.delete(expense)
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Receipt deleted successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
-TESSERACT_AVAILABLE = configure_tesseract()
+@receipts.route('/api/update-receipt/<int:id>', methods=['PUT'])
+@login_required
+def update_receipt(id):
+    from fintelligent.auth.models import Expense
+    expense = Expense.query.get_or_404(id)
+    if expense.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    data = request.get_json()
+    try:
+        if 'merchant' in data: expense.merchant = data['merchant']
+        if 'amount' in data: expense.amount = float(data['amount'])
+        if 'category' in data: expense.category = data['category']
+        if 'date' in data: expense.date = datetime.strptime(data['date'], '%Y-%m-%d')
+        
+        db.session.commit()
+        return jsonify({'success': True, 'message': 'Receipt updated successfully'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 @receipts.route('/api/scan-receipt', methods=['POST'])
 @login_required
 def scan_receipt():
-    if not current_user.is_premium:
-        return jsonify({
-            'error': 'Premium Feature',
-            'solution': 'Scan Receipt is a Pro feature. Upgrade to unlock!'
+    # Manual tier check for JSON response
+    if current_user.plan not in ['PRO', 'STUDENT']:
+         return jsonify({
+            'error': 'This feature requires a STUDENT or PRO subscription.',
+            'solution': 'Upgrade your plan to use AI receipt scanning.'
         }), 403
 
-    global TESSERACT_AVAILABLE
-    if not TESSERACT_AVAILABLE:
-        if configure_tesseract():
-            TESSERACT_AVAILABLE = True
-        else:
-            return jsonify({
-                'error': 'Tesseract OCR engine not found.',
-                'solution': 'Please install it using: brew install tesseract'
-            }), 503
+    import groq
+    api_key = os.environ.get('GROQ_API_KEY')
+    if not api_key:
+        return jsonify({
+            'error': 'Groq API Key not configured.',
+            'solution': 'Please add GROQ_API_KEY to your .env file.'
+        }), 503
 
     if 'image' not in request.files:
         return jsonify({'error': 'No image uploaded'}), 400
     file = request.files['image']
     if file.filename == '':
         return jsonify({'error': 'No image selected'}), 400
+        
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         upload_folder = os.path.join(current_app.root_path, 'static/uploads')
@@ -151,25 +136,64 @@ def scan_receipt():
             os.makedirs(upload_folder)
         filepath = os.path.join(upload_folder, filename)
         file.save(filepath)
+        
         try:
-            text = pytesseract.image_to_string(Image.open(filepath))
-            amount = extract_amount(text)
-            date = extract_date(text)
-            merchant = extract_merchant(text)
-            os.remove(filepath)
+            # Prepare image for Groq
+            with open(filepath, "rb") as image_file:
+                base64_image = base64.b64encode(image_file.read()).decode('utf-8')
+            
+            client = groq.Groq(api_key=api_key)
+            
+            prompt = """
+            Analyze this receipt/bill image (which may be handwritten) and extract the following details into a pure JSON object:
+            - merchant: Name of the store, person, or cafe. If not readable, put "Unknown Merchant".
+            - date: Date of the transaction in YYYY-MM-DD format based on the image text. If not found, output today's date.
+            - amount: The total numerical amount float (e.g., 25.50). Ensure no currency symbols, just the number. If no number is found, return 0.0.
+            
+            Return ONLY a valid JSON string. Ensure keys are exactly 'merchant', 'date', and 'amount'.
+            """
+            
+            response = client.chat.completions.create(
+                model="llama-3.2-11b-vision-preview",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": prompt},
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/jpeg;base64,{base64_image}"
+                                },
+                            },
+                        ],
+                    }
+                ],
+                temperature=0.1,
+            )
+            
+            raw_result = response.choices[0].message.content.strip()
+            
+            # Robust extraction of JSON from response
+            json_match = re.search(r'\{.*\}', raw_result, re.DOTALL)
+            if json_match:
+                raw_json = json_match.group(0)
+                data = json.loads(raw_json)
+            else:
+                raise ValueError("AI did not return valid JSON format.")
+                
+            if os.path.exists(filepath): os.remove(filepath)
+            
             return jsonify({
                 'success': True,
-                'merchant': merchant,
-                'date': date,
-                'amount': amount,
-                'raw_text': text[:200] + '...'
+                'merchant': data.get('merchant', 'Unknown Merchant'),
+                'date': data.get('date', datetime.now().strftime('%Y-%m-%d')),
+                'amount': float(data.get('amount', 0.0)),
+                'raw_text': "(AI Vision Processed)"
             })
-        except pytesseract.TesseractNotFoundError:
-            return jsonify({
-                'error': 'Tesseract OCR binary not found in your system.',
-                'solution': 'Run "brew install tesseract" and restart the app.'
-            }), 503
+            
         except Exception as e:
             if os.path.exists(filepath): os.remove(filepath)
-            return jsonify({'error': f"OCR Processing Failed: {str(e)}"}), 500
+            return jsonify({'error': f"Processing Failed: {str(e)}"}), 500
+            
     return jsonify({'error': 'Invalid file type'}), 400

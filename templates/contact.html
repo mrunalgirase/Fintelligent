@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Contact Support - Fintelligent{% endblock %}
+
+{% block content %}
+<div class="animate-rise" style="max-width: 1000px; margin: 4rem auto;">
+    <div style="text-align: center; margin-bottom: 4rem;">
+        <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, #3b82f6 0%, #10b981 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Connect with Our Lab</h1>
+        <p style="color: var(--text-muted); font-size: 1.25rem;">Our support architects are ready to assist with any technical or financial strategy queries.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem;">
+        <!-- Contact Form Card -->
+        <div class="card-ui glass-layer" style="padding: 3rem;">
+            <h3 style="margin-bottom: 2rem; font-weight: 700;">Submit a Signal</h3>
+            <form action="#" method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <!-- CSRF Token would go here if we were really submitting -->
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Your Name</label>
+                    <input type="text" class="input-ui" placeholder="John Doe" required>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Email Address</label>
+                    <input type="email" class="input-ui" placeholder="john@example.com" required>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Inquiry Type</label>
+                    <select class="input-ui" style="background: rgba(15, 23, 42, 0.5); border: 1px solid #334155; color: white;">
+                        <option>Technical Support</option>
+                        <option>Strategy Consultation</option>
+                        <option>Partnership Proposal</option>
+                        <option>Corporate Access</option>
+                    </select>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">Detail Your Inquiry</label>
+                    <textarea class="input-ui" style="min-height: 150px; resize: vertical;" placeholder="How can we help?" required></textarea>
+                </div>
+                <button type="submit" class="btn-primary-ui" style="justify-content: center; padding: 1rem;">
+                    <i class="fa-solid fa-paper-plane"></i> Initialize Connection
+                </button>
+            </form>
+        </div>
+
+        <!-- Contact Intel Card -->
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+            <div class="card-ui glass-layer" style="padding: 2rem; position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -10px; right: -10px; font-size: 6rem; opacity: 0.05; transform: rotate(15deg);"><i class="fa-solid fa-headset"></i></div>
+                <h4 style="font-weight: 700; margin-bottom: 1rem;"><i class="fa-solid fa-envelope" style="color: var(--primary); margin-right: 0.75rem;"></i> Email Direct</h4>
+                <p style="color: var(--text-muted); margin-bottom: 0.5rem;">Human support for complex issues:</p>
+                <a href="mailto:support@fintelligent.com" style="color: var(--primary); font-weight: 700; font-size: 1.1rem;">support@fintelligent.com</a>
+            </div>
+
+            <div class="card-ui glass-layer" style="padding: 2rem; position: relative; overflow: hidden;">
+                <div style="position: absolute; top: -10px; right: -10px; font-size: 6rem; opacity: 0.05; transform: rotate(15deg);"><i class="fa-solid fa-share-nodes"></i></div>
+                <h4 style="font-weight: 700; margin-bottom: 1rem;"><i class="fa-solid fa-globe" style="color: #10b981; margin-right: 0.75rem;"></i> Social Nodes</h4>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <a href="#" class="btn-primary-ui" style="background: rgba(255,255,255,0.05); box-shadow: none; border: 1px solid rgba(255,255,255,0.1);"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="btn-primary-ui" style="background: rgba(255,255,255,0.05); box-shadow: none; border: 1px solid rgba(255,255,255,0.1);"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="#" class="btn-primary-ui" style="background: rgba(255,255,255,0.05); box-shadow: none; border: 1px solid rgba(255,255,255,0.1);"><i class="fa-brands fa-github"></i></a>
+                </div>
+            </div>
+
+            <div class="card-ui glass-layer" style="padding: 2rem; border-color: rgba(168, 85, 247, 0.2);">
+                <h4 style="font-weight: 700; margin-bottom: 1rem;"><i class="fa-solid fa-location-dot" style="color: #a855f7; margin-right: 0.75rem;"></i> HQ Coordinates</h4>
+                <p style="color: var(--text-muted);">Virtual Lab 001<br>Cloud-Native Architecture</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem;">*Responses typically generated within 2-4 standard cycles.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
