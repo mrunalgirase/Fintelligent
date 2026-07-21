@@ -10,7 +10,10 @@
                 style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0;">
                 AI Financial Coach</h1>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">
-                <i class="fa-solid fa-bolt" style="color: var(--secondary);"></i> Powered by Llama3 • Private & Local
+                <i class="fa-solid fa-bolt" style="color: var(--secondary);"></i> Powered by {{ ai_provider }}
+                {% if data_sources and data_sources[0] != 'No data yet' %}
+                · Connected: {{ data_sources | join(', ') }}
+                {% endif %}
             </p>
         </div>
         <div
@@ -32,17 +35,23 @@
                 style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 0 15px 15px 15px; border: 1px solid rgba(255,255,255,0.1);">
                 <p style="color: var(--text-main); margin: 0; line-height: 1.5;">
                     Namaste, <strong>{{ current_user.username }}</strong>! I'm your Fintelligent AI.
-                    I've looked at your recent spending and I'm ready to help you save and invest better.
-                    What's on your mind today?
+                    {% if data_sources and data_sources[0] != 'No data yet' %}
+                    I'm connected to your <strong>{{ data_sources | join(', ') }}</strong> data — ask me about spending patterns, clusters, or savings tips.
+                    {% else %}
+                    Upload a CSV in Analytics or scan a receipt, and I'll analyze your finances instantly.
+                    {% endif %}
                 </p>
             </div>
         </div>
 
         <!-- Sample Questions -->
         <div id="suggestions" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-            <button onclick="sendQuickMessage('Analyze my spending this week')"
+            <button onclick="sendQuickMessage('Analyze my CSV analytics and top spending categories')"
                 style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-size: 0.85rem;">Analyze
-                spending</button>
+                CSV data</button>
+            <button onclick="sendQuickMessage('What do my behavioral clusters tell you about my spending?')"
+                style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); color: #a78bfa; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-size: 0.85rem;">Cluster
+                insights</button>
             <button onclick="sendQuickMessage('How can I save ₹2000 this month?')"
                 style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #34d399; padding: 8px 15px; border-radius: 50px; cursor: pointer; font-size: 0.85rem;">Saving
                 tips</button>
@@ -104,13 +113,24 @@
         sendMessage();
     }
 
+    let isStreaming = false;
+
+    function setChatBusy(busy) {
+        isStreaming = busy;
+        chatInput.disabled = busy;
+        sendBtn.disabled = busy;
+        sendBtn.style.opacity = busy ? '0.5' : '1';
+        sendBtn.style.cursor = busy ? 'not-allowed' : 'pointer';
+    }
+
     async function sendMessage() {
-        // Get input
+        if (isStreaming) return;
+
         const messageInput = document.getElementById('chat-input');
         const message = messageInput.value.trim();
         if (!message) return;
 
-        // Clear input
+        setChatBusy(true);
         messageInput.value = '';
         document.getElementById('suggestions').style.display = 'none';
 
@@ -157,6 +177,10 @@
                 body: JSON.stringify({ message: message })
             });
 
+            if (response.status === 429) {
+                botBubble.innerHTML = '<span style="color: var(--warning);">Too many messages — please wait a minute and try again.</span>';
+                return;
+            }
             if (!response.ok) throw new Error('Network response was not ok');
 
             const reader = response.body.getReader();
@@ -204,6 +228,8 @@
         } catch (error) {
             botBubble.innerHTML = `<span style="color: var(--danger);">I'm having trouble connecting. Is the standard AI model running?</span>`;
             console.error('Fetch error:', error);
+        } finally {
+            setChatBusy(false);
         }
     }
 </script>

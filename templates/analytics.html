@@ -1,503 +1,1004 @@
 {% extends 'base.html' %}
-{% block title %}Advanced Analytics - Fintelligent{% endblock %}
+{% block title %}Neural Analytics - Fintelligent Elite{% endblock %}
 
 {% block content %}
 <style>
-    .cluster-legend {
-        background: rgba(30, 41, 59, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+
+    :root {
+        --glass-bg: rgba(15, 23, 42, 0.6);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --accent-blue: #3b82f6;
+        --accent-purple: #8b5cf6;
+        --accent-emerald: #10b981;
+        --accent-rose: #f43f5e;
+        --accent-orange: #f59e0b;
+        --text-dim: #94a3b8;
     }
 
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.75rem;
-        border-radius: 8px;
+    body { font-family: 'Inter', sans-serif; background-color: #020617; }
+    .outfit { font-family: 'Outfit', sans-serif; }
+
+    .analytics-container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+
+    .glass-panel {
+        background: rgba(15, 23, 42, 0.4);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 1.5rem;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
 
-    .legend-item:hover {
-        background: rgba(255, 255, 255, 0.05);
+    .glass-panel:hover { border-color: rgba(255,255,255,0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+
+    .grad-text {
+        background: linear-gradient(135deg, #fff 30%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
-    .color-dot {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        box-shadow: 0 0 10px currentColor;
+    .accent-grad { background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); }
+
+    /* Premium Bento Grid Styles */
+    .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
     }
 
-    .info-box {
-        background: rgba(59, 130, 246, 0.1);
-        border-left: 4px solid var(--primary);
-        padding: 1rem 1.5rem;
-        border-radius: 8px;
-        margin-bottom: 2rem;
-    }
+    @media (max-width: 992px) { .bento-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; } }
+    @media (max-width: 768px) { .bento-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
 
-    .chart-container {
+    .bento-card {
         position: relative;
-        background: rgba(15, 23, 42, 0.5);
-        border-radius: 16px;
-        padding: 1.5rem;
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        overflow: hidden;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        z-index: 1;
         border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .chart-title {
+    .bento-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        z-index: -1;
+    }
+
+    .bento-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle, var(--glow-color) 0%, transparent 60%);
+        opacity: 0.05;
+        transition: opacity 0.5s ease;
+        z-index: -2;
+    }
+
+    .bento-card:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6);
+        background: rgba(15, 23, 42, 0.8);
+    }
+
+    .bento-card:hover::after { opacity: 0.15; }
+
+    .bento-card.blue-glow { --glow-color: #3b82f6; border-bottom: 3px solid rgba(59, 130, 246, 0.4); }
+    .bento-card.purple-glow { --glow-color: #8b5cf6; border-bottom: 3px solid rgba(139, 92, 246, 0.4); }
+    .bento-card.emerald-glow { --glow-color: #10b981; border-bottom: 3px solid rgba(16, 185, 129, 0.4); }
+
+    .bento-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        justify-content: center;
+        font-size: 1.7rem;
+        margin-bottom: 2rem;
+    }
+
+    .blue-icon { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.05)); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+    .purple-icon { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.05)); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); }
+    .emerald-icon { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.05)); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.2); }
+
+    .bento-card h4 {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 1.4rem;
+        letter-spacing: -0.01em;
+        color: #f8fafc;
+        margin-bottom: 0.75rem;
+    }
+
+    .bento-card p {
+        color: #94a3b8;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 2.5rem;
+        flex-grow: 1;
+    }
+
+    .bento-btn {
+        padding: 1rem 1.75rem;
+        border-radius: 14px;
+        font-weight: 700;
+        font-family: 'Outfit', sans-serif;
+        text-align: center;
+        width: 100%;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        font-size: 1.05rem;
+        cursor: pointer;
+        border: none;
+        outline: none;
+    }
+
+    .btn-premium-blue { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3); }
+    .btn-premium-blue:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.5); color: white; }
+
+    .btn-premium-purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
+    .btn-premium-purple:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.5); color: white; }
+
+    .btn-premium-emerald { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+    .btn-premium-emerald:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5); color: white; }
+
+    .bento-badge {
+        position: absolute;
+        top: 2.5rem;
+        right: 2rem;
+        padding: 0.35rem 0.85rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .badge-blue { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25); }
+    .badge-purple { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.25); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.25); }
+
+
+    /* SVG-based circular score ring */
+    .score-ring-wrap {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        margin: 0 auto;
+    }
+    .score-ring-wrap svg {
+        transform: rotate(-90deg);
+        width: 100%;
+        height: 100%;
+    }
+    .score-ring-wrap .score-value {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-family: 'Outfit', sans-serif;
+    }
+
+    .dna-card {
+        padding: 1.5rem;
+        border-radius: 24px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--glass-border);
+        height: 100%;
+        transition: 0.3s;
+    }
+
+    .dna-card:hover { transform: translateY(-4px); background: rgba(255,255,255,0.05); box-shadow: 0 12px 24px rgba(0,0,0,0.2); }
+
+    .dna-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.35rem;
         margin-bottom: 1rem;
     }
 
-    .chart-title i {
-        color: var(--primary);
+    .insight-pill {
+        padding: 0.6rem 1rem;
+        border-radius: 12px;
+        background: rgba(59, 130, 246, 0.08);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        font-size: 0.9rem;
+    }
+    .overspend-pill {
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        font-size: 0.85rem;
+    }
+
+    .neural-loader {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 6, 23, 0.95);
+        backdrop-filter: blur(15px);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .reveal { animation: reveal 0.8s cubic-bezier(0, 0, 0.2, 1) forwards; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Premium Cluster Card (analytics page) ── */
+    .cluster-card-premium {
+        background: rgba(15,23,42,0.7);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 22px;
+        padding: 1.75rem;
+        position: relative; overflow: hidden;
+        backdrop-filter: blur(20px);
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex; flex-direction: column; gap: 0;
+        border-top: 3px solid var(--cluster-color, #3b82f6);
+        height: 100%;
+    }
+    .cluster-card-premium::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; height: 100px;
+        background: linear-gradient(180deg, color-mix(in srgb, var(--cluster-color, #3b82f6) 8%, transparent), transparent);
+        pointer-events: none;
+    }
+    .cluster-card-premium:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 24px 48px -12px rgba(0,0,0,0.5);
+    }
+    .ccp-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; position: relative; }
+    .ccp-icon-wrap {
+        width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: color-mix(in srgb, var(--cluster-color, #3b82f6) 18%, transparent);
+        border: 1px solid color-mix(in srgb, var(--cluster-color, #3b82f6) 30%, transparent);
+    }
+    .ccp-icon { font-size: 1.4rem; color: var(--cluster-color, #3b82f6); }
+    .ccp-header-info { flex: 1; min-width: 0; }
+    .ccp-cluster-id {
+        font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.09em;
+        color: var(--cluster-color, #3b82f6); font-weight: 800; font-family: 'Outfit', sans-serif;
+        margin-bottom: 0.15rem;
+    }
+    .ccp-name { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; color: #f8fafc; margin: 0; line-height: 1.2; }
+    .ccp-ratio-badge {
+        display: flex; flex-direction: column; align-items: center;
+        background: color-mix(in srgb, var(--cluster-color, #3b82f6) 15%, transparent);
+        border: 1px solid color-mix(in srgb, var(--cluster-color, #3b82f6) 25%, transparent);
+        border-radius: 12px; padding: 0.4rem 0.7rem; flex-shrink: 0;
+    }
+    .ccp-ratio-value { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1rem; color: var(--cluster-color, #3b82f6); line-height: 1; }
+    .ccp-ratio-label { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-top: 0.1rem; }
+    .ccp-progress-wrap { margin-bottom: 1.25rem; }
+    .ccp-progress-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+    .ccp-progress-fill {
+        height: 100%; border-radius: 3px;
+        background: linear-gradient(90deg, var(--cluster-color, #3b82f6), color-mix(in srgb, var(--cluster-color, #3b82f6) 60%, #fff));
+        transition: width 1s ease;
+    }
+    .ccp-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; margin-bottom: 1.25rem; }
+    .ccp-metric {
+        background: rgba(0,0,0,0.25); border-radius: 14px;
+        padding: 0.8rem 0.9rem;
+        display: flex; align-items: center; gap: 0.7rem;
+        border: 1px solid rgba(255,255,255,0.04);
+    }
+    .ccp-metric-icon { font-size: 0.85rem; color: var(--cluster-color, #3b82f6); flex-shrink: 0; opacity: 0.85; }
+    .ccp-metric-value { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.95rem; color: #f8fafc; line-height: 1; }
+    .ccp-metric-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.2rem; }
+    .ccp-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 0.25rem 0 1.25rem; }
+    .ccp-section { margin-bottom: 1rem; }
+    .ccp-section:last-of-type { margin-bottom: 0; }
+    .ccp-section-header {
+        display: flex; align-items: center; gap: 0.4rem;
+        font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em;
+        color: var(--text-dim); font-weight: 700; margin-bottom: 0.6rem;
+    }
+    .ccp-section-icon { font-size: 0.7rem; }
+    .ccp-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .ccp-tag { font-size: 0.75rem; padding: 0.3rem 0.65rem; border-radius: 999px; font-weight: 500; line-height: 1.2; }
+    .ccp-tag-cat {
+        background: color-mix(in srgb, var(--cluster-color, #3b82f6) 15%, transparent);
+        color: var(--cluster-color, #3b82f6);
+        border: 1px solid color-mix(in srgb, var(--cluster-color, #3b82f6) 25%, transparent);
+    }
+    .ccp-tag-merchant { background: rgba(255,255,255,0.06); color: #cbd5e1; border: 1px solid rgba(255,255,255,0.09); }
+    .ccp-tag-payment { background: rgba(255,255,255,0.04); color: #94a3b8; border: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 0.2rem; }
+    .ccp-tag-empty { color: var(--text-dim); background: transparent; border: 1px dashed rgba(255,255,255,0.1); }
+    .ccp-count-badge { background: rgba(0,0,0,0.25); border-radius: 999px; padding: 0.1rem 0.4rem; font-size: 0.65rem; font-weight: 700; }
+    .ccp-freq-section { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); }
+    .ccp-freq-label { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .ccp-freq-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+    .ccp-freq-fill {
+        height: 100%; border-radius: 3px;
+        background: linear-gradient(90deg, var(--cluster-color, #3b82f6), color-mix(in srgb, var(--cluster-color, #3b82f6) 50%, #fff));
+    }
+
+    /* Section heading */
+    .section-heading-row { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1.5rem; }
+    .section-heading-icon-sm {
+        width: 40px; height: 40px; border-radius: 12px;
+        display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+    }
+    .section-count-pill {
+        margin-left: auto; padding: 0.25rem 0.8rem; border-radius: 999px;
+        background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+        font-size: 0.78rem; color: var(--text-dim); font-family: 'Outfit', sans-serif; font-weight: 700;
+    }
+
+    /* Chart legend */
+    .chart-legend { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; justify-content: center; }
+    .chart-legend-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-dim); }
+    .chart-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Insight pills upgrade */
+    .insight-pill {
+        padding: 0.85rem 1.1rem;
+        border-radius: 14px;
+        background: rgba(59, 130, 246, 0.06);
+        border: 1px solid rgba(59, 130, 246, 0.15);
+        font-size: 0.88rem;
+        display: flex; align-items: flex-start; gap: 0.75rem;
+        transition: 0.2s;
+    }
+    .insight-pill:hover { background: rgba(59,130,246,0.1); }
+    .insight-pill-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .overspend-pill {
+        padding: 0.6rem 1rem;
+        border-radius: 12px;
+        background: rgba(239, 68, 68, 0.07);
+        border: 1px solid rgba(239, 68, 68, 0.18);
+        font-size: 0.85rem;
+        display: flex; justify-content: space-between; align-items: center;
+        transition: 0.2s;
+    }
+    .overspend-pill:hover { background: rgba(239,68,68,0.12); }
+
+    .pulse-dot { animation: pulse-anim 2s infinite; }
+    @keyframes pulse-anim {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
     }
 </style>
 
-<!-- Hero Section -->
-<div class="dashboard-header animate-rise" style="margin-bottom: 3rem; text-align: center;">
-    <h1
-        style="font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
-        Advanced Analytics
-    </h1>
-    <p style="color: var(--text-muted); font-size: 1.2rem; max-width: 700px; margin: 0 auto;">
-        <i class="fa-solid fa-brain" style="color: var(--primary);"></i>
-        Upload your transaction history for AI-powered insights and spending pattern analysis
-    </p>
-</div>
-
-<!-- Upload Section -->
-<div class="card-ui animate-rise"
-    style="margin-bottom: 3rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border: 2px dashed rgba(59, 130, 246, 0.3);">
-    <label for="csvUpload"
-        style="cursor: pointer; display: flex; flex-direction: column; align-items: center; padding: 3rem; text-align: center;">
-        <div
-            style="width: 80px; height: 80px; background: var(--primary-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);">
-            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: white;"></i>
+<div class="analytics-container">
+    <!-- Header Section -->
+    <div class="row align-items-center mb-5 reveal">
+        <div class="col-lg-8">
+            <h1 class="display-3 outfit fw-800 grad-text mb-2">Financial <span class="text-primary">Analytics</span></h1>
+            <p class="text-dim fs-5">AI-powered spending analysis, behavioral clustering, and budget intelligence from your real data.</p>
         </div>
-        <h3 style="color: var(--text-main); margin-bottom: 0.75rem; font-size: 1.5rem;">Upload Transaction History</h3>
-        <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 0.5rem;">
-            Drop your CSV file here or click to browse
-        </p>
-        <p style="color: var(--text-muted); font-size: 0.85rem; opacity: 0.7;">
-            Required columns: <code
-                style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">transaction_id, date, category, amount</code>
-        </p>
-    </label>
-    <form action="/analytics" method="post" enctype="multipart/form-data" id="uploadForm" style="display: none;">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <input type="file" id="csvUpload" name="file" accept=".csv"
-            onchange="document.getElementById('uploadForm').submit();">
-    </form>
-</div>
-
-{% if error %}
-<div class="alert alert-danger animate-rise"
-    style="margin-bottom: 2rem; padding: 1.25rem 1.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; border-radius: 12px; color: #f87171; display: flex; align-items: center; gap: 1rem;">
-    <i class="fa-solid fa-triangle-exclamation" style="font-size: 1.5rem;"></i>
-    <span style="font-weight: 500;">{{ error }}</span>
-</div>
-{% endif %}
-
-{% if dashboard_data %}
-
-<!-- What You're Seeing Info Box -->
-<div class="info-box animate-rise">
-    <h4 style="color: var(--text-main); margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
-        <i class="fa-solid fa-circle-info"></i>
-        Understanding Your Analytics
-    </h4>
-    <p style="color: var(--text-muted); margin: 0; line-height: 1.6;">
-        We've analyzed <strong>₹{{ "{:,.0f}".format(dashboard_data.total_spent) }}</strong> across your transactions
-        using machine learning to identify spending patterns and trends.
-    </p>
-</div>
-
-<!-- Charts Grid -->
-<div
-    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
-
-    <!-- Spending Trends -->
-    <div class="card-ui animate-rise chart-container">
-        <div class="chart-title">
-            <i class="fa-solid fa-chart-line"></i>
-            <h3 style="color: var(--text-main); margin: 0; font-size: 1.25rem;">Monthly Spending Trends</h3>
-            <i class="fa-solid fa-circle-question" style="color: var(--text-muted); font-size: 0.9rem; cursor: help;"
-                title="Shows how your spending changes over time"></i>
-        </div>
-        <div style="height: 300px;"><canvas id="trendChart"></canvas></div>
-    </div>
-
-    <!-- Category Distribution -->
-    <div class="card-ui animate-rise chart-container">
-        <div class="chart-title">
-            <i class="fa-solid fa-chart-pie"></i>
-            <h3 style="color: var(--text-main); margin: 0; font-size: 1.25rem;">Category Breakdown</h3>
-            <i class="fa-solid fa-circle-question" style="color: var(--text-muted); font-size: 0.9rem; cursor: help;"
-                title="Where your money goes by category"></i>
-        </div>
-        <div style="height: 300px;"><canvas id="categoryChart"></canvas></div>
-    </div>
-</div>
-
-<!-- KMeans Clustering Section -->
-<div class="animate-rise" style="margin-bottom: 3rem;">
-    <div style="margin-bottom: 2rem;">
-        <h2
-            style="font-size: 2rem; font-weight: 700; color: var(--text-main); margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.75rem;">
-            <i class="fa-solid fa-diagram-project" style="color: #8b5cf6;"></i>
-            AI Spending Pattern Analysis
-        </h2>
-        <p style="color: var(--text-muted); font-size: 1rem; margin: 0;">
-            <i class="fa-solid fa-circle-info" style="font-size: 0.85rem; margin-right: 0.25rem;"></i>
-            Machine learning has grouped your spending into distinct patterns to help you understand your habits
-        </p>
-    </div>
-
-    <!-- Cluster Legend -->
-    <div class="cluster-legend animate-rise">
-        <h4 style="color: var(--text-main); margin: 0 0 1rem 0; font-size: 1.1rem;">
-            <i class="fa-solid fa-book-open" style="color: var(--accent);"></i>
-            Spending Pattern Guide
-        </h4>
-        <div style="display: grid; gap: 0.75rem;">
-            <div class="legend-item">
-                <span class="color-dot" style="background: #10b981;"></span>
-                <div style="flex-grow: 1;">
-                    <strong style="color: var(--text-main); font-size: 1rem;">Cluster 0: Frugal Spenders</strong>
-                    <p style="color: var(--text-muted); margin: 0.25rem 0 0 0; font-size: 0.9rem;">
-                        Low-cost categories with budget-conscious spending patterns
-                    </p>
+        <div class="col-lg-4 text-lg-end">
+            <div class="glass-panel py-2 px-4 d-inline-flex align-items-center gap-3">
+                <div class="text-start">
+                    <span class="xsmall text-dim d-block">DATA SOURCE</span>
+                    <span class="fw-600 outfit">{% if dashboard_data %}Synced{% else %}Awaiting Input{% endif %}</span>
                 </div>
-            </div>
-            <div class="legend-item">
-                <span class="color-dot" style="background: #3b82f6;"></span>
-                <div style="flex-grow: 1;">
-                    <strong style="color: var(--text-main); font-size: 1rem;">Cluster 1: Moderate Spenders</strong>
-                    <p style="color: var(--text-muted); margin: 0.25rem 0 0 0; font-size: 0.9rem;">
-                        Balanced spending across essential and lifestyle categories
-                    </p>
-                </div>
-            </div>
-            <div class="legend-item">
-                <span class="color-dot" style="background: #f59e0b;"></span>
-                <div style="flex-grow: 1;">
-                    <strong style="color: var(--text-main); font-size: 1rem;">Cluster 2: High-Value Spenders</strong>
-                    <p style="color: var(--text-muted); margin: 0.25rem 0 0 0; font-size: 0.9rem;">
-                        Premium categories with higher average transaction amounts
-                    </p>
-                </div>
+                <div class="spinner-grow text-primary spinner-grow-sm" role="status"></div>
             </div>
         </div>
     </div>
 
-    <!-- Detailed Cluster Breakdown Cards -->
-    <div
-        style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
-        {% if dashboard_data.cluster_details %}
-        {% for cluster_id, details in dashboard_data.cluster_details.items() %}
-        <div class="card-ui animate-rise"
-            style="background: rgba(30, 41, 59, 0.6); border: 2px solid {% if cluster_id == 0 %}#10b981{% elif cluster_id == 1 %}#3b82f6{% else %}#f59e0b{% endif %}; border-radius: 16px; padding: 1.75rem;">
-            <!-- Cluster Header -->
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-                <div
-                    style="width: 48px; height: 48px; border-radius: 50%; background: {% if cluster_id == 0 %}rgba(16, 185, 129, 0.2){% elif cluster_id == 1 %}rgba(59, 130, 246, 0.2){% else %}rgba(245, 158, 11, 0.2){% endif %}; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; color: {% if cluster_id == 0 %}#10b981{% elif cluster_id == 1 %}#3b82f6{% else %}#f59e0b{% endif %};">
-                    {{ cluster_id }}
+    {% if dashboard_data and dashboard_data.get('source') == 'database' %}
+    <div class="row mb-4 reveal">
+        <div class="col-12">
+            <div class="glass-panel p-3 d-flex align-items-center justify-content-between flex-wrap gap-3" style="border-color: rgba(16, 185, 129, 0.25);">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="pulse-dot" style="width:10px;height:10px;border-radius:50%;background:#10b981;display:inline-block;"></span>
+                    <span class="text-light"><strong>Live Account Data</strong> — {{ dashboard_data.transaction_count }} transactions · ₹{{ "{:,.0f}".format(dashboard_data.total_spent) }} analyzed</span>
                 </div>
-                <div>
-                    <h3 style="color: var(--text-main); margin: 0; font-size: 1.25rem; font-weight: 700;">Cluster {{
-                        cluster_id }}</h3>
-                    <p style="color: var(--text-muted); margin: 0; font-size: 0.9rem;">{{ details.count }} transactions
-                    </p>
-                </div>
+                <a href="{{ url_for('recommendation.all_clusters') if dashboard_data.n_clusters > 0 else '#' }}" class="btn btn-sm btn-outline-light rounded-pill px-3 {% if dashboard_data.n_clusters == 0 %}disabled{% endif %}">
+                    Full Cluster View
+                </a>
             </div>
+        </div>
+    </div>
+    {% elif not dashboard_data %}
+    <div class="row mb-4 reveal">
+        <div class="col-12">
+            <div class="glass-panel p-4 text-center" style="border-color: rgba(59, 130, 246, 0.2);">
+                <i class="fa-solid fa-database text-primary mb-3" style="font-size: 2rem;"></i>
+                <h4 class="outfit fw-800 mb-2">No Analytics Data Yet</h4>
+                <p class="text-dim mb-0">Upload a CSV, scan a bank statement, or add receipts — your neural spending map will appear here automatically.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
-            <!-- Stats Grid -->
-            <div
-                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                <div>
-                    <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Avg Amount</div>
-                    <div style="color: var(--text-main); font-size: 1.25rem; font-weight: 700;">₹{{
-                        "{:,.0f}".format(details.avg_amount) }}</div>
-                </div>
-                <div>
-                    <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Total</div>
-                    <div style="color: var(--text-main); font-size: 1.25rem; font-weight: 700;">₹{{
-                        "{:,.0f}".format(details.total_amount) }}</div>
-                </div>
-                <div>
-                    <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Frequency Score
+    <!-- Synthesis Results Entry (If session exists) -->
+    {% if session.get('analytics_data') %}
+    <div class="row mb-5 reveal" style="animation-delay: 0.1s">
+        <div class="col-12">
+            <div class="glass-panel p-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-4">
+                    <div class="cluster-number-badge accent-grad" style="width: 56px; height: 56px; color: #fff;">
+                        <i class="fa-solid fa-layer-group"></i>
                     </div>
-                    <div style="color: var(--text-main); font-size: 1.25rem; font-weight: 700;">{{
-                        "%.2f"|format(details.frequency_score) }}</div>
+                    <div>
+                        <h4 class="outfit fw-800 mb-1">Active Neural Map Detected</h4>
+                        <p class="text-dim small mb-0">Your last synthesis for <strong>{{ session.get('analytics_data').transaction_count }}</strong> transactions is ready.</p>
+                    </div>
+                </div>
+                <a href="{{ url_for('recommendation.all_clusters') }}" class="btn btn-primary rounded-pill px-5 py-3 outfit fw-700">
+                    View Synthesis Results <i class="fa-solid fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Premium Bento Grid -->
+    <div class="bento-grid mb-5 reveal" style="animation-delay: 0.2s">
+        <!-- Module 1: CSV Architect -->
+        <div class="bento-card blue-glow">
+            <span class="bento-badge badge-blue">Batch Ingest</span>
+            <div class="bento-icon blue-icon">
+                <i class="fa-solid fa-file-csv"></i>
+            </div>
+            <h4>CSV Architect</h4>
+            <p>Upload raw financial datasets. The Fintelligent Engine automatically clusters behaviors into 5 neural dimensions.</p>
+            <button class="bento-btn btn-premium-blue" onclick="document.getElementById('csvInput').click()">
+                <i class="fa-solid fa-upload"></i> Upload Dataset
+            </button>
+            <input type="file" id="csvInput" name="file" style="display: none;" accept=".csv" onchange="submitCSV(this)">
+        </div>
+
+        <!-- Module 2: Statement Vision -->
+        <div class="bento-card purple-glow">
+            <span class="bento-badge badge-purple">Vision Core</span>
+            <div class="bento-icon purple-icon">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+            <h4>Optical Vision</h4>
+            <p>Don't have a CSV? Seamlessly extract itemized spending telemetry directly from visual bank statements using AI OCR.</p>
+            <button class="bento-btn btn-premium-purple" onclick="document.getElementById('bankInput').click()">
+                <i class="fa-solid fa-expand"></i> Scan Statement
+            </button>
+            <input type="file" id="bankInput" name="file" style="display: none;" accept="image/*" onchange="submitBankStatement(this)">
+        </div>
+
+        <!-- Module 3: Power BI -->
+        <div class="bento-card emerald-glow">
+            <span class="bento-badge badge-emerald">Live Auth</span>
+            <div class="bento-icon emerald-icon">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <h4>Power BI Link</h4>
+            <p>Mount your personal financial genome directly into Microsoft Power BI for real-time charting and dashboards.</p>
+            <button class="bento-btn btn-premium-emerald" onclick="togglePowerBI()">
+                <i class="fa-solid fa-link"></i> Connect Engine
+            </button>
+        </div>
+    </div>
+
+
+
+    <!-- Synthesis Loader -->
+    <div id="loader" class="neural-loader">
+        <div class="text-center">
+            <div class="spinner-border text-primary mb-4" style="width: 4rem; height: 4rem;" role="status"></div>
+            <h2 class="outfit fw-800 grad-text">Synthesizing Neural Map...</h2>
+            <p class="text-dim">Reconfiguring cluster centroids across 5 dimensions.</p>
+        </div>
+    </div>
+
+    <!-- Error Interface -->
+    <div id="errorAlert" class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger rounded-4 mt-4 reveal" {% if not error %}style="display: none;"{% endif %}>
+        <i class="fa-solid fa-circle-exclamation me-2"></i> {{ error if error else '' }}
+    </div>
+
+    <!-- Results Section (CSV & Clusters) -->
+    {% if dashboard_data %}
+    <div id="csvResults" class="reveal" style="animation-delay: 0.4s">
+        <!-- Top: Health + Trend + Budget -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-4">
+                <div class="glass-panel text-center h-100">
+                    <h5 class="text-dim xsmall outfit fw-800 mb-4">FINANCIAL HEALTH INDEX</h5>
+                    <div class="score-ring-wrap mb-4">
+                        <svg viewBox="0 0 36 36">
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="3"/>
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="{{ dashboard_data.health_score.color }}" stroke-width="3" stroke-dasharray="{{ dashboard_data.health_score.score }}, 100" stroke-linecap="round"/>
+                        </svg>
+                        <div class="score-value">
+                            <span class="display-4 fw-900 outfit" style="color: {{ dashboard_data.health_score.color }}">{{ dashboard_data.health_score.score }}</span>
+                            <span class="xsmall fw-800 text-dim">PTS</span>
+                        </div>
+                    </div>
+                    <div class="badge py-2 px-4 rounded-pill mb-3" style="background: {{ dashboard_data.health_score.color }}20; color: {{ dashboard_data.health_score.color }}">
+                        {{ dashboard_data.health_score.level }} CLASSIFICATION
+                    </div>
+                    <p class="text-dim small px-3 mb-0">{{ dashboard_data.health_score.message }}</p>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="glass-panel h-100">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+                        <div>
+                            <h5 class="text-dim xsmall outfit fw-800 mb-1">CASH FLOW INTENSITY</h5>
+                            <h2 class="outfit fw-800 mb-0">Neural Trend Mapping</h2>
+                        </div>
+                        <div class="d-flex gap-4 flex-wrap">
+                            <div class="text-end">
+                                <span class="xsmall text-dim d-block mb-0">TOTAL SYNCED</span>
+                                <span class="fs-3 outfit fw-800 text-primary">₹{{ "{:,.0f}".format(dashboard_data.total_spent) }}</span>
+                            </div>
+                            {% if dashboard_data.transaction_count is defined %}
+                            <div class="text-end">
+                                <span class="xsmall text-dim d-block mb-0">TRANSACTIONS</span>
+                                <span class="fs-4 outfit fw-800">{{ dashboard_data.transaction_count }}</span>
+                            </div>
+                            {% endif %}
+                            <div class="text-end">
+                                <span class="xsmall text-dim d-block mb-0">BUDGET</span>
+                                <span class="fs-5 outfit fw-700 {% if dashboard_data.budget.status == 'healthy' %}text-success{% else %}text-warning{% endif %}">₹{{ "{:,.0f}".format(dashboard_data.budget.limit) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="height: 280px;"><canvas id="csvTrendChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights & Overspending - Premium -->
+        <div class="row g-4 mb-5">
+            {% if dashboard_data.insights is iterable and dashboard_data.insights is not string %}
+            <div class="col-lg-8">
+                <div class="glass-panel h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div style="width:36px;height:36px;border-radius:11px;background:rgba(245,158,11,0.15);color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:0.9rem;">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h5 class="outfit fw-800 mb-0" style="font-size:0.95rem;letter-spacing:0.04em;">BEHAVIORAL INSIGHTS</h5>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        {% for insight in dashboard_data.insights %}
+                        <div class="insight-pill">
+                            <span class="insight-pill-icon" style="color:#60a5fa;"><i class="fa-solid fa-bolt"></i></span>
+                            <span class="text-light">{{ insight }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if dashboard_data.overspending_areas is mapping and dashboard_data.overspending_areas|length > 0 %}
+            <div class="col-lg-4">
+                <div class="glass-panel h-100">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <div style="width:36px;height:36px;border-radius:11px;background:rgba(239,68,68,0.15);color:#f87171;display:flex;align-items:center;justify-content:center;font-size:0.9rem;">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <h5 class="outfit fw-800 mb-0" style="font-size:0.95rem;letter-spacing:0.04em;">HIGH-SPEND AREAS</h5>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        {% for cat, amt in dashboard_data.overspending_areas.items() %}
+                        <div class="overspend-pill">
+                            <span class="d-flex align-items-center gap-2">
+                                <span style="width:7px;height:7px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
+                                <span class="text-light">{{ cat }}</span>
+                            </span>
+                            <span class="outfit fw-800" style="color:#fb7185;">₹{{ "{:,.0f}".format(amt) }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-lg-4">
+                <div class="glass-panel h-100 d-flex align-items-center justify-content-center">
+                    <div class="text-center">
+                        <div style="width:60px;height:60px;border-radius:18px;background:rgba(16,185,129,0.12);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 0.75rem;">✅</div>
+                        <p class="text-dim small mb-0">No high-spend categories detected. Your spending is well distributed!</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Behavioral Clusters — Premium Layout -->
+        <div class="mb-5">
+            <div class="section-heading-row">
+                <div class="section-heading-icon-sm" style="background:rgba(59,130,246,0.15);color:#60a5fa;">
+                    <i class="fa-solid fa-layer-group"></i>
                 </div>
                 <div>
-                    <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Spend Ratio</div>
-                    <div style="color: var(--text-main); font-size: 1.25rem; font-weight: 700;">{{
-                        "%.1f"|format(details.spend_ratio) }}%</div>
+                    <h3 class="outfit fw-800 mb-0">Spending <span style="background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Clusters</span></h3>
+                    <p class="text-dim xsmall mb-0 mt-1">Each cluster shows distinct behavioral spending patterns — categories appear in one cluster only for clarity.</p>
                 </div>
+                <span class="section-count-pill">{{ (dashboard_data.cluster_details|length) }} cluster(s)</span>
             </div>
 
-            <!-- Top Categories -->
-            <div style="margin-bottom: 1.25rem;">
-                <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem; font-weight: 600;">Top
-                    Categories:</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                    {% for category in details.top_categories[:3] %}
-                    <span
-                        style="background: {% if cluster_id == 0 %}rgba(16, 185, 129, 0.15){% elif cluster_id == 1 %}rgba(59, 130, 246, 0.15){% else %}rgba(245, 158, 11, 0.15){% endif %}; color: {% if cluster_id == 0 %}#10b981{% elif cluster_id == 1 %}#3b82f6{% else %}#f59e0b{% endif %}; padding: 0.4rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
-                        {{ category }}
-                    </span>
-                    {% endfor %}
+            <div class="row g-3">
+                {% set clusters_to_show = dashboard_data.cluster_list if (dashboard_data.cluster_list is defined and dashboard_data.cluster_list is iterable) else (dashboard_data.cluster_details.items()|sort if dashboard_data.cluster_details is mapping else []) %}
+                {% for cluster_id, details in clusters_to_show %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    {% include 'partials/_cluster_card.html' %}
                 </div>
+                {% endfor %}
             </div>
 
-            <!-- Top Merchants -->
-            <div style="margin-bottom: 1.25rem;">
-                <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem; font-weight: 600;">Top
-                    Merchants:</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                    {% for merchant in details.top_merchants[:3] %}
-                    <span
-                        style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); padding: 0.4rem 0.75rem; border-radius: 12px; font-size: 0.85rem;">
-                        {{ merchant }}
-                    </span>
-                    {% endfor %}
+            {% if not dashboard_data.cluster_details %}
+            <div class="glass-panel text-center py-5 mt-3">
+                <i class="fa-solid fa-layer-group text-dim mb-3" style="font-size: 3rem;"></i>
+                <p class="text-dim mb-0">Upload a CSV with date, category, and amount to see spending clusters.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Charts: PCA Space + Category Genome -->
+        <div class="row g-4 mb-5">
+            <div class="col-lg-6">
+                <div class="glass-panel">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <div style="width:32px;height:32px;border-radius:10px;background:rgba(59,130,246,0.15);color:#60a5fa;display:flex;align-items:center;justify-content:center;font-size:0.85rem;">
+                            <i class="fa-solid fa-braille"></i>
+                        </div>
+                        <h5 class="outfit fw-800 mb-0" style="font-size:1rem;">Neural PCA Space</h5>
+                    </div>
+                    <p class="text-dim xsmall mb-3">Categories projected to 2D — tighter clusters = stronger behavioral patterns.</p>
+                    <div style="height: 320px;"><canvas id="csvClusterChart"></canvas></div>
+                    <div class="chart-legend" id="analyticsClusterLegend"></div>
                 </div>
             </div>
-
-            <!-- Payment Methods -->
-            <div>
-                <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem; font-weight: 600;">
-                    Payment Methods:</div>
-                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                    {% for method, count in details.payment_methods.items() %}
-                    <span
-                        style="background: rgba(255, 255, 255, 0.05); color: var(--text-muted); padding: 0.4rem 0.75rem; border-radius: 12px; font-size: 0.85rem;">
-                        {{ method }} ({{ count }})
-                    </span>
-                    {% endfor %}
+            <div class="col-lg-6">
+                <div class="glass-panel">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <div style="width:32px;height:32px;border-radius:10px;background:rgba(16,185,129,0.15);color:#34d399;display:flex;align-items:center;justify-content:center;font-size:0.85rem;">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        <h5 class="outfit fw-800 mb-0" style="font-size:1rem;">Category Genome</h5>
+                    </div>
+                    <p class="text-dim xsmall mb-3">Spending distribution across all detected categories.</p>
+                    <div style="height: 280px;"><canvas id="csvCategoryChart"></canvas></div>
+                    <div class="chart-legend" id="analyticsCategoryLegend"></div>
                 </div>
             </div>
         </div>
-        {% endfor %}
-        {% endif %}
     </div>
+    {% endif %}
 
-    <!-- Cluster Visualization -->
-    <div class="card-ui animate-rise chart-container">
-        <div class="chart-title">
-            <i class="fa-solid fa-scatter-chart"></i>
-            <h3 style="color: var(--text-main); margin: 0; font-size: 1.25rem;">Spending Pattern Clusters (KMeans + PCA)
-            </h3>
-            <i class="fa-solid fa-circle-question" style="color: var(--text-muted); font-size: 0.9rem; cursor: help;"
-                title="Each dot represents a spending category. Colors show which pattern group it belongs to."></i>
+
+    <!-- Power BI Interface -->
+    <div id="powerBISection" class="result-section reveal mb-5" style="display: none;">
+        <div class="glass-panel">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="outfit fw-800 mb-1">Power BI <span class="text-primary">Synergy</span></h2>
+                    <p class="text-dim small mb-0">Enterprise-grade analytics powered by Microsoft Power BI.</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-light btn-sm rounded-pill px-4" onclick="exportDataForPowerBI()">
+                        <i class="fa-solid fa-file-export me-2"></i> Export Data
+                    </button>
+                    <button class="btn btn-primary btn-sm rounded-pill px-4" onclick="showPBIConfig()">
+                        <i class="fa-solid fa-gear me-2"></i> Config
+                    </button>
+                </div>
+            </div>
+            
+            <div id="pbiContainer" class="rounded-4 overflow-hidden" style="height: 700px; background: rgba(0,0,0,0.2); position: relative;">
+                <div id="pbiPlaceholder" class="position-absolute inset-0 d-flex flex-column align-items-center justify-content-center text-center p-5">
+                    <i class="fa-solid fa-chart-line text-primary mb-4" style="font-size: 4rem; opacity: 0.5;"></i>
+                    <h3 class="outfit fw-800 mb-2">Neural Link Not Configured</h3>
+                    <p class="text-dim max-w-lg mx-auto mb-4">To integrate your custom Power BI report, click "Config" and enter your Embed URL. Otherwise, use our built-in Transaction Architect.</p>
+                    <button class="btn btn-primary rounded-pill px-5 py-2" onclick="showPBIConfig()">Connect Power BI</button>
+                </div>
+                <!-- Power BI Report will be embedded here -->
+                <div id="embedContainer" style="height: 100%; width: 100%;"></div>
+            </div>
         </div>
-        <div style="height: 450px;"><canvas id="clusterChart"></canvas></div>
+    </div>
+
+    <!-- PBI Config Modal -->
+    <div id="pbiConfigModal" class="neural-loader" style="display: none; background: rgba(2, 6, 23, 0.8);">
+        <div class="glass-panel p-5" style="max-width: 500px; width: 90%;">
+            <h3 class="outfit fw-800 mb-4">Neural Link Configuration</h3>
+            <div class="mb-4">
+                <label class="text-dim xsmall d-block mb-2">POWER BI EMBED URL</label>
+                <input type="text" id="pbiEmbedUrl" class="form-control bg-dark border-secondary text-light rounded-3" placeholder="https://app.powerbi.com/reportEmbed?reportId=...">
+                <p class="text-dim xsmall mt-2">Get this from Power BI Service: File > Embed report > Website or portal.</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary flex-grow-1 rounded-pill" onclick="savePBIConfig()">Save Configuration</button>
+                <button class="btn btn-outline-light rounded-pill" onclick="hidePBIConfig()">Cancel</button>
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- Insights Section -->
-<div
-    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
-    <div class="card-ui animate-rise" style="background: rgba(251, 191, 36, 0.05); border-left: 4px solid #fbbf24;">
-        <h3 style="color: var(--text-main); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-            <i class="fa-solid fa-lightbulb" style="color: #fbbf24;"></i>
-            Key Insights
-        </h3>
-        <ul style="color: var(--text-muted); line-height: 2; margin: 0; padding-left: 1.5rem;">
-            {% for insight in dashboard_data.insights %}
-            <li style="margin-bottom: 0.5rem;">{{ insight }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="card-ui animate-rise" style="background: rgba(16, 185, 129, 0.05); border-left: 4px solid #10b981;">
-        <h3 style="color: var(--text-main); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-            <i class="fa-solid fa-clipboard-check" style="color: #10b981;"></i>
-            Recommended Actions
-        </h3>
-        <ul style="color: var(--text-muted); line-height: 2; margin: 0; padding-left: 1.5rem;">
-            {% for rec in dashboard_data.health_score.recommendations %}
-            <li style="margin-bottom: 0.5rem;">{{ rec }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const data = {{ dashboard_data | tojson }};
+    function showLoader() { document.getElementById('loader').style.display = 'flex'; }
+    function hideLoader() { document.getElementById('loader').style.display = 'none'; }
 
-    // Enhanced color palette
-    const clusterColors = {
-        0: { bg: 'rgba(16, 185, 129, 0.8)', border: '#10b981' },  // Green - Frugal
-        1: { bg: 'rgba(59, 130, 246, 0.8)', border: '#3b82f6' },  // Blue - Moderate
-        2: { bg: 'rgba(245, 158, 11, 0.8)', border: '#f59e0b' }   // Orange - High-value
-    };
-
-    // Trend Chart with gradient
-    const trendCtx = document.getElementById('trendChart').getContext('2d');
-    const trendGradient = trendCtx.createLinearGradient(0, 0, 0, 300);
-    trendGradient.addColorStop(0, 'rgba(59, 130, 246, 0.4)');
-    trendGradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
-
-    new Chart(trendCtx, {
-        type: 'line',
-        data: {
-            labels: data.monthly_trend.labels,
-            datasets: [{
-                label: 'Monthly Spending (₹)',
-                data: data.monthly_trend.data,
-                borderColor: '#3b82f6',
-                backgroundColor: trendGradient,
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true,
-                pointRadius: 5,
-                pointBackgroundColor: '#3b82f6',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointHoverRadius: 7
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: true, labels: { color: '#cbd5e1', font: { size: 14 } } },
-                tooltip: {
-                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                    titleColor: '#f1f5f9',
-                    bodyColor: '#cbd5e1',
-                    borderColor: 'rgba(59, 130, 246, 0.5)',
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: false
-                }
-            },
-            scales: {
-                y: {
-                    ticks: { color: '#cbd5e1' },
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
-                },
-                x: {
-                    ticks: { color: '#cbd5e1' },
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' }
-                }
+    function submitCSV(input) {
+        if(!input.files[0]) return;
+        showLoader();
+        const form = document.createElement('form');
+        form.method = 'POST'; form.action = '/analytics'; form.enctype = 'multipart/form-data';
+        form.style.display = 'none';
+        const csrf = document.createElement('input');
+        csrf.type = 'hidden'; csrf.name = 'csrf_token'; csrf.value = '{{ csrf_token() }}';
+        form.appendChild(input); form.appendChild(csrf);
+        document.body.appendChild(form); form.submit();
+    }
+    async function submitBankStatement(input) {
+        if(!input.files[0]) return;
+        showLoader();
+        const formData = new FormData(); formData.append('file', input.files[0]);
+        try {
+            const res = await fetch('/api/analytics/bank-statement', {
+                method: 'POST', headers: { 'X-CSRFToken': '{{ csrf_token() }}' }, body: formData
+            });
+            const data = await res.json();
+            if(data.success && data.redirect) {
+                window.location.href = data.redirect;
+            } else {
+                hideLoader();
+                showError(data.error || "Neural Node Disconnected.");
             }
+        } catch(e) { hideLoader(); showError("Neural Node Disconnected."); }
+    }
+
+    function showError(m) { const a = document.getElementById('errorAlert'); a.style.display = 'block'; a.innerText = m; }
+
+
+    function togglePowerBI() {
+        const pbiSect = document.getElementById('powerBISection');
+        const csvSect = document.getElementById('csvResults');
+        const bsSect = document.getElementById('bankResults');
+        
+        if (pbiSect.style.display === 'none') {
+            pbiSect.style.display = 'block';
+            if(csvSect) csvSect.style.display = 'none';
+            if(bsSect) bsSect.style.display = 'none';
+            loadPowerBI();
+            pbiSect.scrollIntoView({ behavior: 'smooth' });
+        } else {
+            pbiSect.style.display = 'none';
+            if(csvSect) csvSect.style.display = 'block';
         }
+    }
+
+    function showPBIConfig() { document.getElementById('pbiConfigModal').style.display = 'flex'; }
+    function hidePBIConfig() { document.getElementById('pbiConfigModal').style.display = 'none'; }
+
+    function savePBIConfig() {
+        const url = document.getElementById('pbiEmbedUrl').value;
+        if (url) {
+            localStorage.setItem('pbi_embed_url', url);
+            loadPowerBI();
+            hidePBIConfig();
+        }
+    }
+
+    function loadPowerBI() {
+        const url = localStorage.getItem('pbi_embed_url');
+        const container = document.getElementById('embedContainer');
+        const placeholder = document.getElementById('pbiPlaceholder');
+        
+        if (url) {
+            placeholder.style.display = 'none';
+            container.innerHTML = `<iframe width="100%" height="100%" src="${url}" frameborder="0" allowFullScreen="true"></iframe>`;
+        } else {
+            placeholder.style.display = 'flex';
+            container.innerHTML = '';
+        }
+    }
+
+    function exportDataForPowerBI() {
+        // Simple CSV export of current expenses
+        window.location.href = '/api/analytics/export-csv';
+    }
+
+    // Load initial state
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedUrl = localStorage.getItem('pbi_embed_url');
+        if (savedUrl) document.getElementById('pbiEmbedUrl').value = savedUrl;
     });
 
-    // Category Chart with vibrant colors
-    new Chart(document.getElementById('categoryChart'), {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(data.category_distribution),
-            datasets: [{
-                data: Object.values(data.category_distribution),
-                backgroundColor: [
-                    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-                    '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#84cc16'
-                ],
-                borderWidth: 2,
-                borderColor: '#0f172a'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'right',
-                    labels: { color: '#cbd5e1', font: { size: 12 }, padding: 15 }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                    titleColor: '#f1f5f9',
-                    bodyColor: '#cbd5e1',
-                    borderColor: 'rgba(59, 130, 246, 0.5)',
-                    borderWidth: 1,
-                    padding: 12,
-                    callbacks: {
-                        label: function (context) {
-                            const value = context.parsed;
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
-                            return `₹${value.toLocaleString()} (${percentage}%)`;
-                        }
+    {% if dashboard_data %}
+    (function() {
+        const data = {{ dashboard_data | tojson | safe }};
+        const commonStyle = { color: '#94a3b8', font: { family: 'Outfit', size: 10 } };
+
+        // Trend Chart
+        new Chart(document.getElementById('csvTrendChart'), {
+            type: 'line',
+            data: {
+                labels: data.monthly_trend.labels,
+                datasets: [{
+                    label: 'Velocity', data: data.monthly_trend.data,
+                    borderColor: '#3b82f6', borderWeight: 4, tension: 0.45, fill: true,
+                    backgroundColor: (ctx) => {
+                        const canvas = ctx.chart.ctx;
+                        const gradient = canvas.createLinearGradient(0, 0, 0, 300);
+                        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+                        gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+                        return gradient;
                     }
-                }
+                }]
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                scales: { 
+                    x: { grid: { display: false }, ticks: commonStyle },
+                    y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: commonStyle }
+                },
+                plugins: { legend: { display: false } }
             }
-        }
-    });
-
-    // Enhanced Cluster Chart
-    const datasets = [];
-    const clusters = [...new Set(data.pca_points.map(p => p.cluster))];
-
-    clusters.forEach(c => {
-        const clusterColor = clusterColors[c] || { bg: '#94a3b8', border: '#64748b' };
-        datasets.push({
-            label: `Cluster ${c}`,
-            data: data.pca_points.filter(p => p.cluster === c).map(p => ({ x: p.x, y: p.y })),
-            backgroundColor: clusterColor.bg,
-            borderColor: clusterColor.border,
-            borderWidth: 2,
-            pointRadius: 8,
-            pointHoverRadius: 12,
-            pointHoverBorderWidth: 3
         });
-    });
 
-    new Chart(document.getElementById('clusterChart'), {
-        type: 'scatter',
-        data: { datasets },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    labels: { color: '#cbd5e1', font: { size: 14 }, padding: 20 }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                    titleColor: '#f1f5f9',
-                    bodyColor: '#cbd5e1',
-                    borderColor: 'rgba(59, 130, 246, 0.5)',
-                    borderWidth: 1,
-                    padding: 12,
-                    callbacks: {
-                        label: function (context) {
-                            return `Position: (${context.parsed.x.toFixed(2)}, ${context.parsed.y.toFixed(2)})`;
+        // PCA Space – one dataset per cluster so legend shows all clusters
+        const pcaElem = document.getElementById('csvClusterChart');
+        const clusterColors = data.cluster_colors || ["#f43f5e", "#8b5cf6", "#10b981", "#3b82f6", "#f59e0b", "#64748b"];
+        const clusterDetails = data.cluster_details || {};
+        if (pcaElem && data.pca_points && data.pca_points.length > 0) {
+            const byCluster = {};
+            data.pca_points.forEach(p => {
+                const c = p.cluster;
+                if (!byCluster[c]) byCluster[c] = [];
+                byCluster[c].push({ x: p.x, y: p.y, label: p.label || '' });
+            });
+            const datasets = Object.keys(byCluster).sort((a, b) => Number(a) - Number(b)).map((clusterId, idx) => {
+                const name = (clusterDetails[clusterId] && clusterDetails[clusterId].name) ? clusterDetails[clusterId].name : 'Cluster ' + (Number(clusterId) + 1);
+                const color = clusterColors[Number(clusterId)] || clusterColors[idx % clusterColors.length];
+                return {
+                    label: name,
+                    data: byCluster[clusterId],
+                    backgroundColor: color,
+                    borderColor: color,
+                    pointRadius: 8,
+                    pointHoverRadius: 12,
+                    pointBorderWidth: 2,
+                    pointBorderColor: 'rgba(255,255,255,0.3)'
+                };
+            });
+            new Chart(pcaElem, {
+                type: 'scatter',
+                data: { datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                            ticks: { ...commonStyle, maxTicksLimit: 5 },
+                            title: { display: true, text: 'Principal Component 1', color: '#64748b', font: { family: 'Outfit', size: 10 } }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                            ticks: { ...commonStyle, maxTicksLimit: 5 },
+                            title: { display: true, text: 'Principal Component 2', color: '#64748b', font: { family: 'Outfit', size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15,23,42,0.95)',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: { family: 'Outfit', weight: '800', size: 13 },
+                            bodyFont: { family: 'Inter', size: 11 },
+                            callbacks: {
+                                label: function(ctx) {
+                                    const pt = ctx.raw;
+                                    const lines = [];
+                                    if (pt.label) lines.push('\u{1F4C2} ' + pt.label);
+                                    lines.push('PC1: ' + pt.x.toFixed(3));
+                                    lines.push('PC2: ' + pt.y.toFixed(3));
+                                    return lines;
+                                }
+                            }
                         }
                     }
                 }
-            },
-            scales: {
-                x: {
-                    type: 'linear',
-                    position: 'bottom',
-                    ticks: { color: '#cbd5e1' },
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    title: { display: true, text: 'Principal Component 1', color: '#cbd5e1' }
-                },
-                y: {
-                    ticks: { color: '#cbd5e1' },
-                    grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    title: { display: true, text: 'Principal Component 2', color: '#cbd5e1' }
-                }
+            });
+            // Build custom legend
+            const legend = document.getElementById('analyticsClusterLegend');
+            if (legend) {
+                datasets.forEach((ds, i) => {
+                    const item = document.createElement('div');
+                    item.className = 'chart-legend-item';
+                    item.innerHTML = `<div class="chart-legend-dot" style="background:${clusterColors[i]};"></div><span>${ds.label}</span>`;
+                    legend.appendChild(item);
+                });
             }
         }
-    });
+        // Category chart – custom legend + improved styling
+        const catLabels = Object.keys(data.category_distribution || {});
+        const catValues = Object.values(data.category_distribution || {});
+        const catPalette = ['#f43f5e', '#8b5cf6', '#10b981', '#3b82f6', '#f59e0b', '#64748b', '#ec4899', '#14b8a6', '#a855f7', '#eab308', '#06b6d4', '#84cc16'];
+        if (document.getElementById('csvCategoryChart') && catLabels.length > 0) {
+            const catColors = catLabels.map((_, i) => catPalette[i % catPalette.length]);
+            new Chart(document.getElementById('csvCategoryChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: catLabels,
+                    datasets: [{
+                        data: catValues,
+                        backgroundColor: catColors,
+                        borderColor: 'rgba(15,23,42,0.7)',
+                        borderWidth: 3,
+                        hoverOffset: 18
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '66%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(15,23,42,0.95)',
+                            borderColor: 'rgba(255,255,255,0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: { family: 'Outfit', weight: '800', size: 13 },
+                            bodyFont: { family: 'Inter', size: 11 },
+                            callbacks: {
+                                label: (ctx) => `  ₹${ctx.raw.toLocaleString('en-IN')}  (${((ctx.raw / data.total_spent) * 100).toFixed(1)}%)`
+                            }
+                        }
+                    }
+                }
+            });
+            // Build custom legend
+            const catLegend = document.getElementById('analyticsCategoryLegend');
+            if (catLegend) {
+                catLabels.forEach((lbl, i) => {
+                    const pct = ((catValues[i] / data.total_spent) * 100).toFixed(1);
+                    const item = document.createElement('div');
+                    item.className = 'chart-legend-item';
+                    item.innerHTML = `<div class="chart-legend-dot" style="background:${catColors[i]};"></div><span>${lbl} (${pct}%)</span>`;
+                    catLegend.appendChild(item);
+                });
+            }
+        }
+
+        // Animate progress fills after page load
+        document.querySelectorAll('.ccp-progress-fill, .ccp-freq-fill').forEach(el => {
+            const targetWidth = el.style.width;
+            el.style.width = '0%';
+            setTimeout(() => { el.style.width = targetWidth; }, 400);
+        });
+    })();
+    {% endif %}
 </script>
-{% endif %}
 {% endblock %}

@@ -1,0 +1,124 @@
+<!-- Premium Cluster Card - Full Redesign -->
+<div class="cluster-card-premium h-100" style="--cluster-color: {{ details.color }};">
+    <!-- Card Header with Icon + Badge -->
+    <div class="ccp-header">
+        <div class="ccp-icon-wrap">
+            <i class="fa-solid {{ details.icon }} ccp-icon"></i>
+        </div>
+        <div class="ccp-header-info">
+            <div class="ccp-cluster-id">Cluster {{ cluster_id + 1 }}</div>
+            <h4 class="ccp-name">{{ details.name }}</h4>
+        </div>
+        <div class="ccp-ratio-badge">
+            <span class="ccp-ratio-value">{{ "%.1f"|format(details.spend_ratio) }}%</span>
+            <span class="ccp-ratio-label">share</span>
+        </div>
+    </div>
+
+    <!-- Spend Progress Bar -->
+    <div class="ccp-progress-wrap">
+        <div class="ccp-progress-track">
+            <div class="ccp-progress-fill" style="width: {{ [details.spend_ratio, 100]|min }}%;"></div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Grid -->
+    <div class="ccp-metrics">
+        <div class="ccp-metric">
+            <i class="fa-solid fa-indian-rupee-sign ccp-metric-icon"></i>
+            <div>
+                <div class="ccp-metric-value">₹{{ "{:,.0f}".format(details.total_amount) }}</div>
+                <div class="ccp-metric-label">Total Spent</div>
+            </div>
+        </div>
+        <div class="ccp-metric">
+            <i class="fa-solid fa-chart-bar ccp-metric-icon"></i>
+            <div>
+                <div class="ccp-metric-value">₹{{ "{:,.0f}".format(details.avg_amount) }}</div>
+                <div class="ccp-metric-label">Avg. Transaction</div>
+            </div>
+        </div>
+        <div class="ccp-metric">
+            <i class="fa-solid fa-receipt ccp-metric-icon"></i>
+            <div>
+                <div class="ccp-metric-value">{{ details.count }}</div>
+                <div class="ccp-metric-label">Transactions</div>
+            </div>
+        </div>
+        <div class="ccp-metric">
+            <i class="fa-solid fa-bolt ccp-metric-icon"></i>
+            <div>
+                <div class="ccp-metric-value">{{ "%.1f"|format(details.frequency_score) }}/10</div>
+                <div class="ccp-metric-label">Frequency</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="ccp-divider"></div>
+
+    <!-- Categories -->
+    <div class="ccp-section">
+        <div class="ccp-section-header">
+            <i class="fa-solid fa-tags ccp-section-icon"></i>
+            <span>Categories</span>
+        </div>
+        <div class="ccp-tags">
+            {% set cats_to_show = details.primary_categories if (details.primary_categories is defined and details.primary_categories is iterable and details.primary_categories is not string) else (details.top_categories if (details.top_categories is iterable and details.top_categories is not string) else []) %}
+            {% for cat in cats_to_show[:5] %}
+            <span class="ccp-tag ccp-tag-cat">{{ cat }}</span>
+            {% endfor %}
+            {% if not cats_to_show %}
+            <span class="ccp-tag ccp-tag-empty">—</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Merchants -->
+    <div class="ccp-section">
+        <div class="ccp-section-header">
+            <i class="fa-solid fa-store ccp-section-icon"></i>
+            <span>Top Merchants</span>
+        </div>
+        <div class="ccp-tags">
+            {% if details.top_merchants is iterable and details.top_merchants is not string %}
+                {% for merchant in details.top_merchants[:3] %}
+                <span class="ccp-tag ccp-tag-merchant">{{ merchant }}</span>
+                {% endfor %}
+            {% else %}
+                <span class="ccp-tag ccp-tag-empty">—</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Payment Methods -->
+    <div class="ccp-section">
+        <div class="ccp-section-header">
+            <i class="fa-solid fa-credit-card ccp-section-icon"></i>
+            <span>Payment Methods</span>
+        </div>
+        <div class="ccp-tags">
+            {% if details.payment_methods is mapping and details.payment_methods|length > 0 %}
+                {% for method, cnt in details.payment_methods.items() %}
+                <span class="ccp-tag ccp-tag-payment">
+                    {% if 'UPI' in method %}<i class="fa-solid fa-mobile-screen-button me-1"></i>{% elif 'Credit' in method %}<i class="fa-solid fa-credit-card me-1"></i>{% elif 'Debit' in method %}<i class="fa-solid fa-card-blank me-1"></i>{% endif %}
+                    {{ method }} <span class="ccp-count-badge">{{ cnt }}</span>
+                </span>
+                {% endfor %}
+            {% else %}
+                <span class="ccp-tag ccp-tag-empty">—</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Frequency Bar -->
+    <div class="ccp-freq-section">
+        <div class="ccp-freq-label">
+            <span>Activity Level</span>
+            <span>{{ "%.1f"|format(details.frequency_score) }}/10</span>
+        </div>
+        <div class="ccp-freq-track">
+            <div class="ccp-freq-fill" style="width: {{ [details.frequency_score * 10, 100]|min }}%;"></div>
+        </div>
+    </div>
+</div>

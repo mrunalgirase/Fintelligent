@@ -1,0 +1,848 @@
+{% extends 'base.html' %}
+{% block title %}Neural Synthesis - Behavioral Clusters{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap');
+
+    :root {
+        --glass-bg: rgba(15, 23, 42, 0.65);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --accent-blue: #3b82f6;
+        --accent-purple: #8b5cf6;
+        --accent-emerald: #10b981;
+        --accent-rose: #f43f5e;
+        --accent-amber: #f59e0b;
+        --text-dim: #94a3b8;
+        --bg-deep: #020617;
+    }
+
+    body { font-family: 'Inter', sans-serif; background-color: var(--bg-deep); }
+    .outfit { font-family: 'Outfit', sans-serif; }
+
+    .clusters-page { max-width: 1440px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* ── Gradient Text ── */
+    .grad-text {
+        background: linear-gradient(135deg, #fff 30%, #94a3b8 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .grad-blue { background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    /* ── Page Header ── */
+    .page-header { margin-bottom: 3rem; }
+    .back-btn {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        color: var(--text-dim); text-decoration: none; font-size: 0.9rem;
+        margin-bottom: 1.5rem; transition: all 0.2s; font-weight: 500;
+        padding: 0.5rem 1rem; border-radius: 999px;
+        background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+    }
+    .back-btn:hover { color: #fff; background: rgba(255,255,255,0.08); transform: translateX(-3px); }
+
+    /* ── Glass Panel ── */
+    .glass-panel {
+        background: var(--glass-bg);
+        backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px; padding: 2rem;
+        transition: all 0.3s ease;
+    }
+    .glass-panel-sm { border-radius: 16px; padding: 1.5rem; }
+
+    /* ── Summary Stats Row ── */
+    .summary-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    @media (max-width: 992px) { .summary-stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 576px) { .summary-stats-grid { grid-template-columns: 1fr 1fr; } }
+
+    .stat-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 20px; padding: 1.5rem;
+        display: flex; align-items: center; gap: 1rem;
+        transition: all 0.3s;
+    }
+    .stat-card:hover { background: rgba(255,255,255,0.06); transform: translateY(-2px); }
+    .stat-icon {
+        width: 52px; height: 52px; border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.3rem; flex-shrink: 0;
+    }
+    .stat-icon.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .stat-icon.purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+    .stat-icon.emerald { background: rgba(16,185,129,0.15); color: #34d399; }
+    .stat-icon.amber { background: rgba(245,158,11,0.15); color: #fbbf24; }
+    .stat-value { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.4rem; color: #f8fafc; line-height: 1; }
+    .stat-label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.3rem; }
+
+    /* ── Profile Banner ── */
+    .profile-banner {
+        background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(139,92,246,0.08) 100%);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px; padding: 2rem;
+        display: flex; align-items: center; justify-content: space-between;
+        flex-wrap: wrap; gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .profile-left { display: flex; align-items: center; gap: 1.5rem; }
+    .profile-emoji-box {
+        width: 80px; height: 80px; border-radius: 22px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2.4rem; flex-shrink: 0;
+    }
+    .profile-category-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 0.3rem; }
+    .profile-category-name { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 2rem; line-height: 1; }
+    .profile-message { color: var(--text-dim); font-size: 0.9rem; margin-top: 0.4rem; }
+
+    /* Health Score Ring */
+    .health-ring-wrap { position: relative; width: 100px; height: 100px; flex-shrink: 0; }
+    .health-ring-wrap svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+    .health-score-center {
+        position: absolute; inset: 0;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        font-family: 'Outfit', sans-serif;
+    }
+    .health-score-num { font-weight: 900; font-size: 1.6rem; line-height: 1; }
+    .health-score-pts { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .health-right { display: flex; align-items: center; gap: 1.5rem; }
+    .health-info-text { text-align: left; }
+    .health-level-label { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem; }
+    .health-status-badge {
+        display: inline-block; padding: 0.3rem 0.9rem; border-radius: 999px;
+        font-size: 0.7rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+        margin-top: 0.5rem;
+    }
+
+    /* ── Section Heading ── */
+    .section-heading {
+        display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .section-heading-icon {
+        width: 44px; height: 44px; border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.1rem;
+    }
+    .section-heading h3 { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.4rem; margin: 0; }
+    .section-heading p { color: var(--text-dim); font-size: 0.85rem; margin: 0.2rem 0 0; }
+    .section-count-badge {
+        margin-left: auto; padding: 0.3rem 0.9rem; border-radius: 999px;
+        background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+        font-size: 0.8rem; color: var(--text-dim); font-family: 'Outfit', sans-serif; font-weight: 700;
+    }
+
+    /* ── Cluster Cards Grid ── */
+    .clusters-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+    @media (max-width: 1200px) { .clusters-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 640px) { .clusters-grid { grid-template-columns: 1fr; } }
+
+    /* ── Premium Cluster Card ── */
+    .cluster-card-premium {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 22px;
+        padding: 1.75rem;
+        position: relative; overflow: hidden;
+        backdrop-filter: blur(20px);
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex; flex-direction: column; gap: 0;
+        border-top: 3px solid var(--cluster-color);
+    }
+    .cluster-card-premium::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; height: 120px;
+        background: linear-gradient(180deg, color-mix(in srgb, var(--cluster-color) 8%, transparent), transparent);
+        pointer-events: none;
+    }
+    .cluster-card-premium:hover {
+        transform: translateY(-6px);
+        border-color: color-mix(in srgb, var(--cluster-color) 40%, rgba(255,255,255,0.07));
+        box-shadow: 0 24px 48px -12px rgba(0,0,0,0.5), 0 0 0 1px color-mix(in srgb, var(--cluster-color) 20%, transparent);
+    }
+
+    /* Card Header */
+    .ccp-header {
+        display: flex; align-items: flex-start; gap: 1rem;
+        margin-bottom: 1.25rem; position: relative;
+    }
+    .ccp-icon-wrap {
+        width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        background: color-mix(in srgb, var(--cluster-color) 18%, transparent);
+        border: 1px solid color-mix(in srgb, var(--cluster-color) 30%, transparent);
+    }
+    .ccp-icon { font-size: 1.4rem; color: var(--cluster-color); }
+    .ccp-header-info { flex: 1; min-width: 0; }
+    .ccp-cluster-id {
+        font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.09em;
+        color: var(--cluster-color); font-weight: 800; font-family: 'Outfit', sans-serif;
+        margin-bottom: 0.15rem;
+    }
+    .ccp-name {
+        font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.1rem;
+        color: #f8fafc; margin: 0; line-height: 1.2;
+    }
+    .ccp-ratio-badge {
+        display: flex; flex-direction: column; align-items: center;
+        background: color-mix(in srgb, var(--cluster-color) 15%, transparent);
+        border: 1px solid color-mix(in srgb, var(--cluster-color) 25%, transparent);
+        border-radius: 12px; padding: 0.4rem 0.7rem; flex-shrink: 0;
+    }
+    .ccp-ratio-value {
+        font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1rem;
+        color: var(--cluster-color); line-height: 1;
+    }
+    .ccp-ratio-label { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; margin-top: 0.1rem; }
+
+    /* Progress Bar */
+    .ccp-progress-wrap { margin-bottom: 1.25rem; }
+    .ccp-progress-track {
+        height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden;
+    }
+    .ccp-progress-fill {
+        height: 100%; border-radius: 3px;
+        background: linear-gradient(90deg, var(--cluster-color), color-mix(in srgb, var(--cluster-color) 60%, #fff));
+        transition: width 1s ease;
+    }
+
+    /* Metrics Grid */
+    .ccp-metrics {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 0.65rem; margin-bottom: 1.25rem;
+    }
+    .ccp-metric {
+        background: rgba(0,0,0,0.25); border-radius: 14px;
+        padding: 0.8rem 0.9rem;
+        display: flex; align-items: center; gap: 0.7rem;
+        border: 1px solid rgba(255,255,255,0.04);
+    }
+    .ccp-metric-icon { font-size: 0.85rem; color: var(--cluster-color); flex-shrink: 0; opacity: 0.8; }
+    .ccp-metric-value {
+        font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.95rem;
+        color: #f8fafc; line-height: 1;
+    }
+    .ccp-metric-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.04em; margin-top: 0.2rem; }
+
+    /* Divider */
+    .ccp-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 0.25rem 0 1.25rem; }
+
+    /* Tag Sections */
+    .ccp-section { margin-bottom: 1rem; }
+    .ccp-section:last-of-type { margin-bottom: 0; }
+    .ccp-section-header {
+        display: flex; align-items: center; gap: 0.4rem;
+        font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em;
+        color: var(--text-dim); font-weight: 700; margin-bottom: 0.6rem;
+    }
+    .ccp-section-icon { font-size: 0.7rem; }
+    .ccp-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .ccp-tag {
+        font-size: 0.75rem; padding: 0.3rem 0.65rem; border-radius: 999px;
+        font-weight: 500; line-height: 1.2;
+    }
+    .ccp-tag-cat {
+        background: color-mix(in srgb, var(--cluster-color) 15%, transparent);
+        color: var(--cluster-color);
+        border: 1px solid color-mix(in srgb, var(--cluster-color) 25%, transparent);
+    }
+    .ccp-tag-merchant {
+        background: rgba(255,255,255,0.06); color: #cbd5e1;
+        border: 1px solid rgba(255,255,255,0.09);
+    }
+    .ccp-tag-payment {
+        background: rgba(255,255,255,0.04); color: #94a3b8;
+        border: 1px solid rgba(255,255,255,0.07);
+        display: flex; align-items: center; gap: 0.2rem;
+    }
+    .ccp-tag-empty { color: var(--text-dim); background: transparent; border: 1px dashed rgba(255,255,255,0.1); }
+    .ccp-count-badge {
+        background: rgba(0,0,0,0.25); border-radius: 999px;
+        padding: 0.1rem 0.4rem; font-size: 0.65rem; font-weight: 700;
+    }
+
+    /* Frequency Bar */
+    .ccp-freq-section { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); }
+    .ccp-freq-label {
+        display: flex; justify-content: space-between;
+        font-size: 0.7rem; color: var(--text-dim); margin-bottom: 0.5rem;
+        text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .ccp-freq-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+    .ccp-freq-fill {
+        height: 100%; border-radius: 3px;
+        background: linear-gradient(90deg, var(--cluster-color), color-mix(in srgb, var(--cluster-color) 50%, #fff));
+    }
+
+    /* ── Charts Section ── */
+    .charts-grid {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 1.5rem; margin-bottom: 2rem;
+    }
+    @media (max-width: 992px) { .charts-grid { grid-template-columns: 1fr; } }
+
+    .chart-card {
+        background: rgba(15,23,42,0.65);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 22px; padding: 1.75rem;
+        backdrop-filter: blur(20px);
+    }
+    .chart-card-header { margin-bottom: 1.25rem; }
+    .chart-card-title {
+        font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1rem;
+        color: #f8fafc; display: flex; align-items: center; gap: 0.6rem;
+    }
+    .chart-card-subtitle { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.25rem; }
+    .chart-title-icon {
+        width: 32px; height: 32px; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center; font-size: 0.85rem;
+    }
+
+    /* ── Insights Section ── */
+    .insights-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    @media (max-width: 992px) { .insights-grid { grid-template-columns: 1fr; } }
+
+    .insight-item {
+        display: flex; align-items: flex-start; gap: 1rem;
+        padding: 1rem 1.25rem; border-radius: 16px;
+        border: 1px solid rgba(59,130,246,0.12);
+        background: rgba(59,130,246,0.05);
+        margin-bottom: 0.75rem; transition: all 0.2s;
+    }
+    .insight-item:last-child { margin-bottom: 0; }
+    .insight-item:hover { background: rgba(59,130,246,0.08); border-color: rgba(59,130,246,0.2); }
+    .insight-item.danger { border-color: rgba(244,63,94,0.15); background: rgba(244,63,94,0.05); }
+    .insight-item.danger:hover { background: rgba(244,63,94,0.08); border-color: rgba(244,63,94,0.25); }
+    .insight-num { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.5rem; color: var(--accent-blue); line-height: 1; flex-shrink: 0; }
+    .insight-num.danger-num { color: var(--accent-rose); }
+    .insight-text { font-size: 0.9rem; color: #e2e8f0; line-height: 1.5; }
+
+    /* Overspend Items */
+    .overspend-item {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0.75rem 1rem; border-radius: 12px;
+        background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.12);
+        margin-bottom: 0.6rem; transition: 0.2s;
+    }
+    .overspend-item:hover { background: rgba(239,68,68,0.1); }
+    .overspend-item:last-child { margin-bottom: 0; }
+    .overspend-cat { display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; color: #e2e8f0; }
+    .overspend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-rose); }
+    .overspend-amt { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 0.95rem; color: #fb7185; }
+
+    /* ── Summary Footer ── */
+    .summary-footer {
+        background: linear-gradient(135deg, rgba(59,130,246,0.06) 0%, rgba(139,92,246,0.06) 100%);
+        border: 1px solid rgba(255,255,255,0.07); border-radius: 22px;
+        padding: 2rem; display: flex; align-items: center; justify-content: space-between;
+        flex-wrap: wrap; gap: 1rem;
+    }
+    .summary-footer-badge {
+        padding: 0.5rem 1.5rem; border-radius: 999px;
+        background: rgba(59,130,246,0.12); color: #60a5fa;
+        font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.9rem;
+        border: 1px solid rgba(59,130,246,0.2);
+    }
+
+    /* ── Animations ── */
+    .reveal { animation: reveal 0.7s cubic-bezier(0,0,0.2,1) forwards; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+    .delay-4 { animation-delay: 0.2s; }
+    .delay-5 { animation-delay: 0.25s; }
+
+    /* ── Legends ── */
+    .donut-legend {
+        display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; justify-content: center;
+    }
+    .donut-legend-item {
+        display: flex; align-items: center; gap: 0.4rem;
+        font-size: 0.75rem; color: var(--text-dim);
+    }
+    .donut-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── PCA Legend ── */
+    .pca-legend {
+        display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; justify-content: center;
+    }
+    .pca-legend-item {
+        display: flex; align-items: center; gap: 0.5rem;
+        font-size: 0.8rem; color: var(--text-dim);
+    }
+    .pca-legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Monthly Trend Section ── */
+    .trend-card {
+        background: rgba(15,23,42,0.65);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 22px; padding: 1.75rem;
+        backdrop-filter: blur(20px); margin-bottom: 2rem;
+    }
+</style>
+
+<div class="clusters-page">
+
+    <!-- Back Button -->
+    <a href="{{ url_for('recommendation.financial_analytics') }}" class="back-btn reveal">
+        <i class="fa-solid fa-arrow-left"></i> Back to Analytics
+    </a>
+
+    <!-- Page Header -->
+    <div class="page-header reveal delay-1">
+        <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+            <div>
+                <h1 class="outfit fw-900 mb-1" style="font-size: 2.6rem; letter-spacing: -0.02em;">
+                    <span class="grad-text">Neural Synthesis</span> <span class="grad-blue">Results</span>
+                </h1>
+                <p class="text-dim fs-6 mb-0">
+                    Behavioral mapping complete &mdash; <strong class="text-light">{{ dashboard_data.n_clusters }}</strong> spending cluster{{ 's' if dashboard_data.n_clusters != 1 else '' }} detected from <strong class="text-light">{{ dashboard_data.transaction_count }}</strong> transactions
+                </p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill"
+                      style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); font-size: 0.8rem; color: #34d399;">
+                    <span class="d-inline-block" style="width:8px;height:8px;border-radius:50%;background:#10b981;animation:pulse 1.8s infinite;"></span>
+                    Analysis Ready
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Stats Row -->
+    <div class="summary-stats-grid reveal delay-2">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+            <div>
+                <div class="stat-value">₹{{ "{:,.0f}".format(dashboard_data.total_spent) }}</div>
+                <div class="stat-label">Total Analyzed</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple"><i class="fa-solid fa-receipt"></i></div>
+            <div>
+                <div class="stat-value">{{ dashboard_data.transaction_count }}</div>
+                <div class="stat-label">Transactions</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon emerald"><i class="fa-solid fa-layer-group"></i></div>
+            <div>
+                <div class="stat-value">{{ dashboard_data.n_clusters }}</div>
+                <div class="stat-label">Clusters Found</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon amber"><i class="fa-solid fa-heart-pulse"></i></div>
+            <div>
+                <div class="stat-value">{{ dashboard_data.health_score.score }}<span style="font-size:0.8rem;color:var(--text-dim);">/100</span></div>
+                <div class="stat-label">Health Score</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile + Health Banner -->
+    <div class="profile-banner reveal delay-3">
+        <div class="profile-left">
+            <div class="profile-emoji-box" style="background: {{ dashboard_data.category_color }}1a; border: 1px solid {{ dashboard_data.category_color }}33;">
+                {{ dashboard_data.category_icon }}
+            </div>
+            <div>
+                <div class="profile-category-label">Behavioral Classification</div>
+                <div class="profile-category-name" style="color: {{ dashboard_data.category_color }};">{{ dashboard_data.financial_category }}</div>
+                <div class="profile-message">{{ dashboard_data.health_score.message }}</div>
+            </div>
+        </div>
+        <div class="health-right">
+            <div class="health-ring-wrap">
+                <svg viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="4"/>
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          fill="none" stroke="{{ dashboard_data.health_score.color }}" stroke-width="4"
+                          stroke-dasharray="{{ dashboard_data.health_score.score }}, 100" stroke-linecap="round"/>
+                </svg>
+                <div class="health-score-center">
+                    <span class="health-score-num" style="color: {{ dashboard_data.health_score.color }};">{{ dashboard_data.health_score.score }}</span>
+                    <span class="health-score-pts">pts</span>
+                </div>
+            </div>
+            <div class="health-info-text">
+                <div class="health-level-label outfit fw-800">{{ dashboard_data.health_score.level }} Index</div>
+                <span class="health-status-badge" style="background: {{ dashboard_data.health_score.color }}1a; color: {{ dashboard_data.health_score.color }}; border: 1px solid {{ dashboard_data.health_score.color }}33;">
+                    {{ dashboard_data.health_score.level }} STATUS
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spending Clusters Section -->
+    <div class="mb-4 reveal delay-3">
+        <div class="section-heading">
+            <div class="section-heading-icon" style="background:rgba(59,130,246,0.15);color:#60a5fa;">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div>
+                <h3>Spending <span class="grad-blue">Clusters</span></h3>
+                <p>Each cluster groups your spending into distinct behavioral patterns.</p>
+            </div>
+            <span class="section-count-badge">{{ dashboard_data.n_clusters }} cluster{{ 's' if dashboard_data.n_clusters != 1 else '' }}</span>
+        </div>
+
+        <div class="clusters-grid">
+            {% for cluster_id, details in dashboard_data.cluster_list %}
+            <div class="reveal" style="animation-delay: {{ loop.index0 * 0.07 + 0.3 }}s;">
+                {% include 'partials/_cluster_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="reveal delay-4" style="margin-top: 2.5rem;">
+        <div class="section-heading">
+            <div class="section-heading-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa;">
+                <i class="fa-solid fa-chart-mixed"></i>
+            </div>
+            <div>
+                <h3>Visual <span class="grad-blue">Analysis</span></h3>
+                <p>Interactive charts showing your spending patterns and cluster distribution.</p>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <!-- PCA Cluster Map -->
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="chart-card-title">
+                        <div class="chart-title-icon" style="background:rgba(59,130,246,0.15);color:#60a5fa;">
+                            <i class="fa-solid fa-braille"></i>
+                        </div>
+                        Neural PCA Space
+                    </div>
+                    <div class="chart-card-subtitle">Categories projected to 2D — tighter clusters = stronger behavioral patterns</div>
+                </div>
+                <div style="height: 320px; position: relative;">
+                    <canvas id="csvClusterChart"></canvas>
+                </div>
+                <div class="pca-legend" id="pcaLegend"></div>
+            </div>
+
+            <!-- Category Donut -->
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="chart-card-title">
+                        <div class="chart-title-icon" style="background:rgba(16,185,129,0.15);color:#34d399;">
+                            <i class="fa-solid fa-chart-pie"></i>
+                        </div>
+                        Category Genome
+                    </div>
+                    <div class="chart-card-subtitle">Spending distribution across all detected categories</div>
+                </div>
+                <div style="height: 280px; position: relative;">
+                    <canvas id="csvCategoryChart"></canvas>
+                </div>
+                <div class="donut-legend" id="donutLegend"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insights + Overspending Section -->
+    <div class="reveal delay-5" style="margin-top: 0.5rem;">
+        <div class="section-heading" style="margin-bottom: 1.25rem;">
+            <div class="section-heading-icon" style="background:rgba(245,158,11,0.15);color:#fbbf24;">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+            <div>
+                <h3>Behavioral <span class="grad-blue">Insights</span></h3>
+                <p>AI-generated analysis of your spending patterns and financial habits.</p>
+            </div>
+        </div>
+
+        <div class="insights-grid">
+            <!-- Insights List -->
+            <div class="chart-card">
+                <div class="d-flex flex-column gap-2">
+                    {% if dashboard_data.insights %}
+                        {% for insight in dashboard_data.insights %}
+                        <div class="insight-item">
+                            <span class="insight-num">{{ loop.index }}.</span>
+                            <span class="insight-text">{{ insight }}</span>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% set max_spend_cluster = None %}
+                    {% set max_spend = 0 %}
+                    {% for cid, det in dashboard_data.cluster_list %}
+                        {% if det.total_amount > max_spend %}
+                            {% set max_spend = det.total_amount %}
+                            {% set max_spend_cluster = det %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if max_spend_cluster %}
+                    <div class="insight-item danger">
+                        <span class="insight-num danger-num">⚠</span>
+                        <span class="insight-text">
+                            <strong>Dominant Burn:</strong> Highest spend in
+                            <strong style="color: {{ max_spend_cluster.color }};">{{ max_spend_cluster.name }}</strong>
+                            (₹{{ "{:,.0f}".format(max_spend_cluster.total_amount) }}).
+                            Consider optimizing these categories to boost monthly savings.
+                        </span>
+                    </div>
+                    {% endif %}
+
+                    {% set budget = dashboard_data.budget %}
+                    {% if budget.forecast > budget.limit %}
+                    <div class="insight-item danger">
+                        <span class="insight-num danger-num">!</span>
+                        <span class="insight-text">
+                            <strong>Budget Alert:</strong> Forecast ₹{{ "{:,.0f}".format(budget.forecast) }} exceeds your limit of ₹{{ "{:,.0f}".format(budget.limit) }}.
+                            <span style="color: #fb7185;">{{ budget.days_remaining }} days remaining</span> this month.
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Overspending Focus Areas -->
+            <div class="chart-card">
+                <div class="chart-card-header">
+                    <div class="chart-card-title">
+                        <div class="chart-title-icon" style="background:rgba(239,68,68,0.15);color:#f87171;">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        High-Spend Areas
+                    </div>
+                    <div class="chart-card-subtitle">Categories above ₹10,000 threshold</div>
+                </div>
+
+                {% if dashboard_data.overspending_areas and dashboard_data.overspending_areas|length > 0 %}
+                    {% for cat, amt in dashboard_data.overspending_areas.items() %}
+                    <div class="overspend-item">
+                        <div class="overspend-cat">
+                            <div class="overspend-dot"></div>
+                            {{ cat }}
+                        </div>
+                        <div class="overspend-amt">₹{{ "{:,.0f}".format(amt) }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="d-flex flex-column align-items-center justify-content-center py-4 text-center">
+                        <div style="width:56px;height:56px;border-radius:18px;background:rgba(16,185,129,0.15);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1rem;">
+                            ✅
+                        </div>
+                        <p class="text-dim small mb-0">No high-spend categories detected. Your spending is well-distributed!</p>
+                    </div>
+                {% endif %}
+
+                <!-- Budget Progress -->
+                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span style="font-size:0.75rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.05em;">Monthly Budget</span>
+                        <span style="font-size:0.75rem;color:var(--text-dim);">₹{{ "{:,.0f}".format(dashboard_data.budget.spent) }} / ₹{{ "{:,.0f}".format(dashboard_data.budget.limit) }}</span>
+                    </div>
+                    <div style="height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+                        {% set pct = [(dashboard_data.budget.spent / dashboard_data.budget.limit * 100), 100]|min %}
+                        <div style="height:100%;width:{{ pct }}%;border-radius:4px;background:{% if pct > 90 %}linear-gradient(90deg,#f59e0b,#ef4444){% elif pct > 70 %}linear-gradient(90deg,#3b82f6,#f59e0b){% else %}linear-gradient(90deg,#10b981,#3b82f6){% endif %};transition:width 1s ease;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-1">
+                        <span style="font-size:0.7rem;color:var(--text-dim);">{{ dashboard_data.budget.days_remaining }} days left</span>
+                        <span style="font-size:0.7rem;color:{% if pct > 90 %}#f87171{% elif pct > 70 %}#fbbf24{% else %}#34d399{% endif %};">{{ "%.1f"|format(pct) }}% used</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Footer -->
+    <div class="summary-footer reveal" style="animation-delay:0.5s; margin-top: 2rem;">
+        <div>
+            <h4 class="outfit fw-800 mb-1">Genome <span class="grad-blue">Summary</span></h4>
+            <p class="text-dim mb-0">
+                Total volume analyzed: <strong class="text-light">₹{{ "{:,.0f}".format(dashboard_data.total_spent) }}</strong>
+                across <strong class="text-light">{{ dashboard_data.transaction_count }}</strong> data points in
+                <strong class="text-light">{{ dashboard_data.n_clusters }}</strong> behavioral cluster{{ 's' if dashboard_data.n_clusters != 1 else '' }}.
+            </p>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="summary-footer-badge">{{ dashboard_data.financial_category }} Profile</span>
+            <a href="{{ url_for('recommendation.financial_analytics') }}" class="btn btn-outline-light rounded-pill px-4 py-2 outfit fw-700" style="font-size:0.85rem;">
+                <i class="fa-solid fa-upload me-2"></i> New Analysis
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function() {
+    const data = {{ dashboard_data | tojson | safe }};
+    const commonStyle = { color: '#94a3b8', font: { family: 'Outfit', size: 11 } };
+    const clusterColors = data.cluster_colors || ['#f43f5e','#8b5cf6','#10b981','#3b82f6','#f59e0b','#64748b'];
+    const clusterDetails = data.cluster_details || {};
+
+    // ── PCA Scatter Plot ──
+    const pcaElem = document.getElementById('csvClusterChart');
+    if (pcaElem && data.pca_points && data.pca_points.length > 0) {
+        const byCluster = {};
+        data.pca_points.forEach(p => {
+            const c = p.cluster;
+            if (!byCluster[c]) byCluster[c] = [];
+            byCluster[c].push({ x: p.x, y: p.y, label: p.label || '' });
+        });
+        const datasets = Object.keys(byCluster)
+            .sort((a,b) => Number(a)-Number(b))
+            .map((clusterId, idx) => {
+                const name = (clusterDetails[clusterId] && clusterDetails[clusterId].name)
+                    ? clusterDetails[clusterId].name
+                    : 'Cluster ' + (Number(clusterId)+1);
+                const color = clusterColors[Number(clusterId)] || clusterColors[idx % clusterColors.length];
+                return {
+                    label: name,
+                    data: byCluster[clusterId],
+                    backgroundColor: color + 'CC',
+                    borderColor: color,
+                    pointRadius: 12,
+                    pointHoverRadius: 16,
+                    pointBorderWidth: 2,
+                    pointBorderColor: 'rgba(255,255,255,0.5)'
+                };
+            });
+
+        new Chart(pcaElem, {
+            type: 'scatter',
+            data: { datasets },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                        ticks: { ...commonStyle, maxTicksLimit: 5 },
+                        title: { display: true, text: 'Principal Component 1', color: '#64748b', font: { family: 'Outfit', size: 10 } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+                        ticks: { ...commonStyle, maxTicksLimit: 5 },
+                        title: { display: true, text: 'Principal Component 2', color: '#64748b', font: { family: 'Outfit', size: 10 } }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,23,42,0.95)',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        padding: 12,
+                        titleFont: { family: 'Outfit', weight: '800', size: 13 },
+                        bodyFont: { family: 'Inter', size: 11 },
+                        callbacks: {
+                            label: function(ctx) {
+                                const pt = ctx.raw;
+                                const lines = [];
+                                if (pt.label) lines.push('📂 ' + pt.label);
+                                lines.push('PC1: ' + pt.x.toFixed(3));
+                                lines.push('PC2: ' + pt.y.toFixed(3));
+                                return lines;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Build custom PCA legend
+        const legend = document.getElementById('pcaLegend');
+        if (legend) {
+            datasets.forEach((ds, i) => {
+                const item = document.createElement('div');
+                item.className = 'pca-legend-item';
+                item.innerHTML = `<div class="pca-legend-dot" style="background:${clusterColors[i]};"></div><span>${ds.label}</span>`;
+                legend.appendChild(item);
+            });
+        }
+    }
+
+    // ── Category Donut Chart ──
+    const catLabels = Object.keys(data.category_distribution || {});
+    const catValues = Object.values(data.category_distribution || {});
+    const catPalette = ['#f43f5e','#8b5cf6','#10b981','#3b82f6','#f59e0b','#64748b','#ec4899','#14b8a6','#a855f7','#eab308','#06b6d4','#84cc16'];
+
+    if (document.getElementById('csvCategoryChart') && catLabels.length > 0) {
+        const catColors = catLabels.map((_, i) => catPalette[i % catPalette.length]);
+        new Chart(document.getElementById('csvCategoryChart'), {
+            type: 'doughnut',
+            data: {
+                labels: catLabels,
+                datasets: [{
+                    data: catValues,
+                    backgroundColor: catColors,
+                    borderColor: 'rgba(15,23,42,0.6)',
+                    borderWidth: 3,
+                    hoverOffset: 18
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '68%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(15,23,42,0.95)',
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        padding: 12,
+                        titleFont: { family: 'Outfit', weight: '800', size: 13 },
+                        bodyFont: { family: 'Inter', size: 11 },
+                        callbacks: {
+                            label: (ctx) => {
+                                const pct = ((ctx.raw / data.total_spent) * 100).toFixed(1);
+                                return `  ₹${ctx.raw.toLocaleString('en-IN')}  (${pct}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Build custom Donut legend
+        const legend = document.getElementById('donutLegend');
+        if (legend) {
+            catLabels.forEach((lbl, i) => {
+                const item = document.createElement('div');
+                item.className = 'donut-legend-item';
+                const pct = ((catValues[i] / data.total_spent) * 100).toFixed(1);
+                item.innerHTML = `<div class="donut-legend-dot" style="background:${catColors[i]};"></div><span>${lbl} (${pct}%)</span>`;
+                legend.appendChild(item);
+            });
+        }
+    }
+
+    // ── Animate progress fills after page load ──
+    document.querySelectorAll('.ccp-progress-fill, .ccp-freq-fill').forEach(el => {
+        const targetWidth = el.style.width;
+        el.style.width = '0%';
+        setTimeout(() => { el.style.width = targetWidth; }, 300);
+    });
+
+})();
+</script>
+
+<style>
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+</style>
+{% endblock %}

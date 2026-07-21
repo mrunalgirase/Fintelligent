@@ -51,7 +51,7 @@
         <i class="fa-solid fa-calculator" style="color: var(--primary);"></i> Income Tax Calculator
     </h3>
 
-    <form method="POST" action="/tax">
+    <form method="POST" action="/tax" id="taxCalcForm">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Annual
             Income</label>
@@ -59,7 +59,7 @@
             <div
                 style="background: rgba(255,255,255,0.05); padding: 0 1rem; display: flex; align-items: center; border: 1px solid #334155; border-right: none; border-radius: 12px 0 0 12px; color: var(--text-muted);">
                 ₹</div>
-            <input type="number" id="income" class="input-ui" required style="border-radius: 0 12px 12px 0;"
+            <input type="number" id="income" name="income" class="input-ui" required style="border-radius: 0 12px 12px 0;"
                 placeholder="Enter your total annual income">
         </div>
 

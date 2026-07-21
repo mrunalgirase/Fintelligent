@@ -1,0 +1,971 @@
+{% extends 'base.html' %}
+{% block title %}About Us – The Team Behind Fintelligent{% endblock %}
+
+{% block content %}
+<style>
+    html { scroll-behavior: smooth; }
+
+    :root {
+        --about-bg: #020617;
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --glass-bg: rgba(30, 41, 59, 0.5);
+        --brand-blue: #2563eb;
+        --brand-indigo: #4f46e5;
+        --brand-emerald: #10b981;
+        --brand-violet: #8b5cf6;
+        --brand-amber: #f59e0b;
+    }
+
+    .about-wrapper {
+        margin: -2.5rem -1.5rem;
+        overflow-x: hidden;
+    }
+
+    /* ─── Hero ─────────────────────────────────────────────────── */
+    .about-hero {
+        position: relative;
+        padding: 9rem 2rem 7rem;
+        background:
+            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(37, 99, 235, 0.18), transparent),
+            radial-gradient(ellipse 60% 40% at 90% 80%, rgba(139, 92, 246, 0.12), transparent),
+            #020617;
+        text-align: center;
+        border-bottom: 1px solid var(--glass-border);
+        overflow: hidden;
+    }
+
+    .about-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232563eb' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        pointer-events: none;
+    }
+
+    .hero-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1.25rem;
+        background: rgba(37, 99, 235, 0.1);
+        border: 1px solid rgba(37, 99, 235, 0.25);
+        border-radius: 99px;
+        color: #60a5fa;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(8px);
+        animation: pillFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes pillFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    .about-hero h1 {
+        font-size: clamp(2.8rem, 7vw, 5rem);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -0.04em;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #fff 30%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .about-hero .hero-sub {
+        font-size: 1.2rem;
+        color: #94a3b8;
+        max-width: 680px;
+        margin: 0 auto 3rem;
+        line-height: 1.7;
+    }
+
+    /* Floating orbs */
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        pointer-events: none;
+        animation: orbDrift 8s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 400px; height: 400px; background: rgba(37,99,235,0.07); top: -100px; left: -100px; }
+    .orb-2 { width: 300px; height: 300px; background: rgba(139,92,246,0.07); bottom: 0; right: -80px; animation-delay: -4s; }
+    @keyframes orbDrift { from { transform: translate(0,0); } to { transform: translate(30px, 20px); } }
+
+    /* ─── Mission Strip ──────────────────────────────────────────── */
+    .mission-strip {
+        background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(139,92,246,0.08));
+        border-top: 1px solid rgba(37,99,235,0.15);
+        border-bottom: 1px solid rgba(139,92,246,0.15);
+        padding: 5rem 2rem;
+    }
+
+    .mission-inner {
+        max-width: 900px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .mission-quote {
+        font-family: 'Poppins', sans-serif;
+        font-size: clamp(1.3rem, 2.5vw, 2rem);
+        font-weight: 600;
+        line-height: 1.5;
+        color: #e2e8f0;
+        position: relative;
+        padding: 0 2rem;
+    }
+
+    .mission-quote::before,
+    .mission-quote::after {
+        content: '"';
+        position: absolute;
+        font-size: 5rem;
+        color: var(--brand-blue);
+        opacity: 0.2;
+        font-family: Georgia, serif;
+        line-height: 1;
+    }
+
+    .mission-quote::before { top: -1.5rem; left: 0; }
+    .mission-quote::after { content: '"'; bottom: -3rem; right: 0; }
+
+    /* ─── Stats Row ─────────────────────────────────────────────── */
+    .stats-section {
+        padding: 6rem 2rem;
+        background: #020617;
+    }
+
+    .stats-grid {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+
+    .stat-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        backdrop-filter: blur(12px);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--card-accent, var(--brand-blue));
+        border-radius: 20px 20px 0 0;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(37, 99, 235, 0.3);
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+    }
+
+    .stat-number {
+        font-family: 'Outfit', sans-serif;
+        font-size: 3rem;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin-bottom: 0.5rem;
+        background: var(--card-gradient, linear-gradient(135deg, #3b82f6, #2563eb));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label { color: #94a3b8; font-size: 0.9rem; font-weight: 500; }
+
+    /* ─── Section Header ─────────────────────────────────────────── */
+    .section-tag {
+        display: block;
+        color: var(--brand-blue);
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        font-size: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin-bottom: 1.5rem;
+    }
+
+    /* ─── Team Section ───────────────────────────────────────────── */
+    .team-section {
+        padding: 8rem 2rem;
+        background: #0f172a;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .team-card {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+        cursor: default;
+    }
+
+    .team-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 0%, var(--card-glow, rgba(37,99,235,0.1)), transparent 70%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+
+    .team-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        border-color: var(--card-border, rgba(37,99,235,0.4));
+        box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6), 0 0 40px var(--card-shadow, rgba(37,99,235,0.1));
+    }
+
+    .team-card:hover::after { opacity: 1; }
+
+    .member-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        border: 3px solid var(--card-border, rgba(37,99,235,0.4));
+        position: relative;
+        z-index: 1;
+        transition: all 0.4s ease;
+        background: var(--card-avatar-bg, rgba(37,99,235,0.1));
+    }
+
+    .team-card:hover .member-avatar {
+        transform: scale(1.1);
+        box-shadow: 0 0 30px var(--card-shadow, rgba(37,99,235,0.3));
+    }
+
+    .member-name {
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.4rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .member-role {
+        font-size: 0.875rem;
+        color: var(--card-accent-color, #60a5fa);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .member-desc {
+        font-size: 0.875rem;
+        color: #64748b;
+        line-height: 1.6;
+        position: relative;
+        z-index: 1;
+    }
+
+    .member-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 1.25rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .tag {
+        padding: 0.25rem 0.75rem;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: rgba(37, 99, 235, 0.1);
+        color: #60a5fa;
+        border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+
+    /* ─── Achievements ───────────────────────────────────────────── */
+    .achievements-section {
+        padding: 8rem 2rem;
+        background: var(--about-bg);
+    }
+
+    .achievements-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 4rem;
+    }
+
+    .achievement-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        padding: 2rem;
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+        transition: all 0.3s ease;
+    }
+
+    .achievement-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(16, 185, 129, 0.3);
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
+    }
+
+    .achievement-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--brand-emerald);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .achievement-card:hover .achievement-icon {
+        background: rgba(16, 185, 129, 0.2);
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .achievement-text h4 {
+        color: white;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+    }
+
+    .achievement-text p {
+        color: #64748b;
+        font-size: 0.85rem;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    /* ─── Philosophy ─────────────────────────────────────────────── */
+    .philosophy-section {
+        padding: 8rem 2rem;
+        background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .philosophy-section::before {
+        content: '';
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px; height: 800px;
+        background: radial-gradient(circle, rgba(139,92,246,0.06), transparent 70%);
+        pointer-events: none;
+    }
+
+    .philosophy-inner {
+        max-width: 900px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .philosophy-icon {
+        font-size: 4rem;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, var(--brand-blue), var(--brand-violet));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: brainPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes brainPulse {
+        0%, 100% { filter: drop-shadow(0 0 10px rgba(37,99,235,0.3)); transform: scale(1); }
+        50% { filter: drop-shadow(0 0 25px rgba(139,92,246,0.5)); transform: scale(1.05); }
+    }
+
+    .philosophy-quote {
+        font-size: clamp(1.2rem, 2vw, 1.6rem);
+        font-weight: 600;
+        font-style: italic;
+        color: #e2e8f0;
+        line-height: 1.6;
+        margin-bottom: 3rem;
+    }
+
+    .value-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .value-chip {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        border: 1px solid var(--glass-border);
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        color: #cbd5e1;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .value-chip:hover {
+        border-color: var(--brand-blue);
+        color: white;
+        transform: translateY(-3px);
+        background: rgba(37,99,235,0.1);
+    }
+
+    .value-chip i { color: var(--brand-blue); }
+
+    /* ─── Research Strip ─────────────────────────────────────────── */
+    .research-strip {
+        padding: 6rem 2rem;
+        background: rgba(37, 99, 235, 0.04);
+        border-top: 1px solid rgba(37, 99, 235, 0.1);
+        border-bottom: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .research-inner {
+        max-width: 900px;
+        margin: 0 auto;
+        display: flex;
+        gap: 4rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .research-text { flex: 1; min-width: 280px; }
+    .research-text .section-tag { color: var(--brand-amber); }
+
+    .research-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+        background: rgba(245, 158, 11, 0.05);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 20px;
+        flex-shrink: 0;
+        max-width: 320px;
+        transition: all 0.3s ease;
+    }
+
+    .research-badge:hover {
+        background: rgba(245, 158, 11, 0.1);
+        transform: scale(1.02);
+    }
+
+    .research-badge i {
+        font-size: 2.5rem;
+        color: var(--brand-amber);
+    }
+
+    .research-badge-text strong {
+        display: block;
+        color: white;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .research-badge-text span {
+        color: #94a3b8;
+        font-size: 0.8rem;
+    }
+
+    /* ─── CTA ────────────────────────────────────────────────────── */
+    .about-cta {
+        padding: 10rem 2rem;
+        background: #020617;
+        text-align: center;
+        border-top: 1px solid var(--glass-border);
+    }
+
+    .about-cta h2 {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 800;
+        letter-spacing: -0.04em;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 99px;
+        font-weight: 700;
+        font-size: 1.125rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+        text-decoration: none;
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.5);
+        color: white;
+    }
+
+    .btn-outline {
+        padding: 1rem 2.5rem;
+        border-radius: 99px;
+        font-weight: 700;
+        font-size: 1.125rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255,255,255,0.15);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-outline:hover {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.3);
+        transform: translateY(-3px);
+        color: white;
+    }
+
+    /* ─── Scroll Reveal ──────────────────────────────────────────── */
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+        .about-hero { padding: 6rem 1.5rem 5rem; }
+        .research-inner { flex-direction: column; gap: 2rem; }
+        .research-badge { max-width: 100%; }
+        .value-chips { gap: 0.75rem; }
+    }
+</style>
+
+<div class="about-wrapper">
+
+    <!-- ═══════════════ HERO ═══════════════ -->
+    <section class="about-hero">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="hero-pill">
+            <i class="fa-solid fa-users"></i> Meet the Builders
+        </div>
+        <h1>The Minds Behind<br>Fintelligent</h1>
+        <p class="hero-sub">
+            A team of passionate innovators, researchers, and AI enthusiasts dedicated to 
+            transforming financial literacy through the power of technology.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="#team" class="btn-gradient">
+                <i class="fa-solid fa-arrow-down"></i> Meet the Team
+            </a>
+            <a href="#achievements" class="btn-outline">
+                Our Achievements
+            </a>
+        </div>
+    </section>
+
+    <!-- ═══════════════ MISSION STRIP ═══════════════ -->
+    <section class="mission-strip">
+        <div class="mission-inner reveal">
+            <p class="mission-quote">
+                We believe financial intelligence should be accessible, engaging, and personalized for everyone.
+                By combining AI, behavioral science, and gamified learning, we aim to empower the next generation
+                to make smarter financial decisions.
+            </p>
+            <p style="margin-top: 3.5rem; color: #64748b; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;">
+                — The Fintelligent Team Philosophy
+            </p>
+        </div>
+    </section>
+
+    <!-- ═══════════════ IMPACT STATS ═══════════════ -->
+    <section class="stats-section">
+        <div style="max-width: 1100px; margin: 0 auto; text-align: center; margin-bottom: 4rem;" class="reveal">
+            <span class="section-tag">Impact in Numbers</span>
+            <h2 class="section-title">What We've Built Together</h2>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card reveal" style="--card-accent: var(--brand-blue); --card-gradient: linear-gradient(135deg, #3b82f6, #2563eb);">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Core Team Members</div>
+            </div>
+            <div class="stat-card reveal" style="--card-accent: var(--brand-emerald); --card-gradient: linear-gradient(135deg, #34d399, #10b981);">
+                <div class="stat-number">7+</div>
+                <div class="stat-label">Milestones & Recognitions</div>
+            </div>
+            <div class="stat-card reveal" style="--card-accent: var(--brand-violet); --card-gradient: linear-gradient(135deg, #a78bfa, #8b5cf6);">
+                <div class="stat-number">6+</div>
+                <div class="stat-label">Domains of Expertise</div>
+            </div>
+            <div class="stat-card reveal" style="--card-accent: var(--brand-amber); --card-gradient: linear-gradient(135deg, #fbbf24, #f59e0b);">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">Drive to Innovate</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ FOUNDING TEAM ═══════════════ -->
+    <section style="padding: 6rem 2rem; background: #020617; border-top: 1px solid var(--glass-border);">
+        <div style="max-width: 900px; margin: 0 auto; text-align: center;" class="reveal">
+            <span class="section-tag">Founding Team</span>
+            <h2 class="section-title">Built by Innovators & Researchers</h2>
+            <p style="color: #94a3b8; font-size: 1.1rem; line-height: 1.8; margin: 0;">
+                Fintelligent was developed by a passionate team of innovators, researchers, and AI enthusiasts
+                dedicated to transforming financial literacy through technology. Together, we combine expertise in
+                Artificial Intelligence, Machine Learning, Data Analytics, Software Development, Financial Technology,
+                and Research Innovation to create impactful solutions that address real-world financial challenges
+                faced by students.
+            </p>
+        </div>
+    </section>
+
+    <!-- ═══════════════ MEET THE TEAM ═══════════════ -->
+    <section class="team-section" id="team">
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center; margin-bottom: 5rem;" class="reveal">
+            <span class="section-tag">Meet the Team</span>
+            <h2 class="section-title">The People Who Built This</h2>
+            <p style="color: #64748b; max-width: 600px; margin: 0 auto; font-size: 1rem; line-height: 1.7;">
+                United by innovation, driven by research, and committed to improving financial literacy through Artificial Intelligence.
+            </p>
+        </div>
+        <div class="team-grid">
+
+            <!-- Mrunal Girase -->
+            <div class="team-card reveal"
+                 style="--card-glow: rgba(37,99,235,0.12); --card-border: rgba(37,99,235,0.4); --card-shadow: rgba(37,99,235,0.15); --card-avatar-bg: rgba(37,99,235,0.1); --card-accent-color: #60a5fa;">
+                <div class="member-avatar">👨‍💻</div>
+                <div class="member-name">Mrunal Girase</div>
+                <div class="member-role">Project Lead · AI & Data Science Researcher</div>
+                <div class="member-desc">
+                    Founder driving product strategy, innovation, and the vision behind Fintelligent.
+                    Leads AI research and shapes the platform's financial intelligence architecture.
+                </div>
+                <div class="member-tags">
+                    <span class="tag">Project Lead</span>
+                    <span class="tag">AI Research</span>
+                    <span class="tag">Product Strategy</span>
+                </div>
+            </div>
+
+            <!-- Rughved Gulve -->
+            <div class="team-card reveal"
+                 style="--card-glow: rgba(16,185,129,0.12); --card-border: rgba(16,185,129,0.4); --card-shadow: rgba(16,185,129,0.15); --card-avatar-bg: rgba(16,185,129,0.1); --card-accent-color: #34d399;">
+                <div class="member-avatar" style="border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.1);">📊</div>
+                <div class="member-name">Rughved Gulve</div>
+                <div class="member-role" style="color: #34d399;">ML & Analytics Development</div>
+                <div class="member-desc">
+                    Builds the intelligence layer of Fintelligent — designing machine learning models
+                    and analytics pipelines that power smart, data-driven financial insights.
+                </div>
+                <div class="member-tags">
+                    <span class="tag" style="background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2);">Machine Learning</span>
+                    <span class="tag" style="background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2);">Analytics</span>
+                    <span class="tag" style="background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2);">Data Science</span>
+                </div>
+            </div>
+
+            <!-- Shashikant Khade -->
+            <div class="team-card reveal"
+                 style="--card-glow: rgba(245,158,11,0.12); --card-border: rgba(245,158,11,0.4); --card-shadow: rgba(245,158,11,0.15); --card-avatar-bg: rgba(245,158,11,0.1); --card-accent-color: #fbbf24;">
+                <div class="member-avatar" style="border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.1);">⚙️</div>
+                <div class="member-name">Shashikant Khade</div>
+                <div class="member-role" style="color: #fbbf24;">System Integration</div>
+                <div class="member-desc">
+                    The backbone of Fintelligent's infrastructure — ensuring seamless system
+                    integration, reliability, and robust backend performance across the platform.
+                </div>
+                <div class="member-tags">
+                    <span class="tag" style="background: rgba(245,158,11,0.1); color: #fbbf24; border-color: rgba(245,158,11,0.2);">Integration</span>
+                    <span class="tag" style="background: rgba(245,158,11,0.1); color: #fbbf24; border-color: rgba(245,158,11,0.2);">Systems</span>
+                    <span class="tag" style="background: rgba(245,158,11,0.1); color: #fbbf24; border-color: rgba(245,158,11,0.2);">Backend</span>
+                </div>
+            </div>
+
+            <!-- Sarthak More -->
+            <div class="team-card reveal"
+                 style="--card-glow: rgba(139,92,246,0.12); --card-border: rgba(139,92,246,0.4); --card-shadow: rgba(139,92,246,0.15); --card-avatar-bg: rgba(139,92,246,0.1); --card-accent-color: #a78bfa;">
+                <div class="member-avatar" style="border-color: rgba(139,92,246,0.4); background: rgba(139,92,246,0.1);">🎨</div>
+                <div class="member-name">Sarthak More</div>
+                <div class="member-role" style="color: #a78bfa;">Full Stack Development & UX Design</div>
+                <div class="member-desc">
+                    Crafts the interfaces and experiences of Fintelligent — combining full-stack
+                    development with user-centered design to build intuitive, beautiful products.
+                </div>
+                <div class="member-tags">
+                    <span class="tag" style="background: rgba(139,92,246,0.1); color: #a78bfa; border-color: rgba(139,92,246,0.2);">Full Stack</span>
+                    <span class="tag" style="background: rgba(139,92,246,0.1); color: #a78bfa; border-color: rgba(139,92,246,0.2);">UX Design</span>
+                    <span class="tag" style="background: rgba(139,92,246,0.1); color: #a78bfa; border-color: rgba(139,92,246,0.2);">Frontend</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════════════ EXPERTISE ROW ═══════════════ -->
+    <section style="padding: 5rem 2rem; background: #020617; border-top: 1px solid var(--glass-border);">
+        <div style="max-width: 1100px; margin: 0 auto;">
+            <div class="reveal" style="text-align: center; margin-bottom: 3rem;">
+                <span class="section-tag">Combined Expertise</span>
+                <h2 class="section-title" style="margin-bottom: 0.5rem;">Domains We Master</h2>
+            </div>
+            <div class="reveal" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                <div class="value-chip"><i class="fa-solid fa-brain"></i> Artificial Intelligence</div>
+                <div class="value-chip"><i class="fa-solid fa-chart-network"></i> Machine Learning</div>
+                <div class="value-chip"><i class="fa-solid fa-chart-bar"></i> Data Analytics</div>
+                <div class="value-chip"><i class="fa-solid fa-code"></i> Software Development</div>
+                <div class="value-chip"><i class="fa-solid fa-coins"></i> Financial Technology</div>
+                <div class="value-chip"><i class="fa-solid fa-microscope"></i> Research Innovation</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ ACHIEVEMENTS ═══════════════ -->
+    <section class="achievements-section" id="achievements">
+        <div class="achievements-inner">
+            <div class="reveal" style="text-align: center; margin-bottom: 1rem;">
+                <span class="section-tag">Milestones</span>
+                <h2 class="section-title">What We've Accomplished</h2>
+                <p style="color: #64748b; max-width: 600px; margin: 0 auto; font-size: 1rem; line-height: 1.7;">
+                    From research halls to startup stages, here's our journey of recognition and innovation.
+                </p>
+            </div>
+            <div class="achievements-grid">
+
+                <div class="achievement-card reveal">
+                    <div class="achievement-icon"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="achievement-text">
+                        <h4>IJRASET Research Publication</h4>
+                        <p>Published research in the International Journal for Research in Applied Science & Engineering Technology</p>
+                    </div>
+                </div>
+
+                <div class="achievement-card reveal">
+                    <div class="achievement-icon"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="achievement-text">
+                        <h4>IET Expo – KK Wagh</h4>
+                        <p>Represented Fintelligent at the prestigious IET Expo held at KK Wagh institute</p>
+                    </div>
+                </div>
+
+                <div class="achievement-card reveal">
+                    <div class="achievement-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                    <div class="achievement-text">
+                        <h4>IDEATHON – Matoshri College</h4>
+                        <p>Participated in IDEATHON at Matoshri College of Engineering and Research Centre</p>
+                    </div>
+                </div>
+
+                <div class="achievement-card reveal">
+                    <div class="achievement-icon"><i class="fa-solid fa-rocket"></i></div>
+                    <div class="achievement-text">
+                        <h4>TECHGURU 2026</h4>
+                        <p>Showcased Fintelligent at TECHGURU 2026, demonstrating cutting-edge financial AI</p>
+                    </div>
+                </div>
+
+                <div class="achievement-card reveal">
+                    <div class="achievement-icon"><i class="fa-solid fa-seedling"></i></div>
+                    <div class="achievement-text">
+                        <h4>SPPU Startup Bootcamp 2026</h4>
+                        <p>Completed the SPPU Startup Bootcamp 2026, refining our entrepreneurial vision</p>
+                    </div>
+                </div>
+
+                <div class="achievement-card reveal">
+                    <div class="achievement-icon"><i class="fa-solid fa-chalkboard-user"></i></div>
+                    <div class="achievement-text">
+                        <h4>Academic & Industry Presentations</h4>
+                        <p>Presented the platform before academic experts, startup mentors, and industry professionals</p>
+                    </div>
+                </div>
+
+                <div class="achievement-card reveal">
+                    <div class="achievement-icon"><i class="fa-solid fa-certificate"></i></div>
+                    <div class="achievement-text">
+                        <h4>Innovation Certificates</h4>
+                        <p>Received multiple participation and achievement certificates recognizing innovation and research contributions</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ RESEARCH STRIP ═══════════════ -->
+    <section class="research-strip">
+        <div class="research-inner">
+            <div class="research-text reveal">
+                <span class="section-tag">Research-Driven</span>
+                <h2 class="section-title" style="font-size: 2rem; margin-bottom: 1rem;">Built on Peer-Reviewed Science</h2>
+                <p style="color: #94a3b8; line-height: 1.7; margin: 0;">
+                    Fintelligent is not just a product — it's the result of rigorous academic research 
+                    combining AI, behavioral finance, and educational technology to create real-world impact.
+                </p>
+            </div>
+            <div class="research-badge reveal">
+                <i class="fa-solid fa-file-contract"></i>
+                <div class="research-badge-text">
+                    <strong>Published Research</strong>
+                    <span>IJRASET – Applied Science & Engineering Technology</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ PHILOSOPHY ═══════════════ -->
+    <section class="philosophy-section">
+        <div class="philosophy-inner">
+            <div class="philosophy-icon reveal">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+            <h2 class="section-title reveal" style="margin-bottom: 1.5rem;">Our Philosophy</h2>
+            <p class="philosophy-quote reveal">
+                "We believe financial intelligence should be accessible, engaging, and personalized 
+                for everyone. By combining AI, behavioral science, and gamified learning, we aim to 
+                empower the next generation to make smarter financial decisions."
+            </p>
+            <div class="value-chips reveal">
+                <div class="value-chip"><i class="fa-solid fa-universal-access"></i> Accessible for All</div>
+                <div class="value-chip"><i class="fa-solid fa-gamepad"></i> Gamified Learning</div>
+                <div class="value-chip"><i class="fa-solid fa-user-gear"></i> Personalization</div>
+                <div class="value-chip"><i class="fa-solid fa-flask"></i> Behavioral Science</div>
+                <div class="value-chip"><i class="fa-solid fa-graduation-cap"></i> Education First</div>
+                <div class="value-chip"><i class="fa-solid fa-robot"></i> AI-Powered</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ CTA ═══════════════ -->
+    <section class="about-cta">
+        <div style="max-width: 700px; margin: 0 auto;" class="reveal">
+            <h2>
+                Ready to experience<br>
+                <span style="background: linear-gradient(135deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
+                    financial intelligence?
+                </span>
+            </h2>
+            <p style="font-size: 1.15rem; color: #64748b; margin-bottom: 3rem; line-height: 1.7;">
+                Join thousands of students and young professionals already transforming their 
+                financial future with Fintelligent.
+            </p>
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/register" class="btn-gradient" id="about-cta-register">
+                    Get Started Free <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="/contact" class="btn-outline" id="about-cta-contact">
+                    <i class="fa-solid fa-envelope"></i> Contact Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    // Intersection Observer for scroll reveals
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                // Staggered delay based on sibling index
+                const siblings = Array.from(entry.target.parentElement.querySelectorAll('.reveal'));
+                const idx = siblings.indexOf(entry.target);
+                entry.target.style.transitionDelay = `${Math.min(idx * 0.07, 0.4)}s`;
+                entry.target.classList.add('visible');
+                io.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.12 });
+
+    revealEls.forEach(el => io.observe(el));
+
+    // Animated stat counters
+    const statNumbers = document.querySelectorAll('.stat-number');
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const text = el.textContent.trim();
+                // Only animate pure numbers
+                if (/^\d+\+?$/.test(text.replace(/,/g, ''))) {
+                    const num = parseInt(text);
+                    let current = 0;
+                    const step = Math.ceil(num / 40);
+                    const timer = setInterval(() => {
+                        current += step;
+                        if (current >= num) {
+                            current = num;
+                            clearInterval(timer);
+                        }
+                        el.textContent = current + (text.includes('+') ? '+' : '');
+                    }, 30);
+                }
+                counterObserver.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    statNumbers.forEach(el => counterObserver.observe(el));
+</script>
+{% endblock %}

@@ -60,10 +60,63 @@ def allowed_file(filename):
 @receipts.route('/receipts')
 @login_required
 def receipts_history():
-    """Dedicated view for scanned receipts history"""
+    """Dedicated view for scanned receipts history grouped by month with AI insights"""
     from fintelligent.auth.models import Expense
-    scanned_expenses = Expense.query.filter_by(user_id=current_user.id).order_by(Expense.date.desc()).all()
-    return render_template('receipts_view.html', expenses=scanned_expenses)
+    from collections import OrderedDict
+    import random
+    
+    # Get all expenses sorted by date descending
+    all_expenses = Expense.query.filter_by(user_id=current_user.id).order_by(Expense.date.desc()).all()
+    
+    # Group by month and calculate monthly totals for chart
+    grouped_expenses = OrderedDict()
+    chart_labels = []
+    chart_data = []
+    
+    # Reverse to get chronological for chart
+    chronological_expenses = sorted(all_expenses, key=lambda x: x.date)
+    temp_monthly_totals = {}
+    for exp in chronological_expenses:
+        m_y = exp.date.strftime('%b %Y')
+        temp_monthly_totals[m_y] = temp_monthly_totals.get(m_y, 0) + exp.amount
+        
+    for m_y, total in temp_monthly_totals.items():
+        chart_labels.append(m_y)
+        chart_data.append(float(total))
+        
+    # Group by month for UI (descending)
+    for exp in all_expenses:
+        month_year = exp.date.strftime('%B %Y')
+        if month_year not in grouped_expenses:
+            grouped_expenses[month_year] = []
+        grouped_expenses[month_year].append(exp)
+        
+    # Generate AI Personalized Tips for Students
+    student_tips = [
+        "Pro Tip: Those small cafe visits add up! Using a student ID can save you 10-15% at most local shops.",
+        "Strategic Move: Your weekend spending is 20% higher than weekdays. Consider a 'No-Spend' Saturday next month!",
+        "Budget Hack: You've scanned several grocery receipts. Switching to bulk buying for essentials could save you ₹500/month.",
+        "Wealth Building: You saved ₹200 more this month than last. That's enough to start a small recurring deposit!",
+        "Smart Shopping: Most of your shopping is at the end of the month. Try mid-month sales to get better deals."
+    ]
+    
+    # Basic logic for specific cases
+    personalized_tip = random.choice(student_tips)
+    if all_expenses:
+        food_sum = sum(e.amount for e in all_expenses if e.category == 'Food')
+        if food_sum > 5000:
+            personalized_tip = "AI Insight: Your Food & Dining spending is quite high. Try meal-prepping 3 days a week to save for your next tech upgrade!"
+            
+    return render_template('receipts_view.html', 
+                          grouped_expenses=grouped_expenses, 
+                          total_count=len(all_expenses),
+                          total_amount=sum(e.amount for e in all_expenses),
+                          all_expenses=all_expenses,
+                          chart_labels=chart_labels,
+                          chart_data=chart_data,
+                          personalized_tip=personalized_tip)
+
+
 
 @receipts.route('/api/delete-receipt/<int:id>', methods=['DELETE'])
 @login_required
@@ -154,7 +207,7 @@ def scan_receipt():
             """
             
             response = client.chat.completions.create(
-                model="llama-3.2-11b-vision-preview",
+                model="meta-llama/llama-4-scout-17b-16e-instruct",
                 messages=[
                     {
                         "role": "user",

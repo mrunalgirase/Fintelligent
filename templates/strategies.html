@@ -33,6 +33,7 @@
     </h3>
 
     <form method="post" action="/strategies">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <label style="display: block; color: var(--text-muted); margin-bottom: 0.5rem; font-size: 0.9rem;">Annual
             Income</label>
         <div style="display: flex; margin-bottom: 1.5rem;">

@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% block title %}Neural Vision - Statement Analysis{% endblock %}
+
+{% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+
+    :root {
+        --glass-bg: rgba(15, 23, 42, 0.6);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --accent-purple: #8b5cf6;
+        --text-dim: #94a3b8;
+    }
+
+    body { font-family: 'Inter', sans-serif; background-color: #020617; }
+    .outfit { font-family: 'Outfit', sans-serif; }
+
+    .analytics-container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+    /* Bento Grid */
+    .bento-card {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 2rem;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .bento-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border-radius: inherit;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        z-index: 1;
+    }
+
+    .bento-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+        background: rgba(15, 23, 42, 0.8);
+    }
+
+    .glass-tab {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.05);
+        border-radius: 999px;
+        color: var(--text-dim);
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    .glass-tab.active {
+        background: rgba(139, 92, 246, 0.15);
+        border-color: rgba(139, 92, 246, 0.3);
+        color: #fff;
+    }
+    
+    .dna-card {
+        padding: 1.25rem;
+        border-radius: 16px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--glass-border);
+        transition: 0.3s;
+    }
+    .dna-card:hover {
+        background: rgba(255,255,255,0.04);
+        border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .ai-tip-card {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        border-radius: 16px;
+        background: rgba(0,0,0,0.3);
+        border-left: 4px solid var(--accent-purple);
+        margin-bottom: 1rem;
+    }
+    
+    .reveal { animation: reveal 0.8s cubic-bezier(0, 0, 0.2, 1) forwards; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="analytics-container">
+    <div class="d-flex justify-content-between align-items-center mb-5 reveal">
+        <div>
+            <a href="{{ url_for('recommendation.financial_analytics') }}" class="text-dim text-decoration-none d-flex align-items-center gap-2 mb-3 outfit fw-600 transition" style="font-size: 0.9rem;">
+                <i class="fa-solid fa-arrow-left"></i> Back to Analytics
+            </a>
+            <h1 class="display-4 outfit fw-800 text-white mb-2">Statement <span style="background: linear-gradient(135deg, #8b5cf6, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Synthesized</span></h1>
+            <p class="text-dim fs-5 mb-0">High-confidence neural extraction from uploaded document.</p>
+        </div>
+        <div class="text-end d-none d-md-block">
+            <div class="badge px-4 py-2" style="background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.3); color: #c084fc; border-radius: 12px; font-size: 0.85rem;">
+                <i class="fa-solid fa-bolt me-2"></i> Llama Vision Active
+            </div>
+            <div class="mt-2 text-dim xsmall">PROCESSED AT {{ now.strftime('%H:%M:%S UTC') }}</div>
+        </div>
+    </div>
+
+    <!-- Core Metrics Row -->
+    <div class="row g-4 mb-4 reveal" style="animation-delay: 0.1s">
+        <div class="col-lg-4">
+            <div class="bento-card text-center d-flex flex-column justify-content-center align-items-center">
+                <span class="text-dim xsmall fw-800 d-block mb-2 text-uppercase letter-spacing-1">TOTAL SYNCED BURN</span>
+                <h1 class="display-4 fw-800 outfit text-white mb-0">₹{{ "{:,.0f}".format(statement_data.summary.total_debit) }}</h1>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="bento-card text-center d-flex flex-column justify-content-center align-items-center">
+                <span class="text-dim xsmall fw-800 d-block mb-2 text-uppercase letter-spacing-1">DETECTED TRANSACTIONS</span>
+                <h1 class="display-4 fw-800 outfit text-purple mb-0" style="color: #a78bfa;">{{ statement_data.summary.count }}</h1>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="bento-card text-center d-flex flex-column justify-content-center align-items-center">
+                <span class="text-dim xsmall fw-800 d-block mb-2 text-uppercase letter-spacing-1">AI CONFIDENCE</span>
+                <h1 class="display-4 fw-800 outfit text-emerald mb-0" style="color: #34d399;">98.4%</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Analytics Row -->
+    <div class="row g-4 mb-4 reveal" style="animation-delay: 0.2s">
+        <div class="col-lg-5">
+            <div class="bento-card">
+                <h4 class="outfit fw-800 text-white mb-4"><i class="fa-solid fa-chart-pie me-2 text-purple" style="color:#a78bfa;"></i> Genome Map</h4>
+                <div style="height: 280px; position: relative;" class="mb-4">
+                    <canvas id="bsCategoryChart"></canvas>
+                </div>
+                <button class="btn w-100 fw-700 outfit" style="background: rgba(139, 92, 246, 0.15); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 12px; padding: 0.75rem;">
+                    Sync to Strategy Module
+                </button>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="bento-card">
+                <h4 class="outfit fw-800 text-white mb-4"><i class="fa-solid fa-robot me-2 text-emerald" style="color:#34d399;"></i> AI Coaching Directives</h4>
+                
+                <div class="d-flex flex-column gap-3">
+                    {% for tip in statement_data.ai_tips %}
+                    <div class="ai-tip-card" style="border-left-color: {{ tip.color }};">
+                        <div class="tip-icon" style="width: 48px; height: 48px; border-radius: 14px; background: {{ tip.color }}22; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.25rem; color: {{ tip.color }};">
+                            <i class="fa-solid {{ tip.icon }}"></i>
+                        </div>
+                        <div>
+                            <h6 class="outfit fw-800 text-white mb-2" style="font-size: 1.1rem;">{{ tip.title }}</h6>
+                            <p class="text-dim mb-0" style="font-size: 0.95rem; line-height: 1.5;">{{ tip.text|safe }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if not statement_data.ai_tips %}
+                    <div class="text-center py-4">
+                        <i class="fa-solid fa-check-circle text-emerald mb-3" style="font-size: 2.5rem; opacity: 0.5;"></i>
+                        <h6 class="text-white outfit">No Critical Anomalies</h6>
+                        <p class="text-dim small">Your spending matrix appears balanced. Keep investing!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ledger & Transactions -->
+    <div class="bento-card reveal" style="animation-delay: 0.3s">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="outfit fw-800 text-white mb-0"><i class="fa-solid fa-list me-2"></i> Extracted Ledger</h4>
+            <div class="d-flex gap-2">
+                <button class="glass-tab active py-1 px-3">All</button>
+                <button class="glass-tab py-1 px-3">Debits</button>
+            </div>
+        </div>
+        
+        <div class="ledger-container pr-2" style="max-height: 600px; overflow-y: auto;">
+            <div class="d-flex flex-column gap-3" id="transactionsList">
+                {% for tx in statement_data.transactions %}
+                <div class="dna-card d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-3">
+                        <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; color: var(--text-dim);">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                        <div>
+                            <span class="xsmall text-dim d-block fw-600 mb-1" style="letter-spacing: 0.05em;">{{ tx.date }}</span>
+                            <h6 class="fw-700 text-white mb-0">{{ tx.description }}</h6>
+                        </div>
+                    </div>
+                    <div class="text-end d-flex align-items-center gap-4">
+                        <span class="badge py-1 px-2 outfit" style="background: rgba(139, 92, 246, 0.1); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 8px;">{{ tx.category }}</span>
+                        <span class="fw-800 fs-5 {{ 'text-success' if tx.type == 'CREDIT' else 'text-white' }}" style="min-width: 100px; text-align: right;">
+                            {{ '+' if tx.type == 'CREDIT' else '-' }} ₹{{ "{:,.0f}".format(tx.amount) if tx.amount else 0 }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const rawData = {{ statement_data.summary.categories | tojson | safe }};
+    const labels = Object.keys(rawData);
+    const dataValues = Object.values(rawData);
+    
+    // Premium color palette
+    const colors = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#6366f1', '#06b6d4'];
+    
+    const ctx = document.getElementById('bsCategoryChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: dataValues,
+                backgroundColor: colors,
+                borderWidth: 2,
+                borderColor: 'rgba(15,23,42,0.8)',
+                hoverOffset: 15,
+                borderRadius: 4
+            }]
+        },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false, 
+            cutout: '65%',
+            plugins: { 
+                legend: { 
+                    position: 'right',
+                    labels: { color: '#94a3b8', font: { family: 'Outfit', size: 11 }, usePointStyle: true, padding: 20 }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                    titleFont: { family: 'Outfit', size: 13 },
+                    bodyFont: { family: 'Inter', size: 12 },
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            return ' ₹' + context.raw.toLocaleString();
+                        }
+                    }
+                }
+            } 
+        }
+    });
+});
+</script>
+{% endblock %}

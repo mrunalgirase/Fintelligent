@@ -5,14 +5,24 @@
 <!-- Setup Dashboard Variables for CSS -->
 <style>
     :root {
-        --health-color: {
-                {
-                dashboard_data.health_score.color if (dashboard_data and dashboard_data.health_score) else 'var(--primary)'
-            }
-        }
-
-        ;
+        --health-color: {{ dashboard_data.health_score.color if (dashboard_data and dashboard_data.health_score) else 'var(--primary)' }};
     }
+    .pulsing-elite { 
+        animation: elite-pulse 2s infinite alternate; 
+    } 
+    @keyframes elite-pulse { 
+        from { filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3)); transform: scale(1); } 
+        to { filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.7)); transform: scale(1.02); } 
+    } 
+    .cluster-elite-card { 
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; 
+    } 
+    .cluster-elite-card:hover { 
+        transform: translateY(-8px) scale(1.02) !important; 
+        background: rgba(30, 41, 59, 0.7) !important; 
+        border-color: rgba(255, 255, 255, 0.15) !important; 
+    } 
+
 </style>
 
 <!-- Dashboard Data for JavaScript -->
@@ -28,15 +38,32 @@
 <div class="animate-rise" style="margin-bottom: 3rem; text-align: center; position: relative;">
     <div
         style="background: var(--primary-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">
-        <h1 style="font-size: 3rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 0.5rem;">
-            Dashboard
+        <h1 style="font-size: 3.2rem; font-weight: 900; letter-spacing: -1.5px; margin-bottom: 0.5rem; text-shadow: 0 10px 20px rgba(0,0,0,0.3);">
+            Fintelligent <span class="text-gradient pulsing-elite" style="filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4));">Elite</span> Dashboard
         </h1>
     </div>
-    <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto;">
-        Welcome to your personal financial command center. Track, analyze, and optimize your wealth.
-    </p>
+    <div style="margin-top: 0.5rem;">
+        <h2 style="color: var(--text-main); font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;">
+            <span id="time-greeting">Welcome</span>, <span style="position: relative; padding-bottom: 4px;">{{ current_user.username }}<span style="position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; background: var(--primary-gradient); border-radius: 2px; opacity: 0.7;"></span></span>
+        </h2>
+        <p style="color: var(--text-muted); font-size: 1rem; max-width: 600px; margin: 0 auto; font-weight: 500; opacity: 0.8;">
+            {% if dashboard_data and dashboard_data.has_data %}
+            Tracking {{ dashboard_data.transaction_count }} transactions · ₹{{ "{:,.0f}".format(dashboard_data.spent_this_month) }} spent this month
+            {% else %}
+            Your financial command center — scan a receipt to begin tracking.
+            {% endif %}
+        </p>
+    </div>
 
-    {% if dashboard_data and dashboard_data.health_score %}
+    <script>
+        const hour = new Date().getHours();
+        const greeting = hour < 12 ? 'Good Morning' : (hour < 17 ? 'Good Afternoon' : 'Good Evening');
+        if (document.getElementById('time-greeting')) {
+            document.getElementById('time-greeting').innerText = greeting;
+        }
+    </script>
+
+    {% if dashboard_data and dashboard_data.has_data and dashboard_data.health_score %}
     <!-- Gamified Persona Badge -->
     <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
         <div class="animate-rise"
@@ -51,7 +78,7 @@
         <div class="animate-rise" id="dashboard-streak"
             style="display: inline-flex; align-items: center; gap: 0.75rem; background: rgba(249, 115, 22, 0.1); padding: 0.5rem 1.25rem; border-radius: 50px; border: 1px solid rgba(249, 115, 22, 0.2); backdrop-filter: blur(10px);">
             <span style="font-size: 1.2rem; filter: drop-shadow(0 0 5px #f97316);">🔥</span>
-            <span style="color: #fdba74; font-weight: 800; font-size: 1.1rem;" id="streak-val">0</span>
+            <span style="color: #fdba74; font-weight: 800; font-size: 1.1rem;" id="streak-val">{{ streak or 0 }}</span>
             <span style="color: #f97316; font-weight: 600; font-size: 0.8rem; text-transform: uppercase;">Day Streak</span>
         </div>
     </div>
@@ -70,7 +97,41 @@
         </span>
     </div>
     {% endif %}
+    {% endif %}
 </div>
+
+{% if dashboard_data and not dashboard_data.has_data %}
+<div class="animate-rise card-ui glass-layer" style="margin-bottom: 2.5rem; padding: 2rem; text-align: center; border-color: rgba(59, 130, 246, 0.25);">
+    <i class="fa-solid fa-rocket" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+    <h3 style="margin-bottom: 0.5rem;">Start Your Financial Journey</h3>
+    <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto 1.5rem;">Scan a receipt, upload a bank statement, or import a CSV in Analytics to unlock AI insights, clustering, and budget tracking.</p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/receipts" class="btn-primary-ui"><i class="fa-solid fa-camera"></i> Scan Receipt</a>
+        <a href="{{ url_for('recommendation.financial_analytics') }}" class="btn-primary-ui" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);"><i class="fa-solid fa-chart-line"></i> Open Analytics</a>
+    </div>
+</div>
+{% endif %}
+
+{% if dashboard_data and dashboard_data.has_data %}
+<div class="animate-rise" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2.5rem;">
+    <div class="card-ui glass-layer" style="padding: 1.25rem; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">This Month</div>
+        <div style="font-size: 1.75rem; font-weight: 800; color: var(--text-main);">₹{{ "{:,.0f}".format(dashboard_data.spent_this_month) }}</div>
+    </div>
+    <div class="card-ui glass-layer" style="padding: 1.25rem; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Health Score</div>
+        <div style="font-size: 1.75rem; font-weight: 800; color: {{ dashboard_data.health_score.color }};">{{ dashboard_data.health_score.score }}<span style="font-size: 0.9rem; color: var(--text-muted);">/100</span></div>
+    </div>
+    <div class="card-ui glass-layer" style="padding: 1.25rem; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Transactions</div>
+        <div style="font-size: 1.75rem; font-weight: 800; color: var(--text-main);">{{ dashboard_data.transaction_count }}</div>
+    </div>
+    <div class="card-ui glass-layer" style="padding: 1.25rem; text-align: center;">
+        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Daily Burn</div>
+        <div style="font-size: 1.75rem; font-weight: 800; color: {% if dashboard_data.budget.status == 'broke_alert' %}#f87171{% else %}#34d399{% endif %};">₹{{ "{:,.0f}".format(dashboard_data.budget.burn_rate) }}</div>
+    </div>
+</div>
+{% endif %}
 
 <!-- High Priority Predictive Alert -->
 {% if dashboard_data and dashboard_data.budget.status == 'broke_alert' %}
@@ -111,12 +172,94 @@
     </div>
 </div>
 
+{% if dashboard_data.cluster_stats %}
+<!-- Section: AI Behavioral Analysis (Compact Elite View) -->
+<div class="animate-rise" style="margin-bottom: 2.5rem;">
+    <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0; letter-spacing: -0.01em;">
+                AI Behavioral <span class="text-gradient">Cohorts</span>
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin: 2px 0 0 0;">K-Means analysis of your spending magnitude and frequency.</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); padding: 0.35rem 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; color: var(--text-muted);">
+            <i class="fa-solid fa-microchip text-primary me-2"></i> {{ dashboard_data.n_clusters }} Groups Identified
+        </div>
+    </div>
+    
+    <style>
+        .cluster-row-container::-webkit-scrollbar { display: none; }
+    </style>
+    <div class="cluster-row-container" style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 1rem; overflow-x: auto; padding-bottom: 1rem; scrollbar-width: none; -ms-overflow-style: none;">
+        {% for cluster_id, stats in dashboard_data.cluster_stats.items() %}
+        {% set colors = ['#6366f1', '#10b981', '#f59e0b', '#f43f5e', '#a78bfa'] %}
+        {% set color = colors[loop.index0 % 5] %}
+        
+        <!-- Compact Persona Logic -->
+        {% set persona = "Modern Consumer" %}
+        {% if stats.avg_amount > 5000 %}{% set persona = "High-Value Planner" %}
+        {% elif stats.frequency_score > 8 %}{% set persona = "Micro-Spender" %}
+        {% elif stats.spend_ratio > 40 %}{% set persona = "Core Lifestyle" %}
+        {% endif %}
+
+        <div class="card-ui glass-layer cluster-elite-card" style="flex: 1 0 auto; min-width: 220px; max-width: 260px; padding: 1.25rem; border: 1px solid rgba(255,255,255,0.08); border-top: 4px solid {{ color }}; background: rgba(15, 23, 42, 0.6); position: relative; display: flex; flex-direction: column; gap: 1rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+            <!-- Compact Header -->
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div style="width: 28px; height: 28px; background: {{ color }}15; color: {{ color }}; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border: 1px solid {{ color }}20;">
+                        {% if persona == "High-Value Planner" %}<i class="fa-solid fa-gem"></i>
+                        {% elif persona == "Micro-Spender" %}<i class="fa-solid fa-bolt"></i>
+                        {% elif persona == "Core Lifestyle" %}<i class="fa-solid fa-house-chimney"></i>
+                        {% else %}<i class="fa-solid fa-user-astronaut"></i>{% endif %}
+                    </div>
+                    <h5 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ persona }}</h5>
+                </div>
+            </div>
+
+            <!-- Condensed Metrics (2x2) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; padding: 0.75rem; background: rgba(0,0,0,0.15); border-radius: 12px;">
+                <div>
+                    <div style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Avg Value</div>
+                    <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">₹{{ "{:,.0f}".format(stats.avg_amount) }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Total</div>
+                    <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main);">₹{{ "{:,.0f}".format(stats.total_amount) }}</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Ratio</div>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: #f59e0b;">{{ stats.spend_ratio }}%</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Freq</div>
+                    <div style="font-size: 0.85rem; font-weight: 800; color: #10b981;">{{ stats.frequency_score }}/10</div>
+                </div>
+            </div>
+
+            <!-- Condensed Categories & Merchants -->
+            <div style="display: flex; flex-direction: column; gap: 0.4rem;">
+                <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+                    {% for cat in stats.categories %}{% if loop.index <= 2 %}
+                    <span style="font-size: 0.65rem; background: {{ color }}10; color: {{ color }}; padding: 3px 8px; border-radius: 6px; font-weight: 700; border: 1px solid {{ color }}15;">{{ cat }}</span>
+                    {% endif %}{% endfor %}
+                    {% for merchant in stats.merchants %}{% if loop.index <= 1 %}
+                    <span style="font-size: 0.65rem; background: rgba(255,255,255,0.03); color: var(--text-muted); padding: 3px 8px; border-radius: 6px; font-weight: 600; border: 1px solid rgba(255,255,255,0.05);">{{ merchant }}</span>
+                    {% endif %}{% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
 <!-- Market Pulse & AI Insights Grid -->
 <div class="animate-rise"
-    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
     <!-- Market Pulse Widget -->
-    <div class="card-ui glass-layer" style="padding: 1.5rem; border-color: rgba(59, 130, 246, 0.2);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div class="card-ui glass-layer" style="padding: 1.25rem; border-color: rgba(59, 130, 246, 0.2);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
             <h3 style="margin: 0; font-size: 1rem; font-weight: 700; color: var(--text-main);">
                 <i class="fa-solid fa-earth-asia" style="color: var(--primary); margin-right: 0.5rem;"></i> Market Pulse
                 (NSE)
@@ -125,27 +268,23 @@
                 style="font-size: 0.75rem; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: 10px;">LIVE</span>
         </div>
         <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for idx in market or [] %}
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">{{ idx.name }}</span>
+                <div style="text-align: right;">
+                    <div style="font-weight: 700; color: var(--text-main);">{{ idx.price }}</div>
+                    <div style="font-size: 0.8rem; color: {% if idx.positive %}#10b981{% else %}#ef4444{% endif %};">{{ idx.change }}</div>
+                </div>
+            </div>
+            {% else %}
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="color: var(--text-muted); font-size: 0.9rem;">NIFTY 50</span>
                 <div style="text-align: right;">
-                    <div style="font-weight: 700; color: var(--text-main);">22,147.50</div>
-                    <div style="font-size: 0.8rem; color: #10b981;">+142.30 (0.65%)</div>
+                    <div style="font-weight: 700; color: var(--text-main);">—</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Market data unavailable</div>
                 </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: var(--text-muted); font-size: 0.9rem;">SENSEX</span>
-                <div style="text-align: right;">
-                    <div style="font-weight: 700; color: var(--text-main);">73,088.33</div>
-                    <div style="font-size: 0.8rem; color: #10b981;">+482.70 (0.66%)</div>
-                </div>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: var(--text-muted); font-size: 0.9rem;">BANK NIFTY</span>
-                <div style="text-align: right;">
-                    <div style="font-weight: 700; color: var(--text-main);">46,919.80</div>
-                    <div style="font-size: 0.8rem; color: #ef4444;">-85.40 (0.18%)</div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 
@@ -206,91 +345,117 @@
 
 <!-- Section: Daily Quests -->
 <div class="animate-rise" style="margin-bottom: 3rem;">
-    <div style="margin-bottom: 1.5rem;">
-        <h2
-            style="font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.75rem;">
-            <i class="fa-solid fa-trophy" style="color: #f59e0b;"></i>
-            Daily Quests
-        </h2>
-        <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">
-            <i class="fa-solid fa-circle-info" style="font-size: 0.85rem; margin-right: 0.25rem;"></i>
-            Complete these tasks to earn XP and improve your financial habits
-        </p>
-    </div>
-    <div class="animate-rise" style="margin-bottom: 3rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0;">Daily Quests</h2>
-            <span
-                style="font-size: 0.85rem; color: var(--accent); background: rgba(245, 158, 11, 0.1); padding: 4px 12px; border-radius: 20px; font-weight: 600;">
-                <i class="fa-solid fa-bolt"></i> +50 XP Available
-            </span>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fa-solid fa-trophy" style="color: #f59e0b;"></i> Daily Quests
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0.25rem 0 0;">Complete tasks to earn XP and build better habits</p>
         </div>
+        <a href="/gamification" class="btn-primary-ui" style="font-size: 0.85rem; padding: 0.5rem 1rem; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25);">
+            <i class="fa-solid fa-bolt"></i> View All Quests
+        </a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <a href="/receipts" class="card-ui quest-card" style="padding: 1.25rem; border-left: 4px solid #3b82f6; text-decoration: none;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #3b82f6;">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <div style="flex-grow: 1;">
+                    <h4 style="margin: 0; font-size: 1rem; color: var(--text-main);">Paper Trail</h4>
+                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Scan a receipt today</p>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 0.8rem;"></i>
+            </div>
+        </a>
+        <a href="{{ url_for('recommendation.financial_analytics') }}" class="card-ui quest-card" style="padding: 1.25rem; border-left: 4px solid #10b981; text-decoration: none;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #10b981;">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div style="flex-grow: 1;">
+                    <h4 style="margin: 0; font-size: 1rem; color: var(--text-main);">Data Diver</h4>
+                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Explore Analytics insights</p>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 0.8rem;"></i>
+            </div>
+        </a>
+        <a href="/strategies" class="card-ui quest-card" style="padding: 1.25rem; border-left: 4px solid #f59e0b; text-decoration: none;">
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div style="width: 40px; height: 40px; background: rgba(245, 158, 11, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #f59e0b;">
+                    <i class="fa-solid fa-lightbulb"></i>
+                </div>
+                <div style="flex-grow: 1;">
+                    <h4 style="margin: 0; font-size: 1rem; color: var(--text-main);">Wealth Wisdom</h4>
+                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Read a growth strategy</p>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="color: var(--text-muted); font-size: 0.8rem;"></i>
+            </div>
+        </a>
+    </div>
+</div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-            <!-- Quest 1 -->
-            <div class="card-ui quest-card" style="padding: 1.25rem; border-left: 4px solid #3b82f6;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <div
-                        style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #3b82f6;">
-                        <i class="fa-solid fa-receipt"></i>
+<style>
+    .quest-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+    .quest-card:hover { background: rgba(255, 255, 255, 0.05); transform: translateY(-2px); }
+</style>
+
+    <!-- Section: Wealth Multiplier -->
+    <div class="animate-rise" style="margin-bottom: 3.5rem;">
+        <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.02em;">
+                    <i class="fa-solid fa-piggy-bank" style="color: #f472b6;"></i>
+                    Wealth Multiplier
+                </h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">Micro-investing intelligence to accelerate your goals</p>
+            </div>
+            <a href="/investments" class="btn-primary-ui" style="background: var(--pro-gradient); font-size: 0.85rem; padding: 0.6rem 1.5rem; border-radius: 14px; box-shadow: 0 10px 20px -5px rgba(167, 139, 250, 0.3);">
+                Strategy Center <i class="fa-solid fa-arrow-right ms-2" style="font-size: 0.75rem;"></i>
+            </a>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+            <!-- Roundup Card -->
+            <div class="card-ui glass-layer" style="padding: 1.75rem; border-color: rgba(244, 114, 182, 0.2); background: linear-gradient(135deg, rgba(244, 114, 182, 0.05) 0%, transparent 100%); transition: transform 0.3s ease;">
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div style="width: 50px; height: 50px; background: rgba(244, 114, 182, 0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #f472b6; font-size: 1.4rem;">
+                        <i class="fa-solid fa-coins"></i>
                     </div>
-                    <div style="flex-grow: 1;">
-                        <h4 style="margin: 0; font-size: 1rem;">Paper Trail</h4>
-                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Scan 1 more receipt today</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 2px;">0/1</div>
-                        <div style="width: 40px; height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px;">
-                            <div style="width: 0%; height: 100%; background: #3b82f6; border-radius: 2px;"></div>
-                        </div>
+                    <div class="text-end">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Spare Change</div>
+                        <div style="font-size: 1.75rem; font-weight: 800; color: #f472b6; line-height: 1;">₹{{ "{:,.2f}".format(dashboard_data.roundup_savings if dashboard_data else 0) }}</div>
                     </div>
                 </div>
+                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">Our AI identified <b>₹{{ "{:,.2f}".format(dashboard_data.roundup_savings if dashboard_data else 0) }}</b> in spare change that could be auto-invested this month.</p>
+                <div style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 100px; margin-bottom: 1.5rem; overflow: hidden;">
+                    <div class="roundup-progress" style="width: 65%; height: 100%; background: linear-gradient(90deg, #f472b6, #ec4899); border-radius: 100px;"></div>
+                </div>
+                <a href="/investments" style="font-size: 0.9rem; color: #f472b6; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 8px;">
+                    Activate Smart Roundup <i class="fa-solid fa-circle-arrow-right"></i>
+                </a>
             </div>
 
-            <!-- Quest 2 -->
-            <div class="card-ui quest-card" style="padding: 1.25rem; border-left: 4px solid #10b981;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <div
-                        style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #10b981;">
+            <!-- SIP Card -->
+            <div class="card-ui glass-layer" style="padding: 1.75rem; border-color: rgba(37, 99, 235, 0.2); background: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, transparent 100%);">
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div style="width: 50px; height: 50px; background: rgba(37, 99, 235, 0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #3b82f6; font-size: 1.4rem;">
                         <i class="fa-solid fa-chart-line"></i>
                     </div>
-                    <div style="flex-grow: 1;">
-                        <h4 style="margin: 0; font-size: 1rem;">Data Diver</h4>
-                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Check Analytics insights</p>
+                    <div class="text-end">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Recommended SIP</div>
+                        <div style="font-size: 1.75rem; font-weight: 800; color: #3b82f6; line-height: 1;">₹{{ "{:,.0f}".format(dashboard_data.recommended_sip if dashboard_data else 500) }}</div>
                     </div>
-                    <button class="btn"
-                        style="padding: 4px 10px; font-size: 0.75rem; background: rgba(16, 185, 129, 0.1); color: #10b981;">Claim</button>
                 </div>
-            </div>
-
-            <!-- Quest 3 -->
-            <div class="card-ui quest-card" style="padding: 1.25rem; border-left: 4px solid #f59e0b;">
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <div
-                        style="width: 40px; height: 40px; background: rgba(245, 158, 11, 0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #f59e0b;">
-                        <i class="fa-solid fa-lightbulb"></i>
-                    </div>
-                    <div style="flex-grow: 1;">
-                        <h4 style="margin: 0; font-size: 1rem;">Wealth Wisdom</h4>
-                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Read 1 Strategy guide</p>
-                    </div>
-                    <div style="color: #f59e0b;"><i class="fa-solid fa-circle-check"></i></div>
+                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">Based on your budget surplus, a <b>₹{{ "{:,.0f}".format(dashboard_data.recommended_sip if dashboard_data else 500) }}</b> monthly SIP aligns with your current spending pattern.</p>
+                <div style="display: flex; gap: 0.75rem; margin-top: auto;">
+                    <span style="font-size: 0.75rem; background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 12px; border-radius: 8px; font-weight: 600; border: 1px solid rgba(16, 185, 129, 0.1);">Low Risk</span>
+                    <span style="font-size: 0.75rem; background: rgba(59, 130, 246, 0.1); color: #3b82f6; padding: 4px 12px; border-radius: 8px; font-weight: 600; border: 1px solid rgba(59, 130, 246, 0.1);">Growth Optimized</span>
                 </div>
             </div>
         </div>
     </div>
-
-    <style>
-        .quest-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-
-        .quest-card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            transform: scale(1.02);
-        }
-    </style>
 
     <!-- Section: Quick Actions -->
     <div class="animate-rise" style="margin-bottom: 2rem;">
@@ -386,7 +551,7 @@
             <div
                 style="height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; margin-bottom: 0.75rem; overflow: hidden;">
                 <div
-                    style="height: 100%; width: {{ (dashboard_data.budget.spent / dashboard_data.budget.limit * 100)|round }}%; background: {% if dashboard_data.budget.status == 'broke_alert' %}#ef4444{% else %}#3b82f6{% endif %}; border-radius: 10px; transition: width 1s ease;">
+                    style="height: 100%; width: {{ [(dashboard_data.budget.spent / dashboard_data.budget.limit * 100)|round, 100]|min if dashboard_data.budget.limit > 0 else 0 }}%; background: {% if dashboard_data.budget.status == 'broke_alert' %}#ef4444{% else %}#3b82f6{% endif %}; border-radius: 10px; transition: width 1s ease;">
                 </div>
             </div>
             <div style="color: var(--text-muted); font-size: 0.85rem; display: flex; justify-content: space-between;">
@@ -524,137 +689,26 @@
         </div>
     </div>
 
-    <!-- Advanced Clusters Analysis -->
-    <div class="card-ui animate-rise" style="margin-bottom: 3rem;">
-        <div
-            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+    <!-- AI Spending Clusters Visualization (Simplified) -->
+    {% if dashboard_data.cluster_stats %}
+    <div class="card-ui animate-rise" style="margin-bottom: 3.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
             <h3 style="margin: 0; color: var(--text-main); font-size: 1.25rem;">
-                <i class="fa-solid fa-fingerprint" style="color: #f59e0b; margin-right: 0.5rem;"></i> AI Spending
-                Clusters
+                <i class="fa-solid fa-chart-scatter" style="color: #f59e0b; margin-right: 0.5rem;"></i> Cluster Neural Projection
             </h3>
-            <span
-                style="font-size: 0.85rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 0.25rem 0.75rem; border-radius: 20px;">
-                <i class="fa-solid fa-robot"></i> K-Means Analysis
+            <span style="font-size: 0.85rem; color: var(--text-muted); background: rgba(255,255,255,0.05); padding: 0.25rem 0.75rem; border-radius: 20px;">
+                <i class="fa-solid fa-microchip"></i> PCA Behaviour mapping
             </span>
         </div>
 
-        <div class="cluster-container"
-            style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 2rem;">
-            <div class="card-ui"
-                style="padding: 2rem; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px;">
-                <div style="height: 400px; position: relative;">
-                    <canvas id="clusterChart"></canvas>
-                </div>
+        <div class="card-ui glass-layer" style="padding: 2rem; background: rgba(15, 23, 42, 0.4); border-radius: 24px; border-color: rgba(255,255,255,0.05);">
+            <div style="height: 380px; position: relative;">
+                <canvas id="clusterChart"></canvas>
             </div>
-        </div>
-
-        <div class="detailed-cluster-grid">
-            {% for cluster_id, stats in dashboard_data.cluster_stats.items() %}
-            {% set colors = [
-            {'bg': 'rgba(99, 102, 241, 0.05)', 'border': 'rgba(99, 102, 241, 0.3)', 'accent': '#6366f1', 'pill':
-            'rgba(99,
-            102, 241, 0.1)'},
-            {'bg': 'rgba(6, 182, 212, 0.05)', 'border': 'rgba(6, 182, 212, 0.3)', 'accent': '#06b6d4', 'pill': 'rgba(6,
-            182,
-            212, 0.1)'},
-            {'bg': 'rgba(244, 63, 94, 0.05)', 'border': 'rgba(244, 63, 94, 0.3)', 'accent': '#f43f5e', 'pill':
-            'rgba(244,
-            63, 94, 0.1)'}
-            ] %}
-            {% set theme = colors[loop.index0 % 3] %}
-
-            <div class="cluster-card" style="background: {{ theme.bg }}; border: 1.5px solid {{ theme.border }};">
-                <!-- Header -->
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                    <div
-                        style="width: 44px; height: 44px; background: {{ theme.accent }}; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; box-shadow: 0 4px 12px {{ theme.accent }}40;">
-                        {{ cluster_id }}
-                    </div>
-                    <div>
-                        <h4 style="margin: 0; font-size: 1.15rem; color: var(--text-main);">Cluster {{ cluster_id }}
-                        </h4>
-                        <span style="color: var(--text-muted); font-size: 0.85rem;">{{ stats.count }}
-                            transactions</span>
-                    </div>
-                </div>
-
-                <!-- Primary Metrics -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
-                    <div>
-                        <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Avg Amount
-                        </div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">₹{{
-                            "{:,.0f}".format(stats.avg_amount) }}</div>
-                    </div>
-                    <div>
-                        <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Total</div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">₹{{
-                            "{:,.0f}".format(stats.total_amount) }}</div>
-                    </div>
-                </div>
-
-                <!-- Secondary Metrics -->
-                <div
-                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <div>
-                        <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Frequency
-                            Score
-                        </div>
-                        <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">{{
-                            stats.frequency_score
-                            }}</div>
-                    </div>
-                    <div>
-                        <div style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.25rem;">Spend Ratio
-                        </div>
-                        <div style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">{{ stats.spend_ratio
-                            }}%
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tags Sections -->
-                <div class="tag-section">
-                    <h6>Top Categories:</h6>
-                    <div class="pill-container">
-                        {% for cat, count in stats.categories.items()|sort(attribute='1', reverse=True) %}
-                        {% if loop.index <= 3 %} <span class="data-pill"
-                            style="background: {{ theme.pill }}; color: var(--text-main);">{{ cat }}</span>
-                            {% endif %}
-                            {% endfor %}
-                    </div>
-                </div>
-
-                <div class="tag-section">
-                    <h6>Top Merchants:</h6>
-                    <div class="pill-container">
-                        {% if stats.top_merchants %}
-                        {% for merchant, count in stats.top_merchants.items() %}
-                        <span class="data-pill" style="background: {{ theme.pill }}; color: var(--text-main);">{{
-                            merchant
-                            }}</span>
-                        {% endfor %}
-                        {% else %}
-                        <span style="color: var(--text-muted); font-size: 0.8rem; font-style: italic;">No merchant
-                            data</span>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="tag-section">
-                    <h6>Payment Methods:</h6>
-                    <div class="pill-container">
-                        {% for method, count in stats.payment_methods.items() %}
-                        <span class="data-pill" style="background: {{ theme.pill }}; color: var(--text-main);">{{ method
-                            }}
-                            ({{ count }})</span>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
         </div>
     </div>
+    {% endif %}
+
 
     <!-- Recent Activity / Scanned Expenses -->
     <div class="card-ui animate-rise" style="margin-bottom: 3rem;">
@@ -832,11 +886,8 @@
 </div>
 {% endif %}
 
-{% endif %}
-
-<!-- Chart.js and Confetti Logic -->
-{% if dashboard_data %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <script>
@@ -852,6 +903,9 @@
 
         Chart.defaults.color = tickColor;
         Chart.defaults.borderColor = gridColor;
+
+        // Register DataLabels plugin global configuration if needed, or locally in charts
+        Chart.register(ChartDataLabels);
 
         // --- 1. Spending Trend Chart ---
         const ctxTrend = document.getElementById('trendChart');
@@ -873,7 +927,10 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false },
+                        datalabels: { display: false } // Hide labels for trend line
+                    },
                     scales: {
                         y: { beginAtZero: true, grid: { color: gridColor }, ticks: { callback: v => '₹' + v } },
                         x: { grid: { display: false } }
@@ -882,7 +939,7 @@
             });
         }
 
-        // --- 2. Category Distribution Chart ---
+        // --- 2. Category Distribution Chart (Pie/Doughnut with labels) ---
         const ctxCategory = document.getElementById('categoryChart');
         if (ctxCategory) {
             const categoryData = dashboardData.category_distribution || {};
@@ -892,14 +949,51 @@
                     labels: Object.keys(categoryData),
                     datasets: [{
                         data: Object.values(categoryData),
-                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#6366f1', '#14b8a6'],
-                        borderWidth: 0
+                        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#f43f5e', '#a78bfa', '#ec4899', '#06b6d4', '#14b8a6'],
+                        borderWidth: 0,
+                        hoverOffset: 15
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right', labels: { color: tickColor, boxWidth: 10 } } }
+                    cutout: '65%',
+                    plugins: { 
+                        legend: { 
+                            position: 'right', 
+                            labels: { 
+                                color: tickColor, 
+                                boxWidth: 10, 
+                                padding: 20, 
+                                font: { size: 12, weight: '600' } 
+                            } 
+                        },
+                        datalabels: {
+                            display: true,
+                            color: '#ffffff',
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            borderRadius: 6,
+                            padding: 6,
+                            font: {
+                                weight: '900',
+                                size: 12
+                            },
+                            formatter: (value, ctx) => {
+                                let sum = 0;
+                                let dataArr = ctx.chart.data.datasets[0].data;
+                                dataArr.map(data => { sum += data; });
+                                let percentage = (value * 100 / sum).toFixed(1) + "%";
+                                return percentage;
+                            },
+                            anchor: 'center',
+                            align: 'center',
+                            listeners: {
+                                enter: function(context) {
+                                    context.control.style.cursor = 'pointer';
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
@@ -995,7 +1089,6 @@
         }
     }
 </script>
-{% endif %}
 
 <style>
     /* Dashboard Specific Styles */
@@ -1091,5 +1184,21 @@
         font-size: 0.85rem;
         font-weight: 600;
     }
+    .pulsing-elite { 
+        animation: elite-pulse 2s infinite alternate; 
+    } 
+    @keyframes elite-pulse { 
+        from { filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.3)); transform: scale(1); } 
+        to { filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.7)); transform: scale(1.02); } 
+    } 
+    .cluster-elite-card { 
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; 
+    } 
+    .cluster-elite-card:hover { 
+        transform: translateY(-8px) scale(1.02) !important; 
+        background: rgba(30, 41, 59, 0.7) !important; 
+        border-color: rgba(255, 255, 255, 0.15) !important; 
+    } 
+
 </style>
 {% endblock %}

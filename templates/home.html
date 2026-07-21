@@ -25,12 +25,23 @@
     /* Hero Section */
     .hero-section {
         position: relative;
-        padding: 10rem 2rem 8rem;
+        padding: 8rem 2rem 5rem;
         background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.1), transparent 40%),
                     radial-gradient(circle at bottom left, rgba(79, 70, 229, 0.1), transparent 40%),
                     #020617;
         text-align: center;
         border-bottom: 1px solid var(--glass-border);
+        overflow: hidden;
+    }
+
+    .hero-cta-row {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 3.5rem;
+        position: relative;
+        z-index: 2;
     }
 
     .hero-badge {
@@ -68,106 +79,283 @@
         line-height: 1.6;
     }
 
-    .dashboard-mockup {
-        max-width: 1000px;
-        margin: 4rem auto 0;
-        background: #0f172a;
-        border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8), 
-                    0 0 50px rgba(37, 99, 235, 0.15);
-        overflow: hidden;
+    /* Hero Interactive Showcase */
+    .hero-showcase {
+        max-width: 960px;
+        margin: 0 auto;
         position: relative;
-        transform: perspective(1000px) rotateX(2deg);
-        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        z-index: 10;
-        aspect-ratio: 16 / 9;
-        display: flex;
+        z-index: 1;
+        clear: both;
     }
 
-    .dashboard-mockup:hover {
-        transform: perspective(1000px) rotateX(0deg) translateY(-10px);
+    .showcase-glow {
+        position: absolute;
+        inset: -20px;
+        background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.12), transparent 70%);
+        pointer-events: none;
+        animation: glowPulse 4s ease-in-out infinite alternate;
+        z-index: 0;
     }
 
-    .mockup-sidebar {
-        width: 180px;
-        border-right: 1px solid var(--glass-border);
-        padding: 1.5rem;
-        background: rgba(2, 6, 23, 0.5);
+    @keyframes glowPulse {
+        from { opacity: 0.6; transform: scale(0.98); }
+        to { opacity: 1; transform: scale(1.02); }
     }
 
-    .mockup-nav-item {
-        height: 6px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 4px;
-        margin-bottom: 1.5rem;
-        width: 100%;
+    .showcase-panel {
+        position: relative;
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid var(--glass-border);
+        border-radius: 24px;
+        padding: 1.75rem;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.6), 0 0 60px rgba(37, 99, 235, 0.12);
+        overflow: hidden;
     }
 
-    .mockup-main {
-        flex: 1;
-        padding: 2.5rem;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9));
+    .showcase-panel::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--brand-blue), var(--brand-indigo), var(--brand-emerald));
     }
 
-    .mockup-header {
+    .showcase-header {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 2.5rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 
-    .mockup-title {
-        height: 12px;
-        width: 150px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 6px;
+    .showcase-dots {
+        display: flex;
+        gap: 6px;
     }
 
-    .mockup-grid {
+    .showcase-dots span {
+        width: 10px; height: 10px;
+        border-radius: 50%;
+    }
+
+    .showcase-label {
+        font-size: 0.8rem;
+        color: #64748b;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .showcase-live {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.75rem;
+        color: #34d399;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        padding: 0.25rem 0.75rem;
+        border-radius: 99px;
+        font-weight: 700;
+    }
+
+    .showcase-live::before {
+        content: '';
+        width: 6px; height: 6px;
+        background: #34d399;
+        border-radius: 50%;
+        animation: liveBlink 1.5s infinite;
+    }
+
+    @keyframes liveBlink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    .showcase-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .showcase-stat {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 16px;
+        padding: 1.1rem;
+        text-align: left;
+        transition: all 0.3s ease;
+    }
+
+    .showcase-stat:hover {
+        border-color: rgba(59, 130, 246, 0.3);
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .showcase-stat-icon {
+        width: 32px; height: 32px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .showcase-stat-value {
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #f8fafc;
+        letter-spacing: -0.02em;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+
+    .showcase-stat-label {
+        font-size: 0.7rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+    }
+
+    .showcase-body {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 1rem;
+    }
+
+    .showcase-chart-wrap {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 1.25rem;
+    }
+
+    .showcase-chart-wrap h4 {
+        font-size: 0.85rem;
+        color: #94a3b8;
+        margin: 0 0 1rem;
+        font-weight: 600;
+    }
+
+    .showcase-chart-wrap canvas {
+        max-height: 140px;
+    }
+
+    .showcase-tools {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+
+    .showcase-tool {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 0.85rem 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.25s ease;
+    }
+
+    .showcase-tool:hover {
+        border-color: rgba(59, 130, 246, 0.35);
+        background: rgba(59, 130, 246, 0.08);
+        transform: translateX(4px);
+        color: white;
+    }
+
+    .showcase-tool-icon {
+        width: 36px; height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+    }
+
+    .showcase-tool-text strong {
+        display: block;
+        font-size: 0.85rem;
+        color: #f1f5f9;
+        font-weight: 700;
+    }
+
+    .showcase-tool-text span {
+        font-size: 0.72rem;
+        color: #64748b;
+    }
+
+    .showcase-header-badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.75rem;
+    }
+
+    .showcase-header-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #94a3b8;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 0.3rem 0.65rem;
+        border-radius: 99px;
+    }
+
+    /* Steps Section */
+    .steps-section {
+        padding: 6rem 2rem 8rem;
+        background: #020617;
+    }
+
+    .steps-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
-        margin-bottom: 2.5rem;
+        gap: 3rem;
+        max-width: 1200px;
+        margin: 0 auto;
     }
 
-    .mockup-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--glass-border);
-        border-radius: 12px;
-        padding: 1.5rem;
-        height: 100px;
-    }
-
-    .mockup-chart-container {
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        height: 220px;
-        padding: 2rem;
+    .step-card {
+        text-align: center;
         position: relative;
-        overflow: hidden;
     }
 
-    .mockup-chart-line {
-        position: absolute;
-        bottom: 40px;
-        left: 0;
-        width: 100%;
-        height: 100px;
-        background: linear-gradient(transparent, rgba(37, 99, 235, 0.1));
-        clip-path: polygon(0 60%, 15% 40%, 30% 70%, 45% 20%, 60% 50%, 75% 10%, 90% 40%, 100% 30%, 100% 100%, 0 100%);
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background: var(--brand-blue);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        margin: 0 auto 1.5rem;
+        font-size: 1.25rem;
+        box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
     }
 
-    .mockup-chart-stroke {
-        position: absolute;
-        bottom: 40px;
-        left: 0;
-        width: 100%;
-        height: 100px;
-        background: none;
-        border-top: 2px solid var(--brand-blue);
-        clip-path: polygon(0 60%, 15% 40%, 30% 70%, 45% 20%, 60% 50%, 75% 10%, 90% 40%, 100% 30%, 100% 100%, 0 100%);
-        filter: drop-shadow(0 0 8px rgba(37, 99, 235, 0.5));
+    .step-card h3 {
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .step-card p {
+        color: #94a3b8;
     }
 
     /* Trust Section */
@@ -426,10 +614,23 @@
         transform: translateY(-2px);
     }
 
+    @media (max-width: 991px) {
+        .steps-grid { grid-template-columns: 1fr; gap: 4rem; }
+        .showcase-stats { grid-template-columns: repeat(2, 1fr); }
+        .showcase-body { grid-template-columns: 1fr; }
+    }
+
     @media (max-width: 768px) {
-        .hero-section { padding-top: 6rem; }
+        .hero-section { padding: 5rem 1.25rem 3rem; }
         .hero-title { font-size: 3rem; }
         .section-title { font-size: 2.25rem; }
+        .hero-subtitle { font-size: 1.1rem; margin-bottom: 2rem; }
+        .hero-cta-row { margin-bottom: 2.5rem; gap: 0.75rem; }
+        .hero-cta-row .btn-gradient,
+        .hero-cta-row .btn-white { padding: 0.85rem 1.5rem; font-size: 0.95rem; }
+        .steps-section { padding-top: 4rem; }
+        .showcase-stats { grid-template-columns: 1fr 1fr; }
+        .showcase-panel { padding: 1.25rem; }
     }
 
     /* FAQ Section */
@@ -480,27 +681,119 @@
 </style>
 
 <div class="landing-wrapper">
-    <!-- Hero Section -->
     <section class="hero-section">
-        <div class="hero-badge">
-            <i class="fa-solid fa-sparkles"></i> AI Wealth Protocol v3.0 Now Live
+        <div class="hero-badge" data-aos="fade-down">
+            <i class="fa-solid fa-sparkles"></i> Financial Intelligence for the AI Era
         </div>
-        <h1 class="hero-title">Your Wealth, <br> Secured & Thriving.</h1>
-        <p class="hero-subtitle">
-            FinTelligent is India's most trusted AI financial platform for the next generation. We combine bank-level security with intelligent insights to empower your financial future.
+        <h1 class="hero-title" data-aos="zoom-in">Architect Your <br> Wealth with Precision.</h1>
+        <p class="hero-subtitle" data-aos="fade-up">
+            Fintelligent is India's most advanced AI-driven financial platform. We combine institutional-grade analytics with personal tax optimization to secure your future.
         </p>
-        <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+        <div class="hero-cta-row" data-aos="fade-up" data-aos-delay="200">
             <a href="/register" class="btn-gradient">
                 Get Started Free <i class="fa-solid fa-arrow-right"></i>
             </a>
             <a href="#how-it-works" class="btn-white">
-                See How It Works
+                Explore Features
             </a>
-            <a href="#faq" class="btn-white" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white;">
-                FAQ
+            <a href="/about" class="btn-white" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white;">
+                About Us
+            </a>
+            <a href="/login" class="btn-white" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white;">
+                Sign In
             </a>
         </div>
 
+        <div class="hero-showcase" data-aos="fade-up" data-aos-delay="300">
+            <div class="showcase-glow"></div>
+
+            <div class="showcase-panel">
+                <div class="showcase-header">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                            <div class="showcase-dots">
+                                <span style="background: #ef4444;"></span>
+                                <span style="background: #f59e0b;"></span>
+                                <span style="background: #10b981;"></span>
+                            </div>
+                            <span class="showcase-label">Fintelligent Command Center</span>
+                        </div>
+                        <div class="showcase-header-badges">
+                            <span class="showcase-header-badge"><i class="fa-solid fa-robot" style="color:#a78bfa;"></i> AI Coach</span>
+                            <span class="showcase-header-badge"><i class="fa-solid fa-shield-halved" style="color:#34d399;"></i> Tax Optimized</span>
+                        </div>
+                    </div>
+                    <span class="showcase-live">Live Preview</span>
+                </div>
+
+                <div class="showcase-stats">
+                    <div class="showcase-stat">
+                        <div class="showcase-stat-icon" style="background: rgba(16,185,129,0.15); color: #34d399;">
+                            <i class="fa-solid fa-piggy-bank"></i>
+                        </div>
+                        <div class="showcase-stat-value">₹{{ "{:,.0f}".format(data.total_savings) }}</div>
+                        <div class="showcase-stat-label">Avg. Savings</div>
+                    </div>
+                    <div class="showcase-stat">
+                        <div class="showcase-stat-icon" style="background: rgba(59,130,246,0.15); color: #60a5fa;">
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
+                        </div>
+                        <div class="showcase-stat-value">₹{{ "{:,.0f}".format(data.tax_saved) }}</div>
+                        <div class="showcase-stat-label">Tax Saved</div>
+                    </div>
+                    <div class="showcase-stat">
+                        <div class="showcase-stat-icon" style="background: rgba(139,92,246,0.15); color: #a78bfa;">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <div class="showcase-stat-value">{{ data.financial_score }}%</div>
+                        <div class="showcase-stat-label">Health Score</div>
+                    </div>
+                    <div class="showcase-stat">
+                        <div class="showcase-stat-icon" style="background: rgba(245,158,11,0.15); color: #fbbf24;">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+                        <div class="showcase-stat-value">2.4×</div>
+                        <div class="showcase-stat-label">Investment Alpha</div>
+                    </div>
+                </div>
+
+                <div class="showcase-body">
+                    <div class="showcase-chart-wrap">
+                        <h4><i class="fa-solid fa-arrow-trend-up" style="color: #3b82f6; margin-right: 0.4rem;"></i> Monthly Spending Trend</h4>
+                        <canvas id="heroTrendChart"></canvas>
+                    </div>
+                    <div class="showcase-tools">
+                        <a href="/analytics" class="showcase-tool">
+                            <div class="showcase-tool-icon" style="background: rgba(59,130,246,0.15); color: #60a5fa;">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+                            <div class="showcase-tool-text">
+                                <strong>Advanced Analytics</strong>
+                                <span>ML clustering & insights</span>
+                            </div>
+                        </a>
+                        <a href="/tax" class="showcase-tool">
+                            <div class="showcase-tool-icon" style="background: rgba(16,185,129,0.15); color: #34d399;">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <div class="showcase-tool-text">
+                                <strong>Tax Engine</strong>
+                                <span>80C · 80D · HRA optimization</span>
+                            </div>
+                        </a>
+                        <a href="/ai-coach" class="showcase-tool">
+                            <div class="showcase-tool-icon" style="background: rgba(167,139,250,0.15); color: #a78bfa;">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div class="showcase-tool-text">
+                                <strong>AI Financial Coach</strong>
+                                <span>24/7 personalized advice</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Trust Section -->
@@ -530,82 +823,75 @@
         </div>
     </section>
 
-    <!-- Problem Section -->
-    <section class="problem-section" id="how-it-works">
-        <div style="max-width: 1200px; margin: 0 auto;">
-            <span class="section-tag">The Reality Check</span>
-            <h2 class="section-title">Why 90% of young Indians <br> miss out on wealth.</h2>
-            
-            <div class="problem-grid">
-                <div class="problem-card">
-                    <div class="problem-icon"><i class="fa-solid fa-brain"></i></div>
-                    <h3>Financial Blindspots</h3>
-                    <p style="color: #64748b;">Schools teach trigonometry, but not taxes. Most students graduate without knowing how to manage their first salary.</p>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-icon"><i class="fa-solid fa-receipt"></i></div>
-                    <h3>Manual Mess</h3>
-                    <p style="color: #64748b;">Tracking expenses in spreadsheets is tedious. Without automation, you lose track of where your money actually goes.</p>
-                </div>
-                <div class="problem-card">
-                    <div class="problem-icon"><i class="fa-solid fa-piggy-bank"></i></div>
-                    <h3>Missed Savings</h3>
-                    <p style="color: #64748b;">From internship TDS to 80C deductions, young professionals leave thousands on the table simply due to complex tax laws.</p>
-                </div>
-            </div>
+    <!-- Steps Section -->
+    <section class="steps-section" id="how-it-works">
+        <div style="text-align: center; margin-bottom: 5rem;">
+            <span class="section-tag">The Workflow</span>
+            <h2 class="section-title">Zero Effort. Maximum Intelligence.</h2>
         </div>
-    </section>
-
-    <!-- Solution Section -->
-    <section class="solution-section">
-        <div class="solution-content">
-            <div class="ai-brain"><i class="fa-solid fa-microchip-ai"></i></div>
-            <span class="section-tag">The Solution</span>
-            <h2 class="section-title" style="color: white;">Your Money, Augmented.</h2>
-            <p style="font-size: 1.25rem; color: #94a3b8; margin-bottom: 3rem;">
-                FinTelligent isn't just a tracker. It's an intelligent layer that sits on top of your finances, analyzing patterns, predicting shortfalls, and optimizing for growth in real-time.
-            </p>
+        <div class="steps-grid">
+            <div class="step-card" data-aos="fade-up">
+                <div class="step-number">1</div>
+                <h3>Secure Import</h3>
+                <p>Sync your statements or scan receipts with military-grade privacy. We handle the manual entry.</p>
+            </div>
+            <div class="step-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="step-number">2</div>
+                <h3>AI Processing</h3>
+                <p>Our neural engine categorizes every spend and identifies hidden tax-saving opportunities in seconds.</p>
+            </div>
+            <div class="step-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="step-number">3</div>
+                <h3>Wealth Shield</h3>
+                <p>Get personalized roadmaps to zero-tax liability and automated investment strategies for your goals.</p>
+            </div>
         </div>
     </section>
 
     <!-- Features Section -->
     <section class="features-section">
         <div style="max-width: 1200px; margin: 0 auto; text-align: center; margin-bottom: 5rem;">
-            <span class="section-tag">Core Capabilities</span>
-            <h2 class="section-title">Built for the modern earner.</h2>
+            <span class="section-tag">Elite Architecture</span>
+            <h2 class="section-title">The Tools of Modern Wealth.</h2>
         </div>
 
         <div class="feature-grid">
-            <div class="feature-card">
+            <a href="/expenses" class="feature-card" data-aos="fade-up">
                 <div class="feature-icon-new"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-                <h3>AI Budget Planner</h3>
-                <p style="color: #64748b;">Automatic categorization and smart alerts that keep you within your limits without the manual entry.</p>
-            </div>
-            <div class="feature-card">
+                <h3>AI Budget Architect</h3>
+                <p style="color: #64748b;">Smart categorization and predictive alerts. Stop tracking, start optimizing.</p>
+                <div style="margin-top: 1.5rem; font-size: 0.875rem; color: var(--brand-blue); font-weight: 600;">Launch Tool →</div>
+            </a>
+            <a href="/tax" class="feature-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="feature-icon-new"><i class="fa-solid fa-calculator"></i></div>
-                <h3>Smart Tax Shield</h3>
-                <p style="color: #64748b;">Maximize your take-home pay with automated suggestions for 80C, 10(14), and internship TDS refunds.</p>
-            </div>
-            <div class="feature-card">
+                <h3>Precision Tax Engine</h3>
+                <p style="color: #64748b;">Automated 80C, 80D, and HRA optimization. Maximize take-home pay instantly.</p>
+                <div style="margin-top: 1.5rem; font-size: 0.875rem; color: var(--brand-blue); font-weight: 600;">Launch Tool →</div>
+            </a>
+            <a href="/analytics" class="feature-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="feature-icon-new"><i class="fa-solid fa-gauge-high"></i></div>
                 <h3>Financial Health Score</h3>
-                <p style="color: #64748b;">A real-time metric of your financial stability, updated daily based on your spending and saving habits.</p>
-            </div>
-            <div class="feature-card">
+                <p style="color: #64748b;">A dynamic metric of stability. Real-time updates based on 50+ financial data points.</p>
+                <div style="margin-top: 1.5rem; font-size: 0.875rem; color: var(--brand-blue); font-weight: 600;">View Stats →</div>
+            </a>
+            <a href="/ai-coach" class="feature-card" data-aos="fade-up">
                 <div class="feature-icon-new"><i class="fa-solid fa-robot"></i></div>
-                <h3>AI Financial Coach</h3>
-                <p style="color: #64748b;">A 24/7 AI companion to answer questions like "Can I afford this iPhone?" or "How do I start a SIP?"</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon-new"><i class="fa-solid fa-bullseye"></i></div>
-                <h3>Goal-Sync Savings</h3>
-                <p style="color: #64748b;">Set goals for travel, tech, or education. We'll find small ways to save daily to get you there faster.</p>
-            </div>
-            <div class="feature-card">
+                <h3>Private AI Coach</h3>
+                <p style="color: #64748b;">LLM-powered advisor available 24/7. Expert financial strategy at your fingertips.</p>
+                <div style="margin-top: 1.5rem; font-size: 0.875rem; color: var(--brand-blue); font-weight: 600;">Talk to AI →</div>
+            </a>
+            <a href="/analyze-stock" class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon-new"><i class="fa-solid fa-chart-line"></i></div>
+                <h3>Stock Cluster Lab</h3>
+                <p style="color: #64748b;">Advanced ML clustering for portfolio diversification. Identify market patterns early.</p>
+                <div style="margin-top: 1.5rem; font-size: 0.875rem; color: var(--brand-blue); font-weight: 600;">Analyze Stocks →</div>
+            </a>
+            <a href="/education" class="feature-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="feature-icon-new"><i class="fa-solid fa-graduation-cap"></i></div>
-                <h3>Investment Lab</h3>
-                <p style="color: #64748b;">Learn by doing. Gamified paths to understand Mutual Funds, Stocks, and ETFs with zero risk.</p>
-            </div>
+                <h3>Wealth Education</h3>
+                <p style="color: #64748b;">Gamified paths to financial mastery. Learn by doing with zero-risk simulations.</p>
+                <div style="margin-top: 1.5rem; font-size: 0.875rem; color: var(--brand-blue); font-weight: 600;">Explore Lab →</div>
+            </a>
         </div>
     </section>
 
@@ -636,6 +922,78 @@
                     <h4 style="color: white; margin-bottom: 1rem;">Entrepreneurs</h4>
                     <p style="color: #64748b; font-size: 0.875rem;">Tracking burn rate and small business cashflow.</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section style="padding: 8rem 2rem; background: linear-gradient(135deg, #0f172a, #020617); border-bottom: 1px solid var(--glass-border);">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 5rem;">
+                <span class="section-tag">Impact in Numbers</span>
+                <h2 class="section-title">The Average User Difference.</h2>
+            </div>
+            <div class="audience-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                <div class="audience-item" style="border-color: rgba(37, 99, 235, 0.2);">
+                    <div style="font-size: 3rem; font-weight: 800; color: white; margin-bottom: 0.5rem;">₹{{ "{:,.0f}".format(data.total_savings) }}</div>
+                    <p style="color: #64748b; font-size: 0.875rem;">Avg. Annual Savings</p>
+                </div>
+                <div class="audience-item" style="border-color: rgba(16, 185, 129, 0.2);">
+                    <div style="font-size: 3rem; font-weight: 800; color: var(--brand-emerald); margin-bottom: 0.5rem;">₹{{ "{:,.0f}".format(data.tax_saved) }}</div>
+                    <p style="color: #64748b; font-size: 0.875rem;">Tax Saved via AI</p>
+                </div>
+                <div class="audience-item" style="border-color: rgba(245, 158, 11, 0.2);">
+                    <div style="font-size: 3rem; font-weight: 800; color: #f59e0b; margin-bottom: 0.5rem;">{{ data.financial_score }}%</div>
+                    <p style="color: #64748b; font-size: 0.875rem;">Health Score Jump</p>
+                </div>
+                <div class="audience-item" style="border-color: rgba(139, 92, 246, 0.2);">
+                    <div style="font-size: 3rem; font-weight: 800; color: #8b5cf6; margin-bottom: 0.5rem;">2.4x</div>
+                    <p style="color: #64748b; font-size: 0.875rem;">Investment Alpha</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section style="padding: 8rem 2rem; background: #020617;">
+        <div style="max-width: 1000px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 5rem;">
+                <span class="section-tag">Competitive Edge</span>
+                <h2 class="section-title">Why Fintelligent?</h2>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; color: #94a3b8;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--glass-border);">
+                            <th style="padding: 1.5rem; color: white;">Capability</th>
+                            <th style="padding: 1.5rem; color: #64748b;">Traditional Apps</th>
+                            <th style="padding: 1.5rem; color: var(--brand-blue);">Fintelligent AI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid var(--glass-border);">
+                            <td style="padding: 1.5rem; color: white; font-weight: 600;">Data Entry</td>
+                            <td style="padding: 1.5rem;">90% Manual</td>
+                            <td style="padding: 1.5rem; color: var(--brand-emerald);"><i class="fa-solid fa-circle-check"></i> Fully Autonomous</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--glass-border);">
+                            <td style="padding: 1.5rem; color: white; font-weight: 600;">Tax Optimization</td>
+                            <td style="padding: 1.5rem;">None</td>
+                            <td style="padding: 1.5rem; color: var(--brand-emerald);"><i class="fa-solid fa-circle-check"></i> Real-time AI Shield</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--glass-border);">
+                            <td style="padding: 1.5rem; color: white; font-weight: 600;">Wealth Guidance</td>
+                            <td style="padding: 1.5rem;">Generic Charts</td>
+                            <td style="padding: 1.5rem; color: var(--brand-emerald);"><i class="fa-solid fa-circle-check"></i> Personalized LLM Coach</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--glass-border);">
+                            <td style="padding: 1.5rem; color: white; font-weight: 600;">Stock Analysis</td>
+                            <td style="padding: 1.5rem;">Price Trackers</td>
+                            <td style="padding: 1.5rem; color: var(--brand-emerald);"><i class="fa-solid fa-circle-check"></i> ML Clustering & Alphas</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
@@ -688,6 +1046,38 @@
 </div>
 
 <script>
+    // Hero trend chart
+    (function() {
+        const canvas = document.getElementById('heroTrendChart');
+        if (!canvas || typeof Chart === 'undefined') return;
+        new Chart(canvas.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    data: [14200, 12800, 15600, 13400, 11900, 10500],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.12)',
+                    borderWidth: 2.5,
+                    tension: 0.45,
+                    fill: true,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
+                    y: { display: false }
+                },
+                interaction: { intersect: false, mode: 'index' }
+            }
+        });
+    })();
+
     // Simple intersection observer for animations
     const observerOptions = {
         threshold: 0.1

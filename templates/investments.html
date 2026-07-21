@@ -1,0 +1,422 @@
+{% extends "base.html" %}
+
+{% block title %}Wealth Builder - Fintelligent{% endblock %}
+
+{% block content %}
+<div class="wealth-builder-container">
+    <!-- Hero Section: The "Start from Zero" Hook -->
+    <header class="wealth-hero animate-rise">
+        <div class="hero-content">
+            <span class="badge-pill mb-3">Finance 101: Zero to Hero</span>
+            <h1 class="hero-title gradient-text">Wealth Builder</h1>
+            <p class="hero-subtitle">Don't know 'F' in Finance? No problem. We'll turn your spare change into a fortune, step by step.</p>
+        </div>
+        <div class="hero-visual">
+            <div class="glass-stat-card floating">
+                <i class="fa-solid fa-seedling text-success mb-2"></i>
+                <div class="h4 mb-0 fw-800">₹500</div>
+                <div class="xsmall text-muted">Minimum to start</div>
+            </div>
+            <div class="glass-stat-card floating-delayed">
+                <i class="fa-solid fa-rocket text-primary mb-2"></i>
+                <div class="h4 mb-0 fw-800">12%</div>
+                <div class="xsmall text-muted">Avg. Growth</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Finance 101: Simple Education -->
+    <section class="finance-101 row g-4 mb-5 animate-rise" style="animation-delay: 0.1s;">
+        <div class="col-md-4">
+            <div class="education-card">
+                <div class="edu-icon blue"><i class="fa-solid fa-calendar-check"></i></div>
+                <h5>SIP (Auto-Save)</h5>
+                <p>Think of it as a small "Subscription" for your future self. Pay ₹500 every month and watch it grow.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="education-card">
+                <div class="edu-icon purple"><i class="fa-solid fa-wand-sparkles"></i></div>
+                <h5>Compounding</h5>
+                <p>Your money earns interest, and then that interest earns interest! It's like a snowball effect for wealth.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="education-card">
+                <div class="edu-icon gold"><i class="fa-solid fa-shield-halved"></i></div>
+                <h5>Diversification</h5>
+                <p>Not putting all eggs in one basket. We spread your money across different safe spots to keep it secure.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Wealth Engine UI -->
+    <div class="engine-layout animate-rise" style="animation-delay: 0.2s;">
+        <div class="row g-4">
+            <!-- Left: Goal & Dream Builder -->
+            <div class="col-lg-4">
+                <div class="card-ui glass-layer main-card h-100">
+                    <div class="card-content">
+                        <h4 class="fw-800 mb-4"><i class="fa-solid fa-mountain-sun me-2 text-warning"></i>Choose a Dream</h4>
+                        <p class="text-muted small mb-4">Pick a goal and we'll tell you how much to save monthly to reach it.</p>
+                        
+                        <div class="dream-stack mb-4">
+                            <button class="dream-btn" onclick="forgeDream('World Tour', 300000, 24, 'fa-plane-departure')">
+                                <i class="fa-solid fa-plane-departure"></i>
+                                <span>World Tour</span>
+                            </button>
+                            <button class="dream-btn" onclick="forgeDream('New MacBook', 120000, 12, 'fa-laptop')">
+                                <i class="fa-solid fa-laptop"></i>
+                                <span>New MacBook</span>
+                            </button>
+                            <button class="dream-btn" onclick="forgeDream('Safety Net', 1000000, 60, 'fa-vault')">
+                                <i class="fa-solid fa-vault"></i>
+                                <span>Safety Net</span>
+                            </button>
+                        </div>
+
+                        <div id="dream-blueprint" class="dream-result" style="display: none;">
+                            <div class="result-header">
+                                <span id="d-name">World Tour</span>
+                                <div class="badge-price" id="d-total">₹3.0L</div>
+                            </div>
+                            <div class="result-body mt-4">
+                                <div class="h5 text-muted small mb-1">Monthly SIP needed:</div>
+                                <div class="h2 fw-900 text-primary" id="d-sip">₹11,500</div>
+                                <p class="xsmall text-muted mt-2">Assuming 12% average annual growth.</p>
+                            </div>
+                            <button class="btn-primary-ui w-100 mt-3 py-3" onclick="deployDream()">Apply this Goal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: The Visualizer -->
+            <div class="col-lg-8">
+                <div class="card-ui glass-layer main-card h-100 p-0 overflow-hidden">
+                    <div class="p-4 border-bottom border-white-05 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="m-0 fw-800">Wealth Visualizer</h4>
+                            <p class="xsmall text-muted m-0">See how much you can accumulate over time</p>
+                        </div>
+                        <div class="stat-highlight">
+                            <div class="xsmall text-muted">ESTIMATED WEALTH</div>
+                            <div class="h4 text-success fw-900 m-0" id="stat-wealth">₹24.8L</div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4">
+                        <div class="chart-box mb-4">
+                            <canvas id="legacyChart"></canvas>
+                        </div>
+
+                        <div class="slider-controls">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="control-group">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="label-mini">MONTHLY COMMITMENT</span>
+                                            <span class="val-mini">₹<span id="label-amt">5,000</span></span>
+                                        </div>
+                                        <input type="range" class="custom-slider" id="input-amt" min="500" max="100000" step="500" value="5000" oninput="syncVisuals()">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="control-group">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="label-mini">TIME DURATION</span>
+                                            <span class="val-mini"><span id="label-year">10</span> Years</span>
+                                        </div>
+                                        <input type="range" class="custom-slider purple" id="input-year" min="1" max="40" step="1" value="10" oninput="syncVisuals()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Companion: Friendly Assistant -->
+    <div class="ai-assistant-card glass-layer mt-5 animate-rise" style="animation-delay: 0.3s;">
+        <div class="ai-icon"><i class="fa-solid fa-user-tie"></i></div>
+        <div class="ai-content">
+            <h5 class="fw-800">Your Personal Wealth Guide</h5>
+            <p class="mb-0" id="ai-tip">"Hey! Based on your current settings, you'll be a millionaire in about 14 years. Try increasing your SIP by just ₹500 to beat that by 2 years!"</p>
+        </div>
+        <button class="btn-secondary-ui ms-auto" onclick="generateNewTip()">New Tip</button>
+    </div>
+</div>
+
+<style>
+    :root {
+        --text-main: #f1f5f9;
+        --text-muted: #94a3b8;
+        --primary: #3b82f6;
+        --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        --glass-bg: rgba(15, 23, 42, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
+    .wealth-builder-container {
+        padding: 4rem 2rem;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .gradient-text {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .wealth-hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 5rem;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        letter-spacing: -0.05em;
+        margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        max-width: 500px;
+    }
+
+    .hero-visual {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .glass-stat-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        padding: 1.5rem;
+        border-radius: 20px;
+        width: 140px;
+        backdrop-filter: blur(10px);
+        text-align: center;
+    }
+
+    .floating { animation: float 3s ease-in-out infinite; }
+    .floating-delayed { animation: float 3s ease-in-out 1.5s infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    /* Education Cards */
+    .education-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        padding: 2.5rem;
+        border-radius: 32px;
+        height: 100%;
+        transition: transform 0.3s;
+    }
+
+    .education-card:hover { transform: translateY(-10px); }
+    .edu-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem;
+    }
+    .edu-icon.blue { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+    .edu-icon.purple { background: rgba(139, 92, 246, 0.1); color: #a78bfa; }
+    .edu-icon.gold { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+
+    .education-card h5 { font-weight: 800; margin-bottom: 1rem; }
+    .education-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0; }
+
+    /* Dream Builder */
+    .dream-stack { display: flex; flex-direction: column; gap: 0.75rem; }
+    .dream-btn {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--glass-border);
+        color: var(--text-main);
+        padding: 1.25rem;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-weight: 700;
+        text-align: left;
+        transition: 0.2s;
+    }
+    .dream-btn:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
+    .dream-btn i { font-size: 1.2rem; min-width: 25px; }
+
+    .dream-result {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, transparent 100%);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        padding: 2rem;
+        border-radius: 24px;
+        margin-top: 1.5rem;
+    }
+    .result-header { display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
+    .badge-price { background: #3b82f6; color: white; padding: 4px 12px; border-radius: 100px; font-size: 0.8rem; }
+
+    /* Visualizer */
+    .chart-box { height: 320px; width: 100%; position: relative; }
+    .custom-slider { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 100px; outline: none; }
+    .custom-slider::-webkit-slider-thumb {
+        -webkit-appearance: none; width: 24px; height: 24px;
+        background: #3b82f6; border-radius: 50%; border: 4px solid #0f172a;
+        cursor: pointer; box-shadow: 0 0 15px rgba(59,130,246,0.4);
+    }
+    .custom-slider.purple::-webkit-slider-thumb { background: #8b5cf6; box-shadow: 0 0 15px rgba(139,92,246,0.4); }
+
+    /* AI Assistant Card */
+    .ai-assistant-card {
+        padding: 1.5rem 2.5rem;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    .ai-icon {
+        width: 50px; height: 50px; background: var(--primary-gradient);
+        border-radius: 15px; display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 1.5rem;
+    }
+
+    .badge-pill {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+        padding: 6px 14px;
+        border-radius: 100px;
+        font-weight: 800;
+        font-size: 0.75rem;
+        display: inline-block;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .xsmall { font-size: 0.7rem; }
+    .label-mini { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .val-mini { font-size: 1rem; font-weight: 800; }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let wealthChart = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+    syncVisuals();
+});
+
+function syncVisuals() {
+    const amt = document.getElementById('input-amt').value;
+    const year = document.getElementById('input-year').value;
+    
+    document.getElementById('label-amt').innerText = parseInt(amt).toLocaleString();
+    document.getElementById('label-year').innerText = year;
+    
+    fetch(`/api/investments/simulate?amount=${amt}&years=${year}`)
+    .then(r => r.json())
+    .then(data => {
+        document.getElementById('stat-wealth').innerText = '₹' + formatWealth(data.future_value);
+        updateIllustration(data);
+    });
+}
+
+function updateIllustration(data) {
+    const ctx = document.getElementById('legacyChart').getContext('2d');
+    if (wealthChart) wealthChart.destroy();
+
+    const years = data.years;
+    const labels = Array.from({length: years + 1}, (_, i) => `Yr ${i}`);
+    
+    // Compounding math for the visualization
+    const r = 0.12 / 12;
+    const p = data.total_invested / (years * 12);
+    let sequence = [0];
+    for(let y=1; y<=years; y++) {
+        let n = y * 12;
+        let fv = p * (((1 + r)**n - 1) / r) * (1 + r);
+        sequence.push(Math.round(fv));
+    }
+
+    wealthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: sequence,
+                borderColor: '#3b82f6',
+                borderWidth: 5,
+                tension: 0.4,
+                fill: true,
+                backgroundColor: createChartGradient(ctx),
+                pointRadius: 0,
+                pointHoverRadius: 8,
+                pointHoverBackgroundColor: '#3b82f6'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { display: false },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: 'rgba(255,255,255,0.2)', font: { size: 10, weight: '700' } }
+                }
+            }
+        }
+    });
+}
+
+function createChartGradient(ctx) {
+    const grad = ctx.createLinearGradient(0, 0, 0, 300);
+    grad.addColorStop(0, 'rgba(59, 130, 246, 0.2)');
+    grad.addColorStop(1, 'transparent');
+    return grad;
+}
+
+function forgeDream(name, target, months, icon) {
+    document.getElementById('dream-blueprint').style.display = 'block';
+    document.getElementById('d-name').innerText = name;
+    document.getElementById('d-total').innerText = '₹' + formatWealth(target);
+    
+    const r = 0.12 / 12;
+    const sip = Math.round(target / (((1 + r)**months - 1) / r) * (1 + r));
+    document.getElementById('d-sip').innerText = '₹' + sip.toLocaleString();
+    
+    document.getElementById('dream-blueprint').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function formatWealth(num) {
+    if (num >= 10000000) return (num / 10000000).toFixed(2) + 'Cr';
+    if (num >= 100000) return (num / 100000).toFixed(2) + 'L';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num;
+}
+
+function generateNewTip() {
+    const tips = [
+        "Financial Pro Tip: Increasing your drink budget by ₹1000? Increase your SIP by ₹1000 too! Balance is key.",
+        "Did you know? Compounding works best if you don't touch the money for at least 5 years. Stay patient!",
+        "Strategy: Most students waste ₹2000/month on unplanned snacks. Invest half of that and you'll have ₹5 Lakhs in 10 years.",
+        "Zero Effort Move: Enable 'Roundup Engine' to invest pennies silently without you even noticing.",
+        "Wealth Secret: The best time to start was yesterday. The second best time is right now with just ₹500."
+    ];
+    document.getElementById('ai-tip').innerText = `"${tips[Math.floor(Math.random() * tips.length)]}"`;
+}
+
+function deployDream() {
+    alert("Goal Architecture Deployed! We've set your target tracker. Start your first SIP to begin the journey.");
+}
+</script>
+{% endblock %}

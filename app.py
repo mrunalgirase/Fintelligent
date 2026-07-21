@@ -68,7 +68,7 @@ csrf.init_app(app)
 limiter.init_app(app)
 
 # Talisman for security headers (content security policy)
-# Allowing CDNs for FontAwesome and Chart.js
+# Allowing CDNs for FontAwesome, Chart.js, and Power BI
 csp = {
     'default-src': '\'self\'',
     'script-src': [
@@ -76,6 +76,8 @@ csp = {
         'https://cdn.jsdelivr.net',
         'https://kit.fontawesome.com',
         'https://cdnjs.cloudflare.com',
+        'https://app.powerbi.com',
+        'https://content.powerbi.com',
         '\'unsafe-inline\'' # Needed for some existing inline scripts
     ],
     'style-src': [
@@ -90,7 +92,9 @@ csp = {
         'https://ka-p.fontawesome.com',
         'https://cdnjs.cloudflare.com'
     ],
-    'img-src': ['\'self\'', 'data:']
+    'img-src': ['\'self\'', 'data:', 'https://app.powerbi.com'],
+    'frame-src': ['\'self\'', 'https://app.powerbi.com', 'https://content.powerbi.com'],
+    'connect-src': ['\'self\'', 'https://*.powerbi.com']
 }
 talisman.init_app(app, content_security_policy=csp)
 
@@ -115,6 +119,9 @@ app.register_blueprint(ai_coach)
 
 from fintelligent.payments.routes import payments
 app.register_blueprint(payments)
+
+from fintelligent.investments.routes import investments
+app.register_blueprint(investments)
 
 # Initialize Flask-Login
 login_manager.init_app(app)
@@ -176,4 +183,4 @@ if __name__ == '__main__':
             port = 5003
     
     print(f"Starting Flask app on port {port}")
-    app.run(debug=True, port=port, host='0.0.0.0')
+    app.run(debug=True, port=port, host='0.0.0.0', threaded=True)

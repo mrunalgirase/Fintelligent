@@ -2,76 +2,138 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <header class="dashboard-header">
+    <header class="dashboard-header animate-rise">
         <div>
-            <h1>Receipts Hub</h1>
-            <p class="subtitle">Scan, track, and manage your financial documents</p>
+            <h1 class="gradient-text" style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Receipts Hub</h1>
+            <p class="subtitle" style="font-size: 1.1rem; opacity: 0.8;">Your AI-powered document command center</p>
         </div>
         <div class="header-actions">
-            <button onclick="toggleScanner()" class="btn btn-primary" id="scanner-toggle-btn">
-                <i class="fas fa-camera"></i> Scan Receipt
+            <button onclick="toggleScanner()" class="btn-primary-ui" style="padding: 0.75rem 1.5rem; border-radius: 12px;">
+                <i class="fas fa-camera"></i> Smart Scan
             </button>
-            <button onclick="openManualEntry()" class="btn btn-secondary"
-                style="border: 1px solid var(--border-color); color: var(--text-main); padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer;">
-                <i class="fa-solid fa-pen-to-square"></i> Manual Entry
+            <button onclick="openManualEntry()" class="btn-secondary-ui" style="padding: 0.75rem 1.5rem; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                <i class="fa-solid fa-pen-nib"></i> Manual Entry
             </button>
         </div>
     </header>
 
-    <!-- Integrated Scanner Section -->
-    <div id="scanner-container" class="animate-rise" style="display: none; margin-bottom: 2rem;">
-        <div class="card-ui"
-            style="max-width: 600px; margin: 0 auto; border: 2px dashed rgba(59, 130, 246, 0.3); background: rgba(30, 41, 59, 0.4);">
-            <div id="upload-section" style="text-align: center; padding: 2rem;">
-                <i class="fa-solid fa-cloud-arrow-up"
-                    style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-                <h3>Smart Scan</h3>
-                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Upload a photo of your receipt. AI will
-                    extract details.</p>
-                <input type="file" id="receipt-input" accept="image/*" capture="environment" style="display: none;"
-                    onchange="handleImageUpload(this)">
-                <button onclick="document.getElementById('receipt-input').click()" class="btn-primary-ui">
-                    <i class="fa-solid fa-camera"></i> Select Image
+    <!-- AI Insights & Spending Overview Row -->
+    <div class="row g-4 mb-5 animate-rise" style="animation-delay: 0.1s;">
+        <!-- AI Receipt Coach -->
+        <div class="col-lg-5">
+            <div class="card-ui glass-layer" style="height: 100%; position: relative; overflow: hidden; border-radius: 24px; padding: 2rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), transparent);">
+                <div style="position: absolute; top: -20px; right: -20px; font-size: 8rem; opacity: 0.05; transform: rotate(15deg);">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <div style="width: 50px; height: 50px; background: var(--primary-gradient); border-radius: 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                        <i class="fa-solid fa-sparkles"></i>
+                    </div>
+                    <h3 style="margin: 0; font-size: 1.35rem; font-weight: 700;">AI Receipt Coach</h3>
+                </div>
+                <p style="color: var(--text-main); font-size: 1.1rem; line-height: 1.6; font-weight: 500; position: relative; z-index: 1;">
+                    "{{ personalized_tip }}"
+                </p>
+                <div style="margin-top: 2rem;">
+                    <span class="badge" style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600;">
+                        <i class="fa-solid fa-bolt" style="color: #fbbf24; margin-right: 0.5rem;"></i> Personalized insight
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spending Trends Chart -->
+        <div class="col-lg-7">
+            <div class="card-ui glass-layer" style="height: 100%; border-radius: 24px; padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin: 0;">
+                        <i class="fa-solid fa-chart-line" style="color: var(--primary); margin-right: 0.5rem;"></i> Spending Velocity
+                    </h3>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Last {{ chart_labels|length }} Months</div>
+                </div>
+                <div style="height: 220px;">
+                    <canvas id="spendingChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid (Compact & Modern) -->
+    <div class="stats-grid animate-rise" style="animation-delay: 0.2s; margin-bottom: 3rem;">
+        <div class="stat-card card-ui glass-layer">
+            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+                <i class="fas fa-folder-open"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Lifetime Files</h3>
+                <p class="stat-value">{{ total_count }}</p>
+            </div>
+        </div>
+        <div class="stat-card card-ui glass-layer">
+            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Total Scanned</h3>
+                <p class="stat-value">₹{{ "{:,.0f}".format(total_amount) }}</p>
+            </div>
+        </div>
+        <div class="stat-card card-ui glass-layer">
+            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div class="stat-info">
+                <h3>Active Months</h3>
+                <p class="stat-value">{{ grouped_expenses|length }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scanner Row (Conditional) -->
+    <div id="scanner-container" class="animate-rise" style="display: none; margin-bottom: 3rem;">
+        <div class="card-ui" style="max-width: 650px; margin: 0 auto; border: 2px dashed rgba(59, 130, 246, 0.5); border-radius: 24px; overflow: hidden;">
+            <div id="upload-section" style="text-align: center; padding: 3rem;">
+                <div style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.5rem; color: var(--primary);"></i>
+                </div>
+                <h3 style="font-weight: 700;">Drop & Extract</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Student AI will read the date and amount automatically.</p>
+                <input type="file" id="receipt-input" accept="image/*" capture="environment" style="display: none;" onchange="handleImageUpload(this)">
+                <button onclick="document.getElementById('receipt-input').click()" class="btn-primary-ui" style="padding: 0.8rem 2rem;">
+                    <i class="fa-solid fa-file-image"></i> Select Receipt
                 </button>
             </div>
 
             <!-- Loading State -->
-            <div id="loading-state" style="display: none; text-align: center; padding: 3rem;">
-                <div class="spinner"
-                    style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem auto;">
-                </div>
-                <p>AI is analyzing your receipt...</p>
+            <div id="loading-state" style="display: none; text-align: center; padding: 4rem;">
+                <div class="spinner-modern"></div>
+                <p style="margin-top: 1.5rem; font-weight: 600;">Llama 4 Vision is analyzing...</p>
             </div>
 
             <!-- Result Form -->
-            <div id="result-section" style="display: none; padding: 1.5rem; border-top: 1px solid var(--border-color);">
-                <h4 style="margin-bottom: 1.5rem;"><i class="fa-solid fa-circle-check"
-                        style="color: var(--secondary);"></i> Review Details</h4>
+            <div id="result-section" style="display: none; padding: 2rem; background: rgba(255,255,255,0.02);">
+                <h4 style="margin-bottom: 2rem; display: flex; align-items: center; gap: 0.5rem;"><i class="fa-solid fa-wand-magic-sparkles" style="color: #f59e0b;"></i> AI Output</h4>
                 <form id="expense-form">
                     <input type="hidden" id="expense-id">
-                    <div style="margin-bottom: 1rem;">
-                        <label
-                            style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">Merchant</label>
-                        <input type="text" id="merchant" class="input-ui" style="background: rgba(0,0,0,0.2);">
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                        <div>
-                            <label
-                                style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">Date</label>
-                            <input type="date" id="date" class="input-ui" style="background: rgba(0,0,0,0.2);">
-                        </div>
-                        <div>
-                            <label
-                                style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">Amount
-                                (₹)</label>
-                            <input type="number" step="0.01" id="amount" class="input-ui"
-                                style="background: rgba(0,0,0,0.2);">
+                    <div class="form-row mb-4">
+                        <div class="col-md-12">
+                            <label class="input-label">Vendor / Store</label>
+                            <input type="text" id="merchant" class="input-ui" placeholder="e.g. Starbucks">
                         </div>
                     </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label
-                            style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">Category</label>
-                        <select id="category" class="input-ui" style="background: rgba(0,0,0,0.2);">
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label class="input-label">Date</label>
+                            <input type="date" id="date" class="input-ui">
+                        </div>
+                        <div class="col-6">
+                            <label class="input-label">Amount (₹)</label>
+                            <input type="number" step="0.01" id="amount" class="input-ui" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="mb-5">
+                        <label class="input-label">Category</label>
+                        <select id="category" class="input-ui">
                             <option value="Food">Food & Dining</option>
                             <option value="Transport">Transport</option>
                             <option value="Shopping">Shopping</option>
@@ -80,245 +142,361 @@
                         </select>
                     </div>
                     <div style="display: flex; gap: 1rem;">
-                        <button type="button" class="btn-primary-ui" style="flex: 2; justify-content: center;"
-                            onclick="saveExpense()">
-                            <i class="fa-solid fa-floppy-disk"></i> Save to History
+                        <button type="button" class="btn-primary-ui" style="flex: 2; height: 50px;" onclick="saveExpense()">
+                            <i class="fa-solid fa-check"></i> Finalize Scan
                         </button>
-                        <button type="button" class="btn" style="flex: 1; border: 1px solid var(--border-color);"
-                            onclick="resetScanner()">
-                            Reset
-                        </button>
+                        <button type="button" class="btn-secondary-ui" style="flex: 1; height: 50px;" onclick="resetScanner()">Cancel</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
-                <i class="fas fa-receipt"></i>
-            </div>
-            <div class="stat-info">
-                <h3>Total Scanned</h3>
-                <p class="stat-value">{{ expenses|length }}</p>
-            </div>
+    <!-- History Architecture: Month Accordions -->
+    <div class="receipts-explorer animate-rise" style="animation-delay: 0.3s;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin: 0;">Explorer History</h2>
+            <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Grouped by Month</span>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
-                <i class="fas fa-wallet"></i>
-            </div>
-            <div class="stat-info">
-                <h3>Total Value</h3>
-                <p class="stat-value">₹{{ "%.2f"|format(expenses|sum(attribute='amount')) }}</p>
-            </div>
-        </div>
-    </div>
 
-    <div class="content-card mt-4">
-        <div class="card-header">
-            <h2>Recent Scans</h2>
+        {% for month, month_expenses in grouped_expenses.items() %}
+        {% set colors = ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'] %}
+        {% set color = colors[loop.index0 % 5] %}
+        <div class="month-accordion card-ui glass-layer mb-3" style="border: 1px solid rgba(255,255,255,0.05); padding: 0; overflow: hidden; border-radius: 20px;">
+            <div class="accordion-header" style="padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.2s;" onclick="toggleAccordion(this)">
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <div style="width: 44px; height: 44px; background: {{ color }}15; color: {{ color }}; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
+                        <i class="fa-solid fa-calendar-day"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: var(--text-main);">{{ month }}</h3>
+                        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">{{ month_expenses|length }} Objects</span>
+                    </div>
+                </div>
+                <div style="text-align: right; display: flex; align-items: center; gap: 2rem;">
+                    <div class="d-none d-md-block">
+                        <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Value Collected</div>
+                        <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">₹{{ "{:,.0f}".format(month_expenses|sum(attribute='amount')) }}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down accordion-icon" style="transition: transform 0.3s; color: var(--text-muted);"></i>
+                </div>
+            </div>
+
+            <div class="accordion-content" style="display: {{ 'block' if loop.first else 'none' }}; border-top: 1px solid rgba(255,255,255,0.05);">
+                <div class="table-responsive">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Merchant</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th style="text-align: right;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for expense in month_expenses %}
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 700; color: var(--text-main);">{{ expense.date.strftime('%d') }}</div>
+                                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">{{ expense.date.strftime('%a') }}</div>
+                                </td>
+                                <td>
+                                    <div class="merchant-name-modern">{{ expense.merchant or 'Unknown' }}</div>
+                                </td>
+                                <td>
+                                    <span class="category-pill" style="--pill-color: {{ color }}">{{ expense.category }}</span>
+                                </td>
+                                <td class="amount-cell">₹{{ "{:,.2f}".format(expense.amount) }}</td>
+                                <td style="text-align: right;">
+                                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                                        <button class="action-btn"
+                                            data-id="{{ expense.id }}"
+                                            data-merchant="{{ expense.merchant or '' }}"
+                                            data-amount="{{ expense.amount }}"
+                                            data-date="{{ expense.date.strftime('%Y-%m-%d') }}"
+                                            data-category="{{ expense.category or 'Other' }}"
+                                            onclick="handleEdit(this)">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+                                        <button class="action-btn delete" onclick="deleteReceipt({{ expense.id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="table-container">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Merchant</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for expense in expenses %}
-                    <tr>
-                        <td>{{ expense.date.strftime('%Y-%m-%d') }}</td>
-                        <td>
-                            <div class="merchant-info">
-                                <span class="merchant-name">{{ expense.merchant or 'Unknown' }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="category-badge">{{ expense.category }}</span>
-                        </td>
-                        <td class="amount">₹{{ "%.2f"|format(expense.amount) }}</td>
-                        <td>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <button class="btn btn-icon"
-                                    data-id="{{ expense.id }}"
-                                    data-merchant="{{ expense.merchant or '' }}"
-                                    data-amount="{{ expense.amount }}"
-                                    data-date="{{ expense.date.strftime('%Y-%m-%d') }}"
-                                    data-category="{{ expense.category or 'Other' }}"
-                                    onclick="handleEdit(this)"
-                                    title="Edit">
-                                    <i class="fas fa-pen"></i>
-                                </button>
-                                <button class="btn btn-icon" onclick="deleteReceipt({{ expense.id }})" title="Delete"
-                                    style="color: #ef4444;">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" class="empty-state">
-                            <i class="fas fa-folder-open"></i>
-                            <p>No scanned receipts found. Start by scanning your first receipt!</p>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        {% else %}
+        <div class="card-ui glass-layer" style="text-align: center; padding: 5rem 2rem; border-radius: 24px;">
+            <div style="font-size: 4rem; opacity: 0.1; margin-bottom: 2rem;">
+                <i class="fa-solid fa-file-invoice"></i>
+            </div>
+            <h3 style="font-weight: 800;">Your hub is empty</h3>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Upload your first receipt to start the AI analysis.</p>
+            <button onclick="toggleScanner()" class="btn-primary-ui">Scale Up Now</button>
         </div>
+        {% endfor %}
     </div>
 </div>
 
 <style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        --glass-bg: rgba(15, 23, 42, 0.4);
+        --glass-border: rgba(255, 255, 255, 0.08);
+    }
+
     .dashboard-container {
-        padding: 2rem;
-        max-width: 1200px;
+        padding: 3rem 2rem;
+        max-width: 1400px;
         margin: 0 auto;
     }
 
-    .dashboard-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 1rem;
+    .gradient-text {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
     }
 
     .stat-card {
-        background: var(--card-bg);
-        padding: 1.5rem;
-        border-radius: 1rem;
+        padding: 2rem;
         display: flex;
         align-items: center;
-        gap: 1.2rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--border-color);
+        gap: 1.5rem;
+        border-radius: 24px;
+        transition: transform 0.3s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
     }
 
     .stat-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 0.75rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
     }
 
     .stat-value {
-        font-size: 1.5rem;
-        font-weight: 700;
+        font-size: 1.8rem;
+        font-weight: 800;
         margin: 0;
+        letter-spacing: -0.02em;
     }
 
-    .content-card {
-        background: var(--card-bg);
-        border-radius: 1rem;
-        border: 1px solid var(--border-color);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
+    .stat-info h3 {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        margin-bottom: 4px;
     }
 
-    .card-header {
-        padding: 1.5rem;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .table-container {
-        overflow-x: auto;
-    }
-
-    .data-table {
+    /* Modern Table Styles */
+    .modern-table {
         width: 100%;
         border-collapse: collapse;
     }
 
-    .data-table th {
+    .modern-table th {
+        padding: 1.25rem 2rem;
         text-align: left;
-        padding: 1rem 1.5rem;
-        background: rgba(0, 0, 0, 0.02);
-        font-weight: 600;
-        color: var(--text-muted);
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        font-weight: 700;
+        color: var(--text-muted);
+        background: rgba(0,0,0,0.1);
     }
 
-    .data-table td {
-        padding: 1rem 1.5rem;
-        border-top: 1px solid var(--border-color);
+    .modern-table td {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+        vertical-align: middle;
     }
 
-    .merchant-name {
-        font-weight: 500;
-    }
-
-    .category-badge {
-        padding: 0.25rem 0.75rem;
-        border-radius: 2rem;
-        background: rgba(59, 130, 246, 0.1);
-        color: #3b82f6;
-        font-size: 0.8125rem;
-        font-weight: 500;
-    }
-
-    .amount {
-        font-weight: 600;
+    .merchant-name-modern {
+        font-weight: 700;
+        font-size: 1rem;
         color: var(--text-main);
     }
 
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem !important;
-        color: var(--text-muted);
+    .category-pill {
+        display: inline-flex;
+        padding: 6px 14px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        background: var(--pill-color)15;
+        color: var(--pill-color);
+        border: 1px solid var(--pill-color)20;
     }
 
-    .empty-state i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.3;
+    .amount-cell {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: var(--text-main);
     }
 
-    .btn-icon {
-        padding: 0.5rem;
-        border-radius: 0.5rem;
+    .action-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
         color: var(--text-muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         transition: all 0.2s;
     }
 
-    .btn-icon:hover {
-        background: rgba(0, 0, 0, 0.05);
-        color: var(--accent-color);
+    .action-btn:hover {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .action-btn.delete:hover {
+        background: #ef4444;
+        border-color: #ef4444;
+    }
+
+    .input-label {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        margin-bottom: 0.6rem;
+        display: block;
+    }
+
+    .spinner-modern {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255,255,255,0.1);
+        border-top-color: var(--primary);
+        border-right-color: #a855f7;
+        border-radius: 50%;
+        animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        margin: 0 auto;
+    }
+
+    .month-accordion:hover .accordion-header {
+        background: rgba(255,255,255,0.02);
+    }
+
+    .month-accordion.active .accordion-icon {
+        transform: rotate(180deg);
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Toggle Accordion Functionality
+    function toggleAccordion(header) {
+        const accordion = header.parentElement;
+        const content = header.nextElementSibling;
+        
+        // Toggle active class
+        accordion.classList.toggle('active');
+        
+        // Toggle display
+        if (content.style.display === 'block') {
+            content.style.display = 'none';
+        } else {
+            content.style.display = 'block';
+        }
+    }
+
+    // Initialize Chart
+    document.addEventListener('DOMContentLoaded', () => {
+        const ctx = document.getElementById('spendingChart').getContext('2d');
+        const labels = {{ chart_labels | tojson }};
+        const data = {{ chart_data | tojson }};
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Monthly Spend',
+                    data: data,
+                    borderColor: '#a855f7',
+                    backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                    borderWidth: 4,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#6366f1',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleFont: { size: 14, weight: 'bold' },
+                        bodyFont: { size: 14 },
+                        padding: 12,
+                        cornerRadius: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return '₹' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11, weight: '600' } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        ticks: { 
+                            color: 'rgba(255,255,255,0.5)', 
+                            font: { size: 11, weight: '600' },
+                            callback: value => '₹' + value.toLocaleString()
+                        }
+                    }
+                }
+            }
+        });
+    });
+
     function toggleScanner() {
         const container = document.getElementById('scanner-container');
-        const uploadSection = document.getElementById('upload-section');
-        const resultSection = document.getElementById('result-section');
-
         if (container.style.display === 'none') {
             container.style.display = 'block';
             resetScanner();
+            container.scrollIntoView({ behavior: 'smooth' });
         } else {
             container.style.display = 'none';
         }
@@ -329,14 +507,11 @@
         document.getElementById('upload-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
         document.getElementById('loading-state').style.display = 'none';
-
-        // Reset form for new entry
         document.getElementById('expense-id').value = '';
         document.getElementById('merchant').value = '';
         document.getElementById('amount').value = '';
         document.getElementById('date').value = new Date().toISOString().split('T')[0];
         document.getElementById('category').value = 'Other';
-
         document.getElementById('scanner-container').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -346,10 +521,7 @@
         const amount = btn.getAttribute('data-amount');
         const date = btn.getAttribute('data-date');
         const category = btn.getAttribute('data-category');
-        editReceipt(id, merchant, amount, date, category);
-    }
-
-    function editReceipt(id, merchant, amount, date, category) {
+        
         document.getElementById('scanner-container').style.display = 'block';
         document.getElementById('upload-section').style.display = 'none';
         document.getElementById('result-section').style.display = 'block';
@@ -368,7 +540,7 @@
         document.getElementById('result-section').style.display = 'none';
         document.getElementById('loading-state').style.display = 'none';
         document.getElementById('receipt-input').value = '';
-        document.getElementById('expense-id').value = ''; // Clear ID
+        document.getElementById('expense-id').value = '';
         document.getElementById('merchant').value = '';
         document.getElementById('amount').value = '';
         document.getElementById('date').value = '';
@@ -378,7 +550,6 @@
         if (input.files && input.files[0]) {
             const formData = new FormData();
             formData.append('image', input.files[0]);
-            formData.append('csrf_token', '{{ csrf_token() }}'); // Flask-WTF CSRF
 
             document.getElementById('upload-section').style.display = 'none';
             document.getElementById('loading-state').style.display = 'block';
@@ -390,26 +561,24 @@
                 },
                 body: formData
             })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('loading-state').style.display = 'none';
-                    if (data.error) {
-                        alert(data.error);
-                        resetScanner();
-                        return;
-                    }
-
-                    document.getElementById('result-section').style.display = 'block';
-                    document.getElementById('merchant').value = data.merchant;
-                    document.getElementById('amount').value = data.amount;
-                    document.getElementById('date').value = data.date;
-                    // Category remains default or AI guessed? AI currently returns merchant, amount, date.
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred during scanning.');
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading-state').style.display = 'none';
+                if (data.error) {
+                    alert(data.error);
                     resetScanner();
-                });
+                    return;
+                }
+                document.getElementById('result-section').style.display = 'block';
+                document.getElementById('merchant').value = data.merchant;
+                document.getElementById('amount').value = data.amount;
+                document.getElementById('date').value = data.date;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during scanning.');
+                resetScanner();
+            });
         }
     }
 
@@ -441,19 +610,18 @@
                 category: category
             })
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // alert(data.message);
-                    window.location.reload();
-                } else {
-                    alert(data.error || 'Failed to save');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred.');
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.error || 'Failed to save');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred.');
+        });
     }
 
     function deleteReceipt(id) {
@@ -465,18 +633,18 @@
                 'X-CSRFToken': '{{ csrf_token() }}'
             }
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    alert(data.error || 'Failed to delete');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred.');
-            });
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.error || 'Failed to delete');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred.');
+        });
     }
 </script>
 {% endblock %}
